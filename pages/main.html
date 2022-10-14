@@ -8,24 +8,24 @@
     <div class="row align-items-center" style="height: 66px;">
         <!-- 가계부 메뉴 -->
         <div class="col d-flex align-items-center justify-content-center" page-link="/main/page.balances.html">
-            <img src="/public/image/menu_1_dactive.svg">
+            <img src="https://lclasser.github.io/sbalance/public/image/menu_1_dactive.svg">
         </div>
         <!-- <div class="col d-flex align-items-center justify-content-center fs-4">지갑(계좌) </div> -->
         <!-- <div class="col d-flex align-items-center justify-content-center fs-4">관심상점 </div> -->
         <!-- 통계 메뉴 -->
         <div class="col d-flex align-items-center justify-content-center">
-            <img src="/public/image/menu_2_dactive.svg">
+            <img src="https://lclasser.github.io/sbalance/public/image/menu_2_dactive.svg">
         </div>
         <!-- 센터 메뉴 -->
         <div class="col-auto d-flex align-items-center justify-content-center d-none" id="menu_center">
         </div>
         <!-- 자산 메뉴 -->
         <div class="col d-flex align-items-center justify-content-center">
-            <img src="/public/image/menu_3_dactive.svg">
+            <img src="https://lclasser.github.io/sbalance/public/image/menu_3_dactive.svg">
         </div>
         <!-- 설정 메뉴 -->
         <div class="col d-flex align-items-center justify-content-center" page-link="/main/page.setup.html">
-            <img src="/public/image/menu_4_dactive.svg">
+            <img src="https://lclasser.github.io/sbalance/public/image/menu_4_dactive.svg">
         </div>
     </div>
 </footer>
@@ -82,7 +82,7 @@ $(function() {
             img.width = img.width || '62px';
             $menu_center.css('width', img.width);
 
-            $menu_center.html(`<img src="/public/image/${img.file}" style="position:absolute; bottom:16px; width:${img.width};">`);
+            $menu_center.html(`<img src="https://lclasser.github.io/sbalance/public/image/${img.file}" style="position:absolute; bottom:16px; width:${img.width};">`);
             $menu_center.click(function() {
                 callback();
             });
