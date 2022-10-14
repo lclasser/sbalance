@@ -1,0 +1,35 @@
+<link href="/main/balance/page.daily.css" rel="stylesheet" type="text/css"/>
+<div page-declare="dpage" class="w-100 h-100" onload="onPageLoad(this);">
+    <div id="list_items" class="overflow-hidden"></div>
+</div>
+
+<script src="/main/balance/page.daily.js"></script>
+<script>
+    function onPageLoad(epage)
+{
+    var dpage = epage.getPage();
+    var dparam = epage.getParam();
+    
+    var $bsum = dpage.getFrame().getBalanceSum();
+    var _balances = dpage.getReference('balances');
+
+    function page_query() {
+        var inbound = {
+            year  : _balances.now_date.getFullYear(),
+            month : (_balances.now_date.getMonth() + 1),
+            sms_class : $bsum && $bsum[0].getSummaryClass(),
+            acc_key  : dparam.acc_type == 'L' ? dparam.acc_name : dparam.acc_key,
+        };
+        process_daily(dpage, dpage.find("#list_items"), inbound, function(qry_result) {
+            $bsum && $bsum[0].setSummaryResult(qry_result, page_query);
+        });
+    }
+
+    dpage.on('refresh', function(event, value) {
+        console.log(`${dpage.getFile()}: refresh`, event, value);
+        page_query();
+    });
+
+    page_query();
+}
+</script>

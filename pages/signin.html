@@ -1,0 +1,178 @@
+<!-- content : sign in -->
+<style>
+    .signin-title {
+        width: 100%;
+        font-family: 'Noto Sans';
+        font-style: normal;
+        font-weight: 600;
+        font-size: 28px;
+        line-height: 36px;
+        color: #DBD5D2;
+        padding: 0;
+        margin-bottom: 56px;
+    }
+
+    .signin-submit {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 56px;
+        background: linear-gradient(167.94deg, #FFC84C 0%, #FC8032 100%);
+        border-radius: 4px;
+        font-family: 'Noto Sans';
+        font-style: normal;
+        font-weight: 600;
+        font-size: 18px;
+        color: #222223;
+        border: 0;
+    }
+    .signin-submit:active {
+        border: 1px solid #FFC84C;
+        background: #FC792F;
+    }
+
+    .signin-signup {
+        color: #E9E6E6;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 0px;
+        gap: 16px;
+        position: fixed;
+        bottom: 32px;
+        width: 100%;
+    }
+    .signin-signup span {
+        font-family: 'Noto Sans';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 18px;
+        line-height: 24px;
+    }
+</style>
+<div class="sign_in">
+    <div class="container-fluid">
+        <div class="position-fixed signin-down" style="right:10px; top:10px; display:none;">
+            <a href="/sign/down" class="sb-link">App Download</a>
+        </div>
+
+        <div class="rounded top-50 start-50 position-absolute translate-middle" style="width:80%;max-width:512px;">
+            <div class="signin-title">Sign In</div>
+            <div class="signin-form">
+                <form class="mb-0" onsubmit="return doSignin(true);">
+                    <!-- email -->
+                    <div class="sb-input" style="margin-bottom: 16px;">
+                        <input type="email" id="in_email" placeholder=" " required>
+                        <label for="in_email">Email</label>
+                    </div>
+                    <!-- password -->
+                    <div class="sb-input sb-password" style="margin-bottom: 48px;">
+                        <input type="checkbox">
+                        <input type="text" id="in_pwd" autocomplete="off" placeholder=" " required>
+                        <label for="in_pwd">Password</label>
+                    </div>
+                    <!-- signin -->
+                    <div class="sb-input">
+                        <button class="signin-submit" type="submit">Sign in</button>
+                    </div>
+                </form>
+                <!-- remember-me -->
+                <div class="d-flex flex-wrap" style="margin-top: 24px;">
+                    <label class="sb-check">
+                        <input type="checkbox" id="in_rememberme">
+                        <label for="in_rememberme"></label>
+                        <span class="caption">Remember me</span>
+                    </label>
+                    <span class="ms-auto">
+                        <a href="#" class="sb-link" onclick="onForgot(); return false;">Forgot Password</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <!-- signup -->
+        <div class="signin-signup">
+            <span>Don’t have on account?</span>
+            <a href="/sign/up" class="sb-link">Sign up</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        console.log("signin.html ");
+        var info = null;
+
+        if( window.SBalance != null ){
+            if( window.SBalance.getMode() == 'web' ) {
+                $(".signin-down").show();
+            }
+            if( window.SBalance.isRememberMe() == true ) {
+                console.log("SIGNIN: auto signin...");
+                info = window.SBalance.getRememberMe();
+            }
+            if(window.SBalance.getArgs('type') == 'passive') {
+                info = null;
+            }
+        }
+
+        if( info ) {
+            $("#in_email").val(info.usr_email);
+            // $("#in_pwd").val("********");
+            $("#in_rememberme").prop("checked", true);
+            doSignin(true, info.usr_pwd);
+        } else {
+            doSignin(false);
+        }
+    });
+
+    function doSignin(is_sign, auto_pwd) {
+        if( is_sign != true ) {
+            window.SBalance.onSignin(false, null);
+            return;
+        } 
+
+        var inbound = {
+            usr_email : $("#in_email").val(),
+            usr_pwd   : auto_pwd || SHA_256($("#in_pwd").val()),
+        };
+        console.log("signin: (is_auto:" + (auto_pwd ? 'yes' : 'no') + ")", inbound);
+
+        window.SBalance.request("/sign/in", inbound)
+        .then(function(res) {
+            var saved = null;
+            if( res.error != null && res.error.success != 'Y' ) {
+                window.toast({
+                    title_class: "bg-secondary text-white",
+                    title_text: "Sign-In",
+                    mesg_text: `SignIn을 실패 했습니다. (${res.error.message})`,
+                });
+                // alert("doSignin: Error...");
+            } else {
+                console.log("doSignin success", res.data);
+
+                saved = res.data;
+                saved.is_auto = (auto_pwd != null ? true : false);
+                saved.is_rememberme = $("#in_rememberme").is(":checked");
+                if( saved.is_rememberme == true ) {
+                    saved.usr_email = $("#in_email").val();
+                    saved.usr_pwd   = inbound.usr_pwd;
+                }
+            }
+
+            if( window.SBalance.onSignin(is_sign, res.data, saved) == true ) {
+                // alert("doSignin: Success!");
+            }
+        });
+        return false;
+    }
+
+    function onForgot() {
+        window.openModal('/public/modal/modal.forgot.html', function(result) {
+            STracer("signin.html").log("modal.forgot.html result:", result);
+        });
+
+    }
+</script>

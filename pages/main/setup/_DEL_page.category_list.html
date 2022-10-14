@@ -1,0 +1,101 @@
+
+<page onload="onPageLoad(this);">
+    <div id="list_items">
+        <div class="card w-100 mb-1">
+            <div class="card-header d-flex align-items-center p-1" style="height:35px;">
+                <div class="me-auto" id="item_title"></div>
+                <div class="ms-1 ps-4">
+                    <button class="btn btn-primary btn-sm me-1" type="button" id="btn_insert">추가</button>
+                    <button class="btn btn-secondary btn-sm" type="button" 
+                        data-bs-toggle="collapse" data-bs-target=".group_x" aria-expanded="false" aria-controls=".group_x">
+                        <div class="collapse hide group_x"> <i class="fa-solid fa-caret-down"></i> </div>
+                        <div class="collapse show group_x"> <i class="fa-solid fa-caret-up"></i> </div>
+                    </button>
+                </div>
+            </div>
+            <ul class="list-group list-group-flush collapse show group_x">
+            </ul>
+        </div>
+    </div>
+</page>
+
+<script>
+function onPageLoad(epage)
+{
+    var spage = frameGetPage(epage);
+    var pparam = spage.getParam();
+
+    console.log("pparam:", pparam);
+    spage.findItem("#item_title").html(pparam.cate_group);
+
+    spage.findItem("#btn_insert").click(function() {
+        var item = {
+            title : "분류 추가",
+            btn_confirm : "추가",
+            cate_group : pparam.cate_group,
+        };
+        spage.openModal('/main/modal/modal.info_citem.html', item, function(result) {
+            if( result != null ) {
+                refresh_list();
+            }
+        });
+    });
+
+    function refresh_list() {
+        var inbound = {
+            cate_group : pparam.cate_group,
+        };
+        $.post("/main/category/item/select", inbound, function(res) {
+            console.log("/main/category/item/select:", res);
+            var group_item = null;
+
+            var list_group = spage.findItem(".list-group");
+            list_group.html("");
+            res.data.forEach(function(item) {
+                if( item.cate_item == null || item.cate_item.length <= 0 )
+                    return;
+
+                var list_item = $("<li/>").addClass("list-group-item d-flex p-1").html(`
+        <div class="d-flex align-items-center" id="item_account">${item.cate_item}</div>
+        <button class="btn btn-warning btn-sm text-nowrap ms-auto me-1" type="button" id="btn_modify">수정</button>
+        <button class="btn btn-danger btn-sm text-nowrap" type="button" id="btn_delete">삭제</button>
+                `);
+                list_item.find("#btn_modify").click(function() {
+                    item.title = "분류 수정";
+                    item.btn_confirm = "수정";
+                    console.log("modify:", item);
+                    spage.openModal('/main/modal/modal.info_citem.html', item, function(result) {
+                        if( result != null ) {
+                            console.log("result:", result);
+                            refresh_list();
+                        }
+                    });
+                });
+                list_item.find("#btn_delete").click(function() {
+                    spage.openModal('/main/modal/modal.confirm.html', {
+                        title   : "삭제 확인",
+                        content : `"${item.cate_item}" 분류를 삭제 하시겠습니까?`,
+                        btn_confirm : "삭제",
+                        btn_cancel  : "취소"
+                    }, function(result) {
+                        if( result ==  true ) {
+                            result = {
+                                cate_idx : item.cate_idx,
+                            };
+                            $.post("/main/category/item/delete", result, function(res) {
+                                console.log("/main/category/item/update res:", res);
+                                if( res.error.success == 'Y' ) {
+                                    refresh_list();
+                                }
+                            });
+                        }
+                    });
+                });
+                list_group.append(list_item);
+            });
+        });
+    }
+
+    refresh_list();
+}
+</script>

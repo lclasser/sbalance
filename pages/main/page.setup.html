@@ -1,0 +1,60 @@
+
+<div page-declare="dpage" class="w-100 h-100" onload="onPageLoad(this);" onclose="onPageClose(this);">
+    <div class="h-100" style="height: 100vh; display: flex; flex-direction: column;">
+
+        <div class="w-100 theme_view mb-1" style="min-height: 1em; display: flex;">
+            <div class="border border-primary m-1 p-1 w-100 fs-3" id="view_title">설정</div>
+        </div>
+
+        <div class="p-1 pt-0 position-relative" style="flex: 1; overflow: auto;" id="view_body">
+        </div>
+    </div>
+</div>
+
+<script>
+function onPageLoad(epage)
+{
+    var dpage = epage.getPage();
+    var bframe = dpage.createFrame("view_body");
+    
+    bframe.setMenuCenter = function(icon, callback) {
+        return dpage.getFrame().setMenuCenter(icon, callback);
+    }
+    bframe.backHistory = function() {
+        var opage = bframe.popHistory();
+        if( opage != null ) {
+            bframe.openPage(opage.getFile(), opage.getTitle(), null, function(hpage) {
+            });
+            return true;
+        }
+    };
+
+    bframe.on('page_open', function(event, opage) {
+        bframe.addHistory(opage);
+    });
+    bframe.on('page_load', function(event, opage) {
+        bframe.setMenuCenter(null);
+        var title = bframe.getHistory().map(function(item) {
+            return item.title + " > ";
+        });
+        dpage.find("#view_title").html( title );
+        bframe.makePageLink(bframe.get$body());
+    });
+    bframe.on('page_close', function(event, opage) {
+    });
+
+    bframe.on('backward', function() {
+        return bframe.backHistory();
+    });
+    bframe.openPage("/main/setup/page.menu.html", "설정");
+    
+    dpage.find("#view_title").click(function() {
+        bframe.backHistory();
+    });
+}
+
+function onPageClose(epage)
+{
+    STracer("page.setup.html").dbg("onPageClose:", epage);
+}
+</script>

@@ -1,0 +1,108 @@
+
+<div page-declare="dpage" class="w-100 h-100" onload="onPageLoad(this);">
+    <ul class="list-group">
+        <li class="list-group-item fs-3" style="height:50px;" onclick="">문자 수신 설정</li>
+        <li class="list-group-item fs-3" style="height:50px;" id="msg_read">문자 읽기</li>
+    </ul>
+</div>
+
+<script>
+/*
+- 문자 수신 설정
+    1. SMS 수신 여부
+    2. SMS 수신 알림 여부
+    3. 수신 거부 전화번호
+*/
+function onPageLoad(epage)
+{
+    var spage = epage.getPage();
+
+    spage.find("#msg_read").click(function() {
+        if( window.SBalance.getMode() == 'web' )
+        {
+            var now_date = new Date();
+            var msg_date = ''
+                + now_date.getFullYear()
+                + ('0' + (now_date.getMonth()+1).toString()).slice(-2)
+                + ('0' + (now_date.getDate()).toString()).slice(-2)
+            ;
+            var str_date = ''
+                + ('0' + (now_date.getMonth()+1).toString()).slice(-2)
+                + '/'
+                + ('0' + (now_date.getDate()).toString()).slice(-2)
+            ;
+            var pos;
+            var lists = [];
+            for(pos=0; pos< 1; pos++ ) {
+                lists.push({
+                    "usr_key": window.SBalance.getSignin().usr_key,
+                    "dev_key":"a024124e-e94c-3996-b21d-2b3b989661bf",
+                    "msg_phone":"15447200",
+                    "msg_date":msg_date, "msg_time":`0152${("00"+pos).slice(-2)}`,
+                    "msg_body":`[Web발신]
+신한카드(6441)승인 최*호 30,000원(일시불)${str_date} 01:52 고양휴게소(  누적7,110,3${("00"+pos).slice(-2)}원  \n`
+                    ,"msg_event":"onRead"
+                });
+                lists.push({
+                    "usr_key": window.SBalance.getSignin().usr_key,
+                    "dev_key":"a024124e-e94c-3996-b21d-2b3b989661bf",
+                    "msg_phone":"15447200",
+                    "msg_date":msg_date, "msg_time":`0152${("00"+pos).slice(-2)}`,
+                    "msg_body":`[Web발신]
+신한카드(1580)승인 최*호       27,490원(일시불)02/12 21:44  쿠팡          누적6,905,354원  \n`
+                    ,"msg_event":"onRead"
+                });
+                lists.push({
+                    "usr_key": window.SBalance.getSignin().usr_key,
+                    "dev_key":"a024124e-e94c-3996-b21d-2b3b989661bf",
+                    "msg_phone":"15447200",
+                    "msg_date":msg_date, "msg_time":`0152${("00"+pos).slice(-2)}`,
+                    "msg_body":`[Web발신]
+[신한체크승인]     최*호(8273) 06/14                 15:07  (금액)5,700원 티머니 법인택시  \n`
+                    ,"msg_event":"onRead"
+                });
+            }
+
+            var inbound = {
+                date1: msg_date,
+                date2: msg_date,
+                lists: lists,
+            };
+            spage.getFrame().openPage("/main/setup/page.message_list.html", "문자 읽기", inbound);
+            return;
+        }
+
+        window.openModal('/main/modal/modal.date_range.html', null, function(result) {
+            if( result != null ) {
+                console.log("date range:", result);
+
+                // result.date1, result.date2
+                var inbound = {
+                    date1: formaterFmtDate_fromDate(result.date1),
+                    date2: formaterFmtDate_fromDate(result.date2),
+                };
+                var lists = [];
+                window.SBalance.readMessage(inbound, function(readJson) {
+                    // console.log("onRead:" + JSON.stringify(readJson));
+                    lists.push(readJson);
+                }, function(readCount) {
+                    if( readCount == null ) {
+                        window.toast({
+                            title_class: "bg-danger text-white",
+                            title_text: "문자 읽기",
+                            mesg_text: "데이터가 없습니다.",
+                        });
+                        return;
+                    }
+                    console.log("onFinish:["+readCount+"] " + lists.length);
+
+                    inbound.lists = lists;
+                    spage.getFrame().openPage("/main/setup/page.message_list.html", "문자 읽기", inbound);
+                });
+            } else {
+            }
+        });
+    });
+}
+
+</script>

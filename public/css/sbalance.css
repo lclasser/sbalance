@@ -1,0 +1,447 @@
+
+:root {
+    --theme-color-background: #222223;
+    --theme-color-backfont: #DBD5D2;
+
+    --theme-color-withdraw-1: #3C97F5;
+    --theme-color-withdraw-2: #579ABE;
+    --theme-color-withdraw-3: #3CF59C;
+
+    --theme-color-deposit-1: #F96C4E;
+    --theme-color-deposit-2: #e97542;
+    --theme-color-deposit-3: #FFA439;
+
+    --theme-font-size-1: 12px;
+    --theme-font-size-2: 14px;
+    --theme-font-size-3: 16px;
+}
+
+html, body {
+    font-family: "Noto Sans" !important;
+    color: var(--theme-color-backfont) !important;
+    background-color: var(--theme-color-background) !important;
+}
+
+/* 출금 금액 */ .amount-withdraw    { color : var(--theme-color-withdraw-1); }
+/* 입금 금액 */ .amount-deposit     { color: var(--theme-color-deposit-1); }
+/* 출금 이체 */ .transfer-withdraw  { color : var(--theme-color-withdraw-2); }
+/* 입금 이체 */ .transfer-deposit   { color: var(--theme-color-deposit-2); }
+/* 예외 출금 */ .except-withdraw    { color : var(--theme-color-withdraw-3); }
+/* 예외 입금 */ .except-deposit     { color: var(--theme-color-deposit-3); }
+/* 출금 취소 */ .cancel-withdraw    { color: #1158a3; }
+/* 입금 취소 */ .cancel-deposit     { color: #c94124; }
+/* 예상 금액 */ .amount-budget      { color: #DBD5D2; }
+/* unkown    */ .unknown-amount     { color: #555555; }
+
+.s-balance .transparent-bgcolor {
+    background-color: inherit;
+    border: 0;
+}
+
+.s-balance .menu-icons {
+    font-size: 48px !important;
+    width: 48px;
+    text-align: center;
+}
+.s-balance .menu-content {
+    font-size: 16px !important;
+    --background-color: inherit;
+    margin-left: 8px;
+}
+.list-group-item {
+    background-color: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: #E9E6E6;
+
+    display: flex;
+    align-items: center;
+}
+
+.sb-normal {
+    background-color: #FFC84C;
+    border-radius: 4px;
+    font-family: 'Noto Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    color: #222223;
+    border: 0;
+}
+.sb-cancel {
+    background-color: #89939E;
+    border-radius: 4px;
+    font-family: 'Noto Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    color: #FFFFFF;
+    border: 0;
+}
+
+/******************************************************************************
+    Component - input 
+******************************************************************************/
+.sb-input {
+    position: relative;
+}
+.sb-input input {
+    width: 100%;
+    padding: 24px 20px 8px 20px;
+    height: 56px;
+    border: 0;
+    border-radius: 4px;
+    background-color: #383838 !important;
+    color: #E9E6E6;
+}
+.sb-input input:focus {
+    outline: none;
+    box-shadow: 0 0 0 1px #FFC84C;
+}
+.sb-input input:-webkit-autofill {
+    transition: background-color 50000s, color 50000s;
+    background-color: #383838 !important;
+    color: #E9E6E6;
+}
+.sb-input label {
+    pointer-events: none;
+    transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+    transition-duration: 0.5s;
+    position: absolute;
+    top: 16px;
+    left: 20px;
+    --width: 100%;
+    text-align: left;
+    font-size: 16px;
+    font-weight: 400;
+    bottom: 6px;
+    color: #8792a1;
+    background-color: transparent;
+}
+.sb-input:focus-within label {
+    transform: translate3d(0, -8px, 0);
+    font-size: 12px;
+    font-weight: 400;
+}
+.sb-input input:not(:placeholder-shown):valid+label {
+    transform: translate3d(0, -8px, 0) !important;
+    font-weight: 400;
+    font-size: 12px;
+}
+.sb-input input:not(:placeholder-shown):invalid+label {
+    transform: translate3d(0, -8px, 0) !important;
+    font-weight: 400;
+    font-size: 12px;
+}
+
+/******************************************************************************
+    Component - password 
+******************************************************************************/
+.sb-password input[type="checkbox"] {
+    position: absolute;
+    cursor: pointer;
+    display: grid;
+    top: 50%;
+    right: 16px;
+    transform: translateY(-50%);
+    width: 24px !important;
+    height: 24px !important;
+    appearance: none;
+    -webkit-appearance: none;
+    border: 0;
+    box-shadow: none;
+}
+.sb-password input[type="checkbox"]::after {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translate(-50%, -50%);
+    font-family: 'FontAwesome';
+    font-size: 16px;
+    font-weight: 400;
+    content: "\f06e";
+}
+.sb-password input[type="checkbox"]:checked::after {
+    content: "\f070";
+    --clip-path: 0;
+}
+.sb-password input[type="checkbox"]~input[type="text"] {
+    -webkit-text-security: disc !important;
+    --text-security: disc !important;
+    input-security: disc;
+}
+.sb-password input[type="checkbox"]:checked~input[type="text"] {
+    -webkit-text-security: none !important;
+    --text-security: none !important;
+    input-security: none;
+}
+
+/******************************************************************************
+    Component - link 
+******************************************************************************/
+.sb-link {
+    font-family: 'Noto Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 24px;
+}
+.sb-link:link {
+    color: #FFC84C;
+    background-color: transparent;
+    text-decoration: none;
+}
+.sb-link:visited {
+    color: #FFC84C;
+    background-color: transparent;
+    text-decoration: none;
+}
+.sb-link:hover {
+    color: #FC792F;
+    background-color: transparent;
+    text-decoration: underline;
+}
+.sb-link:active {
+    color: #FFC84C;
+    background-color: transparent;
+    text-decoration: underline;
+}
+/******************************************************************************
+    Component - checkbox 
+******************************************************************************/
+.sb-check {
+    display: flex;
+    font-size: 16px;
+}
+.sb-check input[type="checkbox"] {
+    -webkit-appearance: none;
+    position: relative;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    outline: none !important;
+    border: 1px solid #6A6A6A;
+    border-radius: 4px;
+    background: #383838;
+    margin-right: 12px;
+}
+.sb-check input[type="checkbox"]::before {
+    content: "\2713";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    overflow: hidden;
+    transform: scale(0) translate(-50%, -50%);
+    line-height: 1;
+}
+.sb-check input[type="checkbox"]:hover {
+    border-color: #FC792F;
+}
+.sb-check input[type="checkbox"]:checked {
+    background-color: #FC792F;
+    color: white;
+}
+.sb-check input[type="checkbox"]:checked::before {
+    border-radius: 4px;
+    transform: scale(1) translate(-50%, -50%)
+}
+.sb-check span {
+    font-family: 'Noto Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+}
+
+/******************************************************************************
+    Modal 
+******************************************************************************/
+.sb-modal .modal-content {
+    background-color: #282829 !important;
+}
+.sb-modal .modal-header {
+    border-color: #717171 !important;
+}
+.sb-modal .modal-footer {
+    border-color: #717171 !important;
+}
+.sb-modal .btn-close {
+    background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='white'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat !important;
+}
+
+.sb-modal .input-row {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    font-size: 16px !important;
+    margin-bottom: 4px;
+    display: flex;
+}
+
+.sb-modal .input-col {
+    display: flex;
+    flex: 1 0 0%;
+    align-items: center;
+}
+.sb-modal .input-col > * {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+}
+
+.sb-modal .input-label {
+    justify-content: center;
+    align-items: center;
+    --padding: 8px 12px !important;
+    --height: 100%;
+    min-width: 60px;
+    font-size: 16px !important;
+    border: 0;
+
+    display: flex;
+    flex: none;
+    align-self: stretch;
+    color: #E9E6E6;
+    background-color: #323232;
+}
+.sb-modal .input-col[disabled="disabled"] .input-label {
+    background-color: #2F2F2F !important;
+    color: #686868 !important;
+}
+.sb-modal .input-col:first-child *:first-child {
+    border-radius: 4px 0px 0px 4px;
+}
+.sb-modal .input-col:last-child *:last-child {
+    border-radius: 0px 4px 4px 0px;
+}
+
+.sb-modal *[disabled="disabled"] .input-value {
+    background-color: #323232 !important;
+    color: #686868 !important;
+}
+.sb-modal .input-value {
+    --justify-content: center;
+    align-items: center;
+    padding: 8px 12px;
+    font-size: 16px !important;
+
+    flex: 1 1 0%;
+    background-color: #383838;
+    color: #E9E6E6;
+    border: 0;
+    font-size: 16px;
+    border-radius: 0;
+}
+.sb-modal .input-value:focus {
+    background-color: #7c7c7c !important;
+    color: #E9E6E6;
+}
+.sb-modal .input-value:read-only {
+    background-color: #383838;
+}
+.sb-modal .input-col:not(:first-child) .input-value:last-child {
+    --background-color: #ff0000 !important;
+}
+
+.sb-modal .form-select {
+    width: 0px;
+    --padding-right: 38px !important;
+}
+.sb-modal .form-select {
+    border: 0;
+    background-image: url("/public/image/select_btn_normal.svg") !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+    display: inline-block;
+}
+.sb-modal .form-select[disabled="disabled"] {
+    background-image: url("/public/image/select_btn_disable.svg") !important;
+}
+.sb-modal .form-select option {
+    font-size: 16px !important;
+}
+
+/******************************************************************************
+    SBalance Card
+******************************************************************************/
+/* group-header */
+.sb-card {
+    border: 0;
+    width: 100%;
+    background-color: inherit !important;
+}
+.sb-card.border {
+    border: 1px solid #222223 !important;
+}
+
+.sb-card .card-header {
+    padding: 0;
+    padding-left: 6px !important;
+    min-height: 49px;
+    height: auto;
+    background-color: #222223 !important;
+    align-items: center !important;
+    display: flex;
+}
+
+/* group-body */
+.sb-card .card-body {
+    background-color: #282829;
+}
+.sb-card .card-body .seperater {
+    margin: 0;
+    border-top: 1px dashed #717171;
+    margin-left: 0.25rem !important;
+    margin-right: 0.25rem !important;
+    height: 3px;
+    width: auto;
+}
+.sb-card .card-body .icon_category {
+    width: 38px;
+    height: 36px;
+    background: #D8C8AD;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.sb-card .card-body .icon_category.shared {
+    background: linear-gradient(167.94deg, #FFC84C 0%, #FC8032 100%);
+}
+.sb-card .card-body .icon_category span {
+    color: #222223;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 12px;
+    letter-spacing: -0.03em;
+    overflow:hidden;
+}
+.sb-card .card-body .icon_category img {
+    position: absolute;
+    left: 31px;
+    top: 35px;
+    width: 18px;
+    height: 18px;
+}
+.sb-card .card-body .text_string {
+    background-color: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: #E9E6E6;
+}
+
+/******************************************************************************
+    Toast 
+******************************************************************************/
+.s-balance .toast {
+    border: 0;
+}
+.s-balance .toast-body {
+    color: #555555;
+}

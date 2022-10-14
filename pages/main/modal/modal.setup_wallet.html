@@ -1,0 +1,284 @@
+<style>
+    .col-attach {
+        flex: 0 0 auto !important;
+        width: 16.66666667% !important;
+    }
+</style>
+
+<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"  role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="modal_title">지갑 정보</h5>
+            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-12 input-group mb-1">
+                    <span class="input-group-text col-2">금융사</span>
+                    <input class="form-control col" type="text" placeholder="금융사" id="dlg_acc_company">
+                </div>
+                <div class="col-12 input-group mb-1">
+                    <label class="input-group-text col-2">소유</label>
+                    <div  class="form-control row d-flex me-0" id="dlg_acc_type"></div>
+                </div>
+                <div class="col-12 input-group mb-1">
+                    <label class="input-group-text col-2">별칭</label>
+                    <input class="form-control col" type="text" placeholder="가계부에 표시될 별칭" id="dlg_acc_alias">
+                </div>
+                <div class="col-12 input-group mb-1">
+                    <label class="col-2 input-group-text">메모</label>
+                    <input class="form-control" type="text" id="dlg_acc_memo" placeholder="메모">
+                </div>
+                <div class="col-12 input-group mb-1">
+                    <label class="input-group-text col-2">생성일</label>
+                    <div   class="form-control" id="dlg_acc_created"></div>
+                </div>
+
+                <div class="col-12 input-group mb-1" style="display:none !important;">
+                    <label class="col-2 input-group-text">공유자</label>
+                    <div  class="form-control row d-flex me-0" id="dlg_sharer"></div>
+                </div>
+                <div class="col-12 input-group mb-1" style="display:none !important;">
+                    <label class="col-2 input-group-text">공유</label>
+                    <div  class="form-control p-1" id="dlg_sharing"></div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" id="modal_rel" class="btn btn-lg btn-danger">해제</button>
+            <button type="button" id="modal_del" class="btn btn-lg btn-danger">삭제</button>
+            <button type="button" id="modal_ok" class="ms-auto btn btn-lg btn-primary ">저장</button>
+            <button type="button" class="btn btn-lg btn-secondary" data-bs-dismiss="modal">취소</button>
+        </div>
+    </div>
+</div>
+
+<script>
+$(function() {
+    var modal = window.dmodal.getModal();
+    var param = window.dmodal.getParam();
+    console.log("param:", param);
+
+    function displaySelfWallet()
+    {
+        modal.find("#dlg_sharing").empty();
+        window.SBalance.request("/main/shared/account/list", {acc_key: param.acc_key})
+        .then(function(res) {
+            if( res.data && res.data.length > 0 ) {
+                var list_grp = $("<ul/>").addClass("list-group");
+                res.data.forEach(function(item) {
+                    list_grp.append(
+                        `<li class="list-group-item p-1">` +
+                            `<div class="row align-items-center m-0  p-0">` +
+                                `<div class="col-3 text-break">${item.usr_name}</div>` +
+                                `<div class="col-7 text-break">${item.usr_email}</div>` +
+                                `<button class="col-2 btn btn-primary share_key p-1" type="button">해제</button>` +
+                                `<input type="hidden" id="share_key" value="${item.share_key}">` +
+                            `</div>` +
+                        `</li>`
+                    );
+                });
+                modal.find("#dlg_sharing").append(list_grp);
+            } else {
+                var list_grp = $("<ul/>").addClass("list-group m-0");
+                list_grp.append(
+                    `<div class="input-group">` +
+                        `<div class="form-control align-items-center text-black-50">공유된 사용자가 없습니다.</div>` +
+                    `</div>`
+                );
+                modal.find("#dlg_sharing").append(list_grp);
+            }
+
+            modal.find("#dlg_sharer").html(`본인`);
+            modal.find("#dlg_sharing").find(".share_key").click(function() {
+                var inbound = {
+                    share_key : $(this).parent().children("#share_key").val(),
+                    acc_key : param.acc_key,
+                };
+                window.SBalance.request("/main/shared/account/delete", inbound)
+                .then(function(res) {
+                    if( res.error != null && res.error.success != 'Y' ) {
+                        window.toast({
+                            title_class: "bg-danger text-white",
+                            title_text: modal.find("#modal_title").text(),
+                            mesg_text: `지갑 추가를 실패 했습니다. (${res.error.message})`,
+                        });
+                    } else {
+                        displaySelfWallet();
+                    }
+                    console.log(inbound, res);
+                });
+            });
+        });
+    }
+
+    function displayLinkWallet()
+    {
+        window.SBalance.request("/main/shared/account/owner", {acc_key: param.acc_key})
+        .then(function(res) {
+            modal.find("#dlg_sharing").parent().hide();
+            modal.find("#dlg_sharer").html(`<div class="col my-auto p-0">${res.data[0].usr_email}</div>`);
+        });
+    }
+
+    if( param.title )
+        modal.find("#modal_title").text(param.title);
+    console.log("xxx:", modal.find("#modal_title").text());
+
+    if( param == null || param.acc_key == null ) {
+        // 신규 지갑
+        modal.find("#modal_del").hide();
+        modal.find("#modal_rel").hide();
+        modal.find("#dlg_acc_created").parent().hide();
+        modal.find("#dlg_acc_type").html( getStringByAccountType("S") ); // 본인 계좌
+        modal.find("#modal_ok").click(function() {
+            window.SBalance.request("/main/account/insert", {
+                acc_company : modal.find("#dlg_acc_company").val(),
+                acc_alias   : modal.find("#dlg_acc_alias").val(),
+                acc_type    : 'S',
+                acc_memo    : modal.find("#dlg_acc_memo").val(),
+            })
+            .then(function(res) {
+                if( res.error.success == 'Y' ) {
+                    window.toast({
+                        title_class: `bg-success text-white`,
+                        title_text: modal.find("#modal_title").text(),
+                        mesg_text: "지갑을 추가하였습니다.",
+                    });
+                } else {
+                    window.toast({
+                        title_class: "bg-danger text-white",
+                        title_text: modal.find("#modal_title").text(),
+                        mesg_text: `지갑 추가를 실패 했습니다. (${res.error.message})`,
+                    });
+                }
+                window.dmodal.close(true);
+            });
+        });
+    } else {
+        // 지갑 정보
+        window.SBalance.request("/main/account/list", {acc_key: param.acc_key})
+        .then(function(res) {
+            var item = res.data[0];
+
+            modal.find("#dlg_acc_company").val(item.acc_company);
+            modal.find("#dlg_acc_alias").val(item.acc_alias);
+            modal.find("#dlg_acc_memo").val(item.acc_memo);
+
+            modal.find("#dlg_acc_type").html( getStringByAccountType(item.acc_type) );
+            switch( item.acc_type ) {
+            case 'A':
+            case 'S': // 본인
+                modal.find("#modal_del").show();
+                modal.find("#modal_rel").hide();
+                modal.find("#dlg_sharing").parent().show();
+                displaySelfWallet(modal, param);
+                break;
+            case 'L':
+                modal.find("#modal_del").hide();
+                modal.find("#modal_rel").show();
+                modal.find("#dlg_sharer").parent().show();
+                displayLinkWallet(modal, param);
+                break;
+            }
+
+            modal.find("#dlg_acc_created").html(formatterDateSqlToFmt(new Date(item.created)));
+            modal.find("#modal_ok").click(function() {
+                window.SBalance.request("/main/account/update", {
+                    acc_key     : param.acc_key,
+                    acc_company : modal.find("#dlg_acc_company").val(),
+                    acc_alias: modal.find("#dlg_acc_alias").val(),
+                    acc_memo : modal.find("#dlg_acc_memo").val(),
+                })
+                .then(function(res) {
+                    if( res.error.success == 'Y' ) {
+                        window.toast({
+                            title_class: `bg-success text-white`,
+                            title_text: modal.find("#modal_title").text(),
+                            mesg_text: "지갑을 업데이트하였습니다.",
+                        });
+                    } else {
+                        window.toast({
+                            title_class: "bg-danger text-white",
+                            title_text: modal.find("#modal_title").text(),
+                            mesg_text: `지갑 업데이트를 실패 했습니다. (${res.error.message})`,
+                        });
+                    }
+                    window.dmodal.close(true);
+                });
+            });
+        });
+    }
+
+    modal.find("#modal_del").click(function() {
+        // 지갑 삭제
+        console.log("[modal.wallet.html] modal.confirm.html 1");
+        window.openModal('/main/modal/modal.confirm.html', {
+            title   : "삭제 확인",
+            content : `삭제 하시겠습니까?`,
+            btn_confirm : "삭제",
+            btn_cancel  : "취소"
+        }, function(result) {
+            console.log("[modal.wallet.html] modal.confirm.html 2", result);
+            if( result == true ) {
+                var inbound = {
+                    acc_key : param.acc_key,
+                };
+                window.SBalance.request("/main/account/delete", inbound)
+                .then(function(res) {
+                    if( res.error != null && res.error.success != 'Y' ) {
+                        window.toast({
+                            title_class: "bg-danger text-white",
+                            title_text: "지갑 삭제",
+                            mesg_text: `지갑의 삭제를 실패 했습니다. (${res.error.message})`,
+                        });
+                    } else {
+                        window.toast({
+                            title_class: `bg-success text-white`,
+                            title_text: "지갑 삭제",
+                            mesg_text: "지갑을 삭제하였습니다.",
+                        });
+                    }
+                });
+                window.dmodal.exit(true);
+            }
+        });
+    });
+    modal.find("#modal_rel").click(function() {
+        // 지갑 공유 해제
+        window.openModal('/main/modal/modal.confirm.html', {
+            title   : "공유 해제 확인",
+            content : `공유된 지갑을 해제 하시겠습니까?`,
+            btn_confirm : "해제",
+            btn_cancel  : "취소"
+        }, function(result) {
+            if( result != true ) {
+                return;
+            }
+            var inbound = {
+                acc_key : param.acc_key,
+            };
+            window.SBalance.request("/main/shared/account/release", inbound)
+            .then(function(res) {
+                if( res.error != null && res.error.success != 'Y' ) {
+                    window.toast({
+                        title_class: `bg-success text-white`,
+                        title_text: "지갑 공유 해제",
+                        mesg_text: `지갑 공유의 해제를 실패하였습니다.(${res.error.message})`,
+                    });
+                } else {
+                    window.toast({
+                        title_class: `bg-success text-white`,
+                        title_text: "지갑 공유 해제",
+                        mesg_text: "지갑 공유를 해제하였습니다.",
+                    });
+                }
+            });
+            window.dmodal.exit(true);
+        });
+    });
+});
+</script>

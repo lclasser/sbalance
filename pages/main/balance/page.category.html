@@ -1,0 +1,53 @@
+<div page-declare="dpage" class="w-100 h-100" onload="onPageLoad(this);" onclose="onPageClose(this);">
+    <div id="sub_page" class="overflow-hidden"></div>
+</div>
+
+<script>
+function onPageLoad(epage)
+{
+    STracer("page.category.html").log("onPageOpen...");
+    var dpage = epage.getPage();
+
+    var sframe = dpage.createFrame("sub_page");
+    sframe.on('page_open', function(event, opage) {
+        console.log("page_open:", event, opage);
+        this.addHistory(opage);
+        this.setHistoryPath();
+    });
+    sframe.on('page_load', function(event, opage) {
+        $(`[page-file="${opage.getFile()}"]`).addClass("active");
+    });
+    sframe.on('page_close', function(event, opage) {
+        // var $bsum = dpage && dpage.find("#balance_sum");
+    });
+    sframe.on('backward', function() {
+        return this.backHistory();
+    });
+
+    sframe.setHistoryPath = function() {
+        var titles = [];
+        sframe.getHistory().forEach(function(hist) {
+            titles.push(hist.title);
+        });
+        dpage.getFrame().setPagePath(titles, function() {
+            sframe.backHistory();
+        });
+    }
+    sframe.backHistory = function() {
+        var opage = this.popHistory();
+        if( opage != null ) {
+            this.openPage(opage.getFile(), opage.getTitle(), null, function(hpage) {
+                sframe.setHistoryPath();
+            });
+            return true;
+        }
+    };
+
+    sframe.getBalanceSum = function() {
+        var $bsum = dpage.getFrame().getBalanceSum();
+        return $bsum;
+    }
+    sframe.openPage("/main/balance/page.category_group.html", "분류");
+}
+
+</script>

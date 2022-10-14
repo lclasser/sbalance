@@ -1,0 +1,30 @@
+
+<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"  role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="modal_title">SingOut</h5>
+            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        
+        <div class="modal-body">
+            <span >로그아웃 하시겠습니까?</span>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" id="modal_ok" class="btn btn-lg btn-primary ">로그아웃</button>
+            <button type="button" class="btn btn-lg btn-secondary" data-bs-dismiss="modal">취소</button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(function() {
+        $("#modal_ok").click(function() {
+            window.SBalance.request("/sign/out")
+            .then(function(res) {
+                window.dmodal.close(res);
+            });
+        });
+    });
+</script>

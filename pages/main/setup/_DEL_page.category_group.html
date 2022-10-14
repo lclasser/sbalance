@@ -1,0 +1,183 @@
+<style>
+    .fa-circle-plus {
+        font-size: calc(1.625rem + 4.5vw) !important;
+    }
+</style>
+
+<page onload="onPageLoad(this);">
+    <div class="mb-2" id="list_items"></div>
+    <div class="float-end bottom-0 end-0 m-1 p-1 nav-link" id="group_add"><i class="fa-solid fa-circle-plus"></i></div>
+</page>
+
+<script>
+console.log("2 category_group.html in script...");
+
+$(function() {
+    console.log("9 onPageLoad...");
+});
+
+function onPageLoad(epage)
+{
+    var spage = frameGetPage(epage);
+    console.log("X category_group.html onPageLoad...", spage);
+
+    const template_card = `
+    <div class="card-header d-flex align-items-center p-1" style="height:35px;">
+        <div class="me-auto" id="item_title"></div>
+        <div class="ms-1 ps-4">
+            <button class="btn btn-success btn-sm me-1" type="button" id="btn_insert">추가</button>
+            <button class="btn btn-warning btn-sm me-1" type="button" id="btn_modify">수정</button>
+            <button class="btn btn-danger btn-sm me-1" type="button" id="btn_delete">삭제</button>
+            <button class="btn btn-secondary btn-sm" type="button" 
+                data-bs-toggle="collapse" data-bs-target=".group_x" aria-expanded="false" aria-controls=".group_x">
+                <div class="collapse hide group_x"> <i class="fa-solid fa-caret-down"></i> </div>
+                <div class="collapse show group_x"> <i class="fa-solid fa-caret-up"></i> </div>
+            </button>
+        </div>
+    </div>
+    <ul class="list-group list-group-flush collapse show group_x">
+    </ul>`;
+
+    function groupAdd(cate_item) {
+        var list_item =  spage.findItem("#list_items");
+
+        var grp_name = `group_${cate_item.cate_idx}`;
+        var group_card = $("<div/>").addClass("card w-100 mb-1").html(template_card);
+        group_card.find("#item_title").html(cate_item.cate_group);
+        group_card.find(".group_x").removeClass("group_x").addClass(grp_name);
+        group_card.find(`[data-bs-target=".group_x"]`).attr("data-bs-target", `.${grp_name}`);
+        group_card.find(`[aria-controls=".group_x"]`).attr("aria-controls", `${grp_name}`);
+        group_card.find("#btn_modify").click(function() {
+            spage.getFrame().openPage('/main/setup/page.category_list.html', '분류 항목', cate_item);
+        });
+        group_card.find("#btn_insert").click(function() {
+            var item = {
+                title : `'${cate_item.cate_group}'의 분류 추가`,
+                btn_confirm : "추가",
+                cate_group : cate_item.cate_group,
+            };
+            spage.openModal('/main/modal/modal.info_citem.html', item, function(result) {
+                if( result != null ) {
+                    refresh_list();
+                }
+            });
+        });
+        group_card.find("#btn_delete").click(function() {
+            spage.openModal('/main/modal/modal.confirm.html', {
+                title   : "삭제 확인",
+                content : `"${cate_item.cate_group}" 그룹을 삭제 하시겠습니까?`,
+                btn_confirm : "삭제",
+                btn_cancel  : "취소"
+            }, function(result) {
+                if( result ==  true ) {
+                    $.post("/main/category/group/delete", cate_item, function(res) {
+                        console.log("/main/category/group/delete res:", res);
+                        if( res.error.success == 'Y' ) {
+                            refresh_list();
+                        }
+                    });
+                }
+            });
+        });
+        list_item.append(group_card);
+        return group_card;
+    }
+
+    const template_item = `
+        <li class="list-group-item d-flex p-2">
+            <div class="d-flex align-items-center col-3" id="cate_name"></div>
+            <div class="d-flex align-items-center col-3 text-secondary" id="cate_type"></div>
+            <button class="btn btn-warning btn-sm text-nowrap ms-auto me-1" type="button" id="btn_modify">수정</button>
+        </li>
+    `;
+    function itemAdd(group_card, citem) {
+        // group_card.find(".list-group").append(`<li class="list-group-item">${citem.cate_item}</li}`);
+        
+        const cb_modifyItem = function(result) {
+            
+            spage.openModal('/main/modal/modal.info_citem.html', item, cb_modifyItem);
+        }
+
+        var group_item = $(template_item);
+        group_item.find("#cate_name").html(citem.cate_item);
+        group_item.find("#cate_type").html( getStringByCateType(citem.cate_type) );
+        group_item.find("#btn_modify").click(function() {
+            var mitem = {
+                cate_idx   : citem.cate_idx,
+                cate_group : citem.cate_group,
+                cate_item  : citem.cate_item,
+                cate_type  : citem.cate_type,
+                title      : "분류 수정",
+                btn_confirm: "수정",
+            };
+            console.log("modify:", mitem);
+            var cb_modifyItem = function(result, ritem) {
+                if( result == null )
+                    return;
+                if( result.btn_delete == true ) {
+                    spage.openModal('/main/modal/modal.confirm.html', {
+                        title   : "삭제 확인",
+                        content : `"${ritem.cate_item}" 분류를 삭제 하시겠습니까?`,
+                        btn_confirm : "삭제",
+                        btn_cancel  : "취소"
+                    }, function(result) {
+                        if( result ==  true ) {
+                            var inbound = {
+                                cate_idx : ritem.cate_idx,
+                            };
+                            $.post("/main/category/item/delete", inbound, function(res) {
+                                console.log("/main/category/item/update res:", res);
+                                if( res.error.success == 'Y' ) {
+                                    refresh_list();
+                                }
+                            });
+                        } else {
+                            spage.openModal('/main/modal/modal.info_citem.html', ritem, cb_modifyItem);
+                        }
+                    });
+                }
+            };
+            spage.openModal('/main/modal/modal.info_citem.html', mitem, cb_modifyItem);
+        });
+
+        group_card.find(".list-group").append(group_item);
+    }
+
+    function refresh_list() {
+        spage.findItem("#list_items").children().remove();
+        $.post("/main/category/item/select", null, function(res) {
+            console.log("/main/category/item/select:", res);
+            var group_item = null;
+            res.data.forEach(function(item) {
+                if( item.cate_item == null || item.cate_item.length <= 0 ) {
+                    group_item = groupAdd(item);
+                } else {
+                    itemAdd(group_item, item);
+                }
+            });
+        });
+    }
+
+    $("#group_add").click(function() {
+        console.log("group_add: click");
+
+        spage.openModal('/main/modal/modal.info_cgroup.html', null, function(result) {
+            console.log("modal.info_cgroup.html result:", result);
+            if( result != null && result.length > 0 ) {
+                var inbound = {
+                    cate_group: result,
+                };
+                $.post("/main/category/group/insert", inbound, function(res) {
+                    if( res.error != null && res.error.success != 'Y' ) {
+                        alert(`그룹 추가를 실패 했습니다.(${res.error})`);
+                    } else {
+                        refresh_list();
+                    }
+                });
+            }
+        });
+    });
+
+    refresh_list();
+}
+</script>

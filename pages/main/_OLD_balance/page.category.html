@@ -1,0 +1,42 @@
+<div page-declare="dpage" class="w-100 h-100" onload="onPageLoad(this);" onclose="onPageClose(this);">
+    <div id="sub_page" class="overflow-hidden"></div>
+</div>
+
+<script>
+function onPageLoad(epage)
+{
+    var dpage = epage.getPage();
+    console.log("page.category.html loaded");
+
+    var sframe = dpage.createFrame("sub_page");
+    sframe.on('page_open', function(event, opage) {
+        this.addHistory(opage);
+    });
+    sframe.on('page_load', function(event, opage) {
+        $(`[page-file="${opage.getFile()}"]`).addClass("active");
+    });
+    sframe.on('page_close', function(event, opage) {
+        var $btop = dpage && dpage.find("#balance_top");
+    });
+    sframe.on('backward', function() {
+        return this.backHistory();
+    });
+
+    sframe.backHistory = function() {
+        var opage = this.popHistory();
+        if( opage != null ) {
+            this.openPage(opage.getFile(), opage.getTitle(), null, function(hpage) {
+            });
+            return true;
+        }
+    };
+
+    sframe.getBalanceTop = function() {
+        var rpage = dpage.getParent();
+        var $btop = rpage && rpage.find("#balance_top");
+        return $btop;
+    }
+    sframe.openPage("/main/stats/page.category_group.html", "분류 그룹");
+}
+
+</script>

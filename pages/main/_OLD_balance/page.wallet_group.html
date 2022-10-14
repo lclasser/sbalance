@@ -1,0 +1,118 @@
+<div page-declare="dpage" class="w-100 h-100" onload="onPageLoad(this);">
+    <div id="list_items" class="overflow-hidden theme-card-body"></div>
+</div>
+
+<script>
+function onPageLoad(epage)
+{
+    var dpage = epage.getPage();
+    var rpage = dpage.getParent();
+
+    var $btop = dpage.getFrame().getBalanceTop();
+    function select_wallet()
+    {
+        var _balances = dpage.getReference('balances');
+        var sms_class = [];
+        if( $btop.find('#sum_deposit').is(':checked') == true ) sms_class.push("D");
+        if( $btop.find('#sum_withdraw').is(':checked') == true ) sms_class.push("W");
+        if( sms_class.length <= 0 ) {
+            $btop.find('#sum_deposit').prop('checked', true);
+            $btop.find('#sum_withdraw').prop('checked', true);
+        }
+        var inbound = {
+            year  : _balances.now_date.getFullYear(),
+            month : (_balances.now_date.getMonth() + 1),
+            sms_class : sms_class,
+        };
+        console.log("inbound:", inbound);
+
+        $.post("/main/message/wallet", inbound, function(res) {
+            console.log("res:", res);
+            dpage.find("#list_items").empty();
+
+            var grid_row = `
+    <div class="border d-flex align-items-center ps-1 pe-1 col-2" id="acc_company">금융사</div>
+    <div class="border border-start-0 d-flex align-items-center ps-1 pe-1 col-2" id="acc_alias">별칭</div>
+    <div class="border border-start-0 d-flex align-items-center ps-1 pe-1 col-1" id="item_type">소유</div>
+    <div class="border border-start-0 d-flex align-items-center ps-1 pe-1 col justify-content-end" id="deposit_amount">입금금액</div>
+    <div class="border border-start-0 d-flex align-items-center ps-1 pe-1 col-1 justify-content-end" id="deposit_count">개수</div>
+    <div class="border border-start-0 d-flex align-items-center ps-1 pe-1 col justify-content-end" id="withdraw_amount">출금금액</div>
+    <div class="border border-start-0 d-flex align-items-center ps-1 pe-1 col-1 justify-content-end" id="withdraw_count">개수</div>
+    `;
+
+            var sum_deposit = 0;
+            var cnt_deposit = 0;
+            var sum_withdraw = 0;
+            var cnt_withdraw = 0;
+            var obj_body = dpage.find("#list_items");
+            // obj_body.append($("<div/>").addClass("row m-1").css("height", "30px").html(grid_row));
+
+            var obj_row = $("<div/>").addClass("row m-0").css("height", "45px").html(grid_row);
+            obj_row.find("#acc_company").html("금융사");
+            obj_row.find("#acc_alias").html("지갑");
+            obj_row.find("#item_type").html("종류");
+            obj_row.find("#deposit_amount").html("입금 금액");
+            obj_row.find("#deposit_count").html("개수");
+            obj_row.find("#withdraw_amount").html("출금 금액");
+            obj_row.find("#withdraw_count").html("개수");
+            obj_body.append(obj_row);
+
+            res.data.forEach(function(witem, idx) {
+                // Row 생성
+                var obj_row = $("<div/>").addClass("row m-0").css("height", "45px").html(grid_row);
+
+                obj_row.find("#acc_company").html(witem.acc_company);
+                obj_row.find("#acc_alias").html(witem.acc_alias);
+
+                switch( witem.acc_type ) {
+                case 'A': obj_row.find("#item_type").html("자동"); break;
+                case 'S': obj_row.find("#item_type").html("본인"); break;
+                case 'L': obj_row.find("#item_type").html("공유"); break;
+                default : obj_row.find("#item_type").html("-");
+                }
+
+                obj_row.find("#deposit_count").html(witem.deposit_count || '');
+                obj_row.find("#deposit_amount").html(thousandFormatter(witem.deposit_amount) + " 원");
+                sum_deposit += witem.deposit_amount;
+                cnt_deposit += witem.deposit_count;
+
+                obj_row.find("#withdraw_count").html(witem.withdraw_count || '');
+                obj_row.find("#withdraw_amount").html(thousandFormatter(witem.withdraw_amount) + " 원");
+                sum_withdraw += witem.withdraw_amount;
+                cnt_withdraw += witem.withdraw_count;
+
+                obj_row.click(function(event) {
+                    // event.preventDefault();
+                    dpage.getFrame().openPage("/main/stats/page.wallet_item.html", "지갑 상세", witem);
+                    return false;
+                });
+                obj_body.append(obj_row);
+            });
+
+            var obj_row = $("<div/>");
+            obj_row.addClass("row m-0").css("height", "45px").html(grid_row);
+
+            obj_row.find("#acc_company").html("합계");
+            obj_row.find("#acc_alias").html("");
+            obj_row.find("#item_type").html("");
+
+            obj_row.find("#deposit_count").html(cnt_deposit || '');
+            obj_row.find("#deposit_amount").html(thousandFormatter(sum_deposit) + " 원");
+            $btop.find("[for=sum_deposit]").html(thousandFormatter(sum_deposit));
+
+            obj_row.find("#withdraw_count").html(cnt_withdraw || '');
+            obj_row.find("#withdraw_amount").html(thousandFormatter(sum_withdraw) + " 원");
+            $btop.find("[for=sum_withdraw]").html(thousandFormatter(sum_withdraw));
+
+            obj_body.append(obj_row); // prepend
+        });
+    }
+
+    dpage.on('refresh', function(event, value) {
+        console.log(`${dpage.getFile()}: refresh`, event, value);
+        select_wallet();
+    });
+
+    select_wallet();
+}
+</script>

@@ -1,0 +1,40 @@
+
+<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+        <div class="modal-body p-2">
+            <div class="modal-dialog-centered justify-content-between mb-3">
+                <h5 class="modal-title">진행율</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="progress position-relative mb-3" style="height: 2rem;">
+                <div class="progress-bar progress-bar-success position-absolute h-100" role="progressbar" aria-valuenow="40" id="dlg_progessbar"
+                    aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                </div>
+                <div class="position-absolute h-100 d-flex align-items-center text-white ps-2 fs-6" id="dlg_progessval"> 0% </div>
+            </div>
+            <div class="modal-dialog-centered justify-content-end gap-2">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var modal = window.dmodal.getModal();
+    var param = window.dmodal.getParam();
+
+    var dlg_progessbar = modal.find("#dlg_progessbar");
+    var dlg_progessval = modal.find("#dlg_progessval");
+
+    console.log("progress - p");
+    param.update = function(value) {
+        console.log(";;;;;;;;;;;;;;;;;; update:", value);
+        dlg_progessbar.attr("aria-valuenow", value);
+        dlg_progessbar.width(value + "%");
+        dlg_progessval.html(value + "%");
+    };
+    $(function() {
+        console.log("param.init();");
+        param.init();
+    });
+</script>

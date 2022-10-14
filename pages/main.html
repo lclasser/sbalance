@@ -1,0 +1,95 @@
+
+<!-- 메인 컨텐츠 -->
+<div class="p-0 container-fluid overflow-auto vh-100" id="page_body" onload="oninit();">
+</div>
+
+<!-- 하단 메뉴 -->
+<footer class="main-footer">
+    <div class="row align-items-center" style="height: 66px;">
+        <!-- 가계부 메뉴 -->
+        <div class="col d-flex align-items-center justify-content-center" page-link="/main/page.balances.html">
+            <img src="/public/image/menu_1_dactive.svg">
+        </div>
+        <!-- <div class="col d-flex align-items-center justify-content-center fs-4">지갑(계좌) </div> -->
+        <!-- <div class="col d-flex align-items-center justify-content-center fs-4">관심상점 </div> -->
+        <!-- 통계 메뉴 -->
+        <div class="col d-flex align-items-center justify-content-center">
+            <img src="/public/image/menu_2_dactive.svg">
+        </div>
+        <!-- 센터 메뉴 -->
+        <div class="col-auto d-flex align-items-center justify-content-center d-none" id="menu_center">
+        </div>
+        <!-- 자산 메뉴 -->
+        <div class="col d-flex align-items-center justify-content-center">
+            <img src="/public/image/menu_3_dactive.svg">
+        </div>
+        <!-- 설정 메뉴 -->
+        <div class="col d-flex align-items-center justify-content-center" page-link="/main/page.setup.html">
+            <img src="/public/image/menu_4_dactive.svg">
+        </div>
+    </div>
+</footer>
+
+<script>
+$(function() {
+    STracer("main.html").log("window.onload...");
+
+    if( dframeInitialize == null ) {
+        STracer("main.html").log("already init or dont include dframe.js");
+        return;
+    }
+
+    var dframe = dframeInitialize("page_body");
+    if( dframe == null ) {
+        STracer("main.html").log("init dframe.js failed...");
+        return;
+    }
+    SBalance.setFrame(dframe);
+
+    // dframe.makePageInclude('page-include', $(window.document));
+    dframe.makePageLink($("footer"));
+    dframe.on('page_open', function(event, opage, param) {
+        dframe.setMenuCenter(null);
+        $("footer").find(`[page-link]`).find("img").each(function(pos, item) {
+            item.src = item.src.replace("sactive", "dactive");
+        });
+        $("footer").find(`[page-link='${opage.getFile()}']`).find("img").each(function(pos, item) {
+            item.src = item.src.replace("dactive", "sactive");
+        });
+        STracer("main.html").dbg("mainframe.page_open 1:", event);
+        STracer("main.html").dbg("mainframe.page_open 2:", opage);
+        STracer("main.html").dbg("mainframe.page_open 3:", param, opage.getParam());
+        STracer("main.html").dbg("mainframe.page_open 4:", dframe);
+    });
+    dframe.on('page_load', function(event, opage) { STracer("main.html").dbg("mainframe.page_load", opage); });
+    dframe.on('page_ready', function(event, opage) { STracer("main.html").dbg("mainframe.page_ready", opage); });
+    dframe.on('page_close', function(event, opage) { STracer("main.html").dbg("mainframe.page_close", opage); });
+
+    dframe.setMenuCenter = function(icon, callback) {
+        var $menu_center = $("footer").find("#menu_center");
+        if( icon == null ) {
+            $menu_center.addClass("d-none");
+            $menu_center.off();
+        } else {
+            $menu_center.removeClass("d-none");
+            var img = icon;
+            if( typeof(icon) != 'object' ) {
+                img = {
+                    file : icon,
+                    width: '62px',
+                }
+            }
+            img.width = img.width || '62px';
+            $menu_center.css('width', img.width);
+
+            $menu_center.html(`<img src="/public/image/${img.file}" style="position:absolute; bottom:16px; width:${img.width};">`);
+            $menu_center.click(function() {
+                callback();
+            });
+        }
+    }
+
+    var opage = dframe.openPage("/main/page.balances.html");
+    STracer("main.html").log("openPage", opage);
+});
+</script>

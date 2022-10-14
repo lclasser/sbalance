@@ -1,0 +1,187 @@
+<style>
+#dlg_sharing .seperater {
+    margin: 5px !important;
+    border-top: 1px dashed #717171;
+    height: 3px;
+    width: 100%;
+}
+</style>
+<div class="sb-modal modal-dialog modal-dialog-centered modal-dialog-scrollable"  role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="modal_title">그룹 추가</h5>
+            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        
+        <div class="modal-body">
+            <div class="input-row">
+                <div class="input-col">
+                    <label class="input-label col-2">이름</label>
+                    <input class="input-value form-control" type="text" placeholder="그룹 이름" id="dlg_name">
+                </div>
+            </div>
+
+            <div class="input-row" style="display: none;">
+                <div class="input-col">
+                    <label class="input-label col-2">공유자</label>
+                    <label class="input-value form-control" id="dlg_sharer"></label>
+                </div>
+            </div>
+
+            <div class="input-row h-100" style="display: none;">
+                <div class="input-col">
+                    <label class="input-label col-2">공유</label>
+                    <div  class="input-value form-control row d-flex m-0" id="dlg_sharing"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" id="modal_del" class="btn btn-lg btn-danger me-auto">삭제</button>
+            <button type="button" id="modal_ok" class="btn btn-lg btn-primary">저장</button>
+            <button type="button" class="btn btn-lg btn-secondary" data-bs-dismiss="modal">취소</button>
+        </div>
+    </div>
+</div>
+
+<script>
+$(function() {
+    var modal = window.dmodal.getModal();
+    var param = window.dmodal.getParam();
+    console.log("modal.category_group param:", param);
+
+    if( param == null ) {
+        // 신규
+        modal.find("#modal_ok").html("추가");
+        modal.find("#modal_del").hide();
+    } else {
+        param.title   && modal.find("#modal_title").html(param.title);
+        param.cg_name && modal.find("#dlg_name").val(param.cg_name);
+
+        if( param.cg_type == 'L' ) {
+            // 공유
+            modal.find("#modal_ok").hide();
+            modal.find("#modal_del").html("해제");
+            modal.find("#dlg_name").attr('readonly', 'readonly');
+            
+            window.SBalance.request('/main/category/group/owner', {cg_key: param.cg_key})
+            .then(function(res) {
+                var info = res.data[0];
+                if( info != null ) {
+                    modal.find("#dlg_sharer").html(`${info.usr_name} (${info.usr_email})`);
+                } else {
+                    modal.find("#dlg_sharer").html('공유가 해제되었습니다.');
+                }
+                modal.find("#dlg_sharer").parent().parent().show();
+            });
+        }
+        else {
+            // 수정
+            modal.find("#modal_del").show();
+            modal.find("#modal_ok").html("수정");
+
+            function requestLinking() {
+                var $dlg_sharing = modal.find("#dlg_sharing");
+                window.SBalance.request("/main/category/group/linking", {cg_key: param.cg_key})
+                .then(function(res) {
+                    $dlg_sharing.empty();
+                    res.data.forEach(function(item) {
+                        if( $dlg_sharing.children().length > 0 )
+                            $dlg_sharing.append( $(`<div class="seperater"/>`) );
+                        $dlg_sharing.append(
+                            `<div class="row align-items-center m-0 p-0">` +
+                                `<div class="col m-0  p-0">` +
+                                    `<div class="text-break" id="link_user">${item.usr_name}</div>` +
+                                    `<div class="text-break" id="link_email">(${item.usr_email})</div>` +
+                                `</div>` +
+                                `<div class="col-auto m-0 p-0">` +
+                                    `<button class="btn btn-primary share_key p-1" type="button">해제</button>` +
+                                    `<input type="hidden" id="share_key" value="${item.share_key}">` +
+                                `</div>` +
+                            `</div>`
+                        );
+                    });
+                    if( res.data.length > 0 ) {
+                        $dlg_sharing.find(".share_key").click(function() {
+                            var share_key = $(this).parent().parent().find("#share_key").val();
+                            var link_user = $(this).parent().parent().find("#link_user").html();
+                            var link_email = $(this).parent().parent().find("#link_email").html();
+                            window.openModal('/main/modal/modal.confirm.html', {
+                                title   : `공유 해제 확인`,
+                                content : `"${link_user} (${link_email})" 와 분류 공유를 해제 하시겠습니까?`,
+                                btn_confirm : "해제",
+                                btn_cancel  : "취소"
+                            }, function(result) {
+                                if( result ==  true ) {
+                                    window.SBalance.request("/main/shared/group/release", {
+                                        share_key : share_key,
+                                        cg_key   : param.cg_key,
+                                    })
+                                    .then(function(res) {
+                                        if( res.error != null && res.error.success != 'Y' ) {
+                                            window.toast({
+                                                title_class: "bg-danger text-white",
+                                                title_text: modal.find("#modal_title").text(),
+                                                mesg_text: `공유 해제를 실패 했습니다. (${res.error.message})`,
+                                            });
+                                        } else {
+                                            requestLinking();
+                                        }
+                                    });
+                                }
+                            });
+                        });
+                    } else {
+                        $dlg_sharing.html("공유한 사용자가 없습니다.");
+                    }
+                    $dlg_sharing.parent().parent().show();
+                });
+            }
+            requestLinking();
+        }
+    }
+
+    $("#modal_del").click(function() {
+        window.openModal('/main/modal/modal.confirm.html', {
+            title   : `${modal.find("#modal_del").html()} 확인`,
+            content : `"${param.cg_name}" 그룹을 ${modal.find("#modal_del").html()} 하시겠습니까?`,
+            btn_confirm : modal.find("#modal_del").html(),
+            btn_cancel  : "취소"
+        }, function(result) {
+            if( result ==  true ) {
+                var inbound = { cg_key : param.cg_key, };
+                window.SBalance.request("/main/category/group/delete", inbound)
+                .then(function(res) {
+                    console.log("/main/category/item/update res:", res);
+                    if( res.error.success == 'Y' ) {
+                    }
+                });
+                window.dmodal.exit(true);
+            }
+        });
+    });
+
+    $("#modal_ok").click(function() {
+        var inbound = {
+            cg_key  : param && param.cg_key,
+            cg_name: $("#dlg_name").val(),
+        };
+
+        var cg_url = "/main/category/group/update";
+        if( inbound.cg_key == null )
+            cg_url = "/main/category/group/insert";
+
+        window.SBalance.request(cg_url, inbound)
+        .then(function(res) {
+            console.log(`${cg_url} res:`, res);
+            if( res.error.success == 'Y' ) {
+                window.dmodal.close(true);
+            } else {
+                window.dmodal.close();
+            }
+        });
+
+        // window.dmodal.close($("#dlg_name").val());
+    });
+});
+</script>

@@ -1,0 +1,58 @@
+<link href="/main/balance/page.daily.css" rel="stylesheet" type="text/css"/>
+<div page-declare="dpage" class="w-100 h-100" onopen="onPageOpen(this);" onload="onPageLoad(this);">
+    <div id="list_daily" class="overflow-hidden" style="padding-bottom: 50px;"></div>
+</div>
+
+<script src="/main/balance/page.daily.js"></script>
+<script>
+function onPageOpen(epage)
+{
+    STracer("page.daily.html").log("onPageOpen...");
+    var dpage = epage.getPage();
+    var _balances = dpage.getReference('balances');
+
+    dpage.getFrame().setMenuCenter('menu_center_plus.svg', function() {
+        console.log('onsetMenuCenter');
+        window.openModal('/main/modal/modal.balance_message.html', null, function(result) {
+            STracer("page.daily.html").log("modal.balance_message.html result:", result);
+            if( result == null )
+                return;
+            page_query();
+        });
+    });
+
+    var $bsum = dpage.getFrame().getBalanceSum();
+
+    function page_query() {
+        process_daily(dpage, dpage.find("#list_daily"), {
+            year  : _balances.now_date.getFullYear(),
+            month : (_balances.now_date.getMonth() + 1),
+            sms_class : $bsum && $bsum[0].getSummaryClass(),
+        }, function(qry_result) {
+            $bsum && $bsum[0].setSummaryResult(qry_result, page_query);
+        });
+    }
+
+    dpage.on('refresh', function(event, value) {
+        STracer("page.daily.html").log(`event.refresh:`, event, value);
+        page_query();
+        return true; // event-stop
+    });
+
+    page_query();
+}
+
+function onPageLoad(epage) {
+    STracer("page.daily.html").log("onPageLoad...");
+}
+
+$(function() {
+    STracer("page.daily.html").log("$(function() {...");
+});
+$(document).ready(function() {
+    STracer("page.daily.html").log("$(document).ready(function() {...");
+});
+document.addEventListener("DOMContentLoaded", function(event){
+    STracer("page.daily.html").log(`document.addEventListener("DOMContentLoaded", function(event){...`);
+});
+</script>

@@ -1,0 +1,89 @@
+
+<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"  role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="modal_title">날짜 선택</h5>
+            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        
+        <div class="modal-body" style="height: 350px;">
+
+            <div class="row">
+                <div class="col-12 input-group mb-1">
+                    <span class="col-2 input-group-text fs_item">시작 날짜</span>
+                    <input type="button" class="form-control date datetimepicker-input fs_item" id="dlg_date1" data-target="#dlg_date1" data-toggle="datetimepicker"/>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 input-group mb-1">
+                    <span class="col-2 input-group-text fs_item">종료 날짜</span>
+                    <input type="button" class="form-control date datetimepicker-input fs_item" id="dlg_date2" data-target="#dlg_date2" data-toggle="datetimepicker"/>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 input-group mb-1">
+                    <input type="button" class="form-control btn btn-primary ms-1 me-1" id="dlg_prev" value="전달"/>
+                    <input type="button" class="form-control btn btn-primary ms-1 me-1" id="dlg_curr" value="이번달"/>
+                    <input type="button" class="form-control btn btn-primary ms-1 me-1" id="dlg_next" value="다음달"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" id="modal_ok" class="btn btn-lg btn-primary">확인</button>
+            <button type="button" id="modal_no" class="btn btn-lg btn-secondary" data-bs-dismiss="modal">취소</button>
+        </div>
+    </div>
+</div>
+
+<script>
+$(function() {
+    var param = window.dmodal.getParam();
+    console.log("param:", param);
+
+    var now_date = new Date();
+    var dlg_date1 = new Date(now_date.getFullYear(), now_date.getMonth(), 1);
+    var dlg_date2 = new Date(now_date.getFullYear(), now_date.getMonth() + 1, 0);
+
+    $('#dlg_date1').datetimepicker({
+        dayViewHeaderFormat: 'YYYY-MM',
+        format: 'YYYY-MM-DD',
+        locale: 'ko',
+        date  : dlg_date1,
+    });
+
+    $('#dlg_date2').datetimepicker({
+        dayViewHeaderFormat: 'YYYY-MM',
+        format: 'YYYY-MM-DD',
+        locale: 'ko',
+        date  : dlg_date2,
+    });
+
+    $("#dlg_prev").click(function() {
+        var curr_date = $('#dlg_date1').datetimepicker('viewDate').toDate();
+        $('#dlg_date1').datetimepicker('date', new Date(curr_date.getFullYear(), curr_date.getMonth() - 1, 1));
+        $('#dlg_date2').datetimepicker('date', new Date(curr_date.getFullYear(), curr_date.getMonth(), 0));
+    });
+
+    $("#dlg_curr").click(function() {
+        var curr_date = new Date();
+        $('#dlg_date1').datetimepicker('date', new Date(curr_date.getFullYear(), curr_date.getMonth(), 1));
+        $('#dlg_date2').datetimepicker('date', new Date(curr_date.getFullYear(), curr_date.getMonth() + 1, 0));
+    });
+
+    $("#dlg_next").click(function() {
+        var curr_date = $('#dlg_date1').datetimepicker('viewDate').toDate();
+        $('#dlg_date1').datetimepicker('date', new Date(curr_date.getFullYear(), curr_date.getMonth() + 1, 1));
+        $('#dlg_date2').datetimepicker('date', new Date(curr_date.getFullYear(), curr_date.getMonth() + 2, 0));
+    });
+    
+    $("#modal_ok").click(function() {
+        window.dmodal.close({
+            "date1" : $('#dlg_date1').datetimepicker('viewDate').toDate(),
+            "date2" : $('#dlg_date2').datetimepicker('viewDate').toDate(),
+        });
+    });
+});
+</script>

@@ -1,0 +1,135 @@
+<div page-declare="dpage" class="w-100 h-100" onload="onPageLoad(this);" onclose="onPageClose(this);">
+    <style>
+        .nav-link.active {
+            color: rgb(0,0,0) !important;
+            background-color: rgb(245, 216, 0) !important;
+        }
+        .nav-item > a:hover {
+            color: rgb(0,0,0) !important;
+          background-color: rgb(245, 239, 194) !important;
+        }
+    </style>
+    <div class="h-100" style="display: flex; flex-direction: column;">
+        <div class="w-100 border-bottom" style="min-height: 1em; display: flex;">
+            <div class="p-1 w-100">
+                <div class="d-flex">
+                    <div class="d-flex btn-group" role="group" aria-label="Basic example">
+                        <button type="button" class="btn btn-primary fs-5" id="btn_month_prev"><i class="fa-solid fa-caret-left"></i></button>
+                        <button type="button" class="btn btn-primary fs-6" id="btn_month_date"></button>
+                        <button type="button" class="btn btn-primary fs-5" id="btn_month_next"><i class="fa-solid fa-caret-right"></i></button>
+                    </div>
+                    <div class="d-flex ms-1">
+                        <!-- 월별은 통계로.. 결산은 자산으로.. -->
+                        <nav class="navbar navbar-light bg-light p-0">
+                            <div class="container-fluid p-0">
+                                <ul class="nav nav-pills">
+                                    <li class="nav-item">
+                                        <a class="nav-link fs-5" page-link="/main/stats/page.daily.html" href="#" data-bs-toggle="pill" role="tab" aria-controls="pills-daily" aria-selected="true">일별</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link fs-5 disabled" href="#" data-bs-toggle="pill" role="tab" aria-controls="pills-calendar" aria-selected="false">달력</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link fs-5" page-link="/main/stats/page.category.html" href="#" data-bs-toggle="pill" role="tab" aria-controls="pills-month" aria-selected="false">분류</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link fs-5" page-link="/main/stats/page.wallet.html" href="#" data-bs-toggle="pill" role="tab" aria-controls="pills-settle" aria-selected="false">지갑</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </nav>
+                    </div>
+                    <div class="d-flex align-items-center ms-auto me-1" id="btn_setting">
+                        <i class="fa-solid fa-filter nav-link fs-4 p-0"></i>
+                    </div>
+                </div>
+                <div class="d-flex row m-0 mt-1" id="balance_top" style="display:none !important">
+                    <div class="col"></div>
+                    <div class="col-2 p-0 ps-1">
+                        <input type="checkbox" class="btn-check" id="sum_deposit" autocomplete="off">
+                        <label class="w-100 me-1 border border-danger btn btn-outline-danger btn-light shadow-none" for="sum_deposit">2</label>
+                    </div>
+                    <div class="col-2 p-0 ps-1">
+                        <input type="checkbox" class="btn-check" id="sum_withdraw" autocomplete="off">
+                        <label class="w-100 me-1 border border-primary btn btn-outline-primary btn-light shadow-none" for="sum_withdraw">3</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-1" style="flex: 1; overflow: auto;" id="balance_body">
+        </div>
+    </div>
+</div>
+
+<script>
+function onPageLoad(epage)
+{
+    var dpage = epage.getPage();
+
+    // 공용 변수 초기화
+    var _balances = dpage.getReference("balances", { now_date : new Date()});
+    if( _balances.now_date == null ) {
+        _balances.now_date = new Date();
+    }
+
+    var bframe = dpage.createFrame("balance_body");
+    bframe.makePageLink(dpage.get$page());
+
+    bframe.on('page_open', function(event, opage) {
+        if( opage.getFile() == "/main/stats/page.daily.html" )
+            dpage.find("#balance_top").attr('style','display:none !important');
+    });
+    bframe.on('page_load', function(event, opage) {
+        $(`[page-link="${opage.getFile()}"]`).addClass("active");
+    });
+    bframe.on('page_close', function(event, opage) {
+        var $btop = dpage && dpage.find("#balance_top");
+        $btop.find("input").off("change");
+        $btop.find("[for=sum_deposit]").html("");
+        $btop.find("[for=sum_withdraw]").html("");
+    });
+    bframe.openPage("/main/stats/page.daily.html");
+
+    // 화면 기능
+    var $btop = dpage.find("#balance_top");
+    if( $btop != null ) {
+        $btop.find('#sum_deposit').prop('checked', true);
+        $btop.find('#sum_withdraw').prop('checked', true);
+    }
+
+    function setDate(is_update) {
+        dpage.find("#btn_month_date").html(
+            (_balances.now_date.getFullYear()) + "년 " + (_balances.now_date.getMonth() + 1) + "월"
+        );
+        if( is_update == true ) dpage.getFrame().send('refresh');
+    }
+    dpage.find("#btn_month_prev").click(function() {
+        _balances.now_date.setMonth(_balances.now_date.getMonth() - 1, 1);
+        setDate(true);
+    });
+    dpage.find("#btn_month_next").click(function() {
+        _balances.now_date.setMonth(_balances.now_date.getMonth() + 1);
+        setDate(true);
+    });
+    dpage.find("#btn_setting").click(function() {
+        console.log("btn_setting...");
+
+        /* var param = {
+            key: '180883efaf2faf9f53f0b46bcad52838',
+        };
+        dpage.openModal('/main/modal/modal.link_wallet.html', param);
+        */$btop
+        SBalance.onRefresh();
+        // dpage.getFrame().send('refresh', 'refresh-data');
+    });
+
+    setDate(false);
+}
+
+function onPageClose(epage)
+{
+    STracer("page.balances.html").dbg("onPageClose:", epage);
+}
+
+</script>

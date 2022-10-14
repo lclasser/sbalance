@@ -1,0 +1,167 @@
+<style>
+    .col-attach {
+        flex: 0 0 auto !important;
+        width: 16.66666667% !important;
+    }
+</style>
+
+<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"  role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="modal_title">지갑 정보</h5>
+            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-12 input-group mb-1">
+                    <span class="col-3 input-group-text">e-mail</span>
+                    <span class="form-control col" id="dlg_usr_email"></span>
+                </div>
+                <div class="col-12 input-group mb-1">
+                    <label class="col-3 input-group-text">이름</label>
+                    <input class="form-control col" type="text" placeholder="사용자 실명" id="dlg_usr_name">
+                </div>
+                <div class="col-12 input-group mb-1">
+                    <label class="col-3 input-group-text">전화번호</label>
+                    <input class="form-control col" type="text" placeholder="010-0000-0000" id="dlg_usr_phone">
+                </div>
+                <div class="col-12 input-group mb-1">
+                    <label class="col-3 input-group-text">현재 비밀번호</label>
+                    <input class="form-control" type="password" id="dlg_usr_pwd" placeholder="수정을 위해 반드시 비밀번호를 입력하세요.">
+
+                    <input type="checkbox" class="btn-check" id="dlg_usr_show" autocomplete="off">
+                    <label class="btn btn-outline-secondary" for="dlg_usr_show"><i class="fa-solid fa-eye"></i></label>
+                </div>
+                <div class="col-12 input-group mb-1">
+                    <label class="col-3 input-group-text">신규 비밀번호</label>
+                    <input class="form-control" type="password" id="dlg_new_pwd1" placeholder="입력시 변경됩니다.">
+                    
+                    <input type="checkbox" class="btn-check" id="dlg_new_show1" autocomplete="off">
+                    <label class="btn btn-outline-secondary" for="dlg_new_show1"><i class="fa-solid fa-eye"></i></label>
+                </div>
+                <div class="col-12 input-group mb-1">
+                    <label class="col-3 input-group-text">비밀번호 확인</label>
+                    <input class="form-control" type="password" id="dlg_new_pwd2" placeholder="변경된 비밀번호를 입력하세요." disabled="disabled">
+
+                    <input type="checkbox" class="btn-check" id="dlg_new_show2" autocomplete="off" disabled="disabled">
+                    <label class="btn btn-outline-secondary" for="dlg_new_show2"><i class="fa-solid fa-eye"></i></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-danger alert-dismissible fade show p-3 ms-3 me-3" id="dlg_error">
+            <strong>Error!</strong> <span class="message ml-3">A problem has been occurred while submitting your data.</span>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" id="modal_del" class="btn btn-lg btn-warning me-auto">삭제</button>
+            <button type="button" id="modal_ok" class="btn btn-lg btn-primary ">저장</button>
+            <button type="button" class="btn btn-lg btn-secondary" data-bs-dismiss="modal">취소</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function() {
+        var param = window.dmodal.getParam();
+        console.log("param:", param);
+
+        $("#dlg_error").hide();
+
+        var inbound = null;
+        window.SBalance.request("/main/user/select", inbound)
+        .then(function(res) {
+            if( res.error != null && res.error.success != 'Y' ) {
+                alert(`사용자 정보를 확인할 수 없습니다.(${res.error})`);
+            }
+
+            var usr_data = res.data[0];
+            $("#dlg_usr_email").html(usr_data.usr_email);
+            $("#dlg_usr_name").val(usr_data.usr_name);
+            $("#dlg_usr_phone").val(usr_data.usr_phone);
+        });
+        
+        $("#dlg_new_pwd1").keyup(function() {
+            console.log("changed");
+            var new_pwd1 = $("#dlg_new_pwd1").val();
+            if( new_pwd1 == null || new_pwd1.length <= 0 ) {
+                $("#dlg_new_pwd2").attr("disabled", "disabled");
+                $("#dlg_new_show2").attr("disabled", "disabled");
+            } else {
+                $("#dlg_new_pwd2").attr("disabled", false);
+                $("#dlg_new_show2").attr("disabled", false);
+            }
+        });
+    
+        $("#dlg_usr_show").click(function() {
+            if( $("#dlg_usr_show").is(':checked') == true ) {
+                $("#dlg_usr_pwd").attr('type', 'text');
+            } else {
+                $("#dlg_usr_pwd").attr('type', 'password');
+            }
+        });
+
+        $("#dlg_new_show1").click(function() {
+            if( $("#dlg_new_show1").is(':checked') == true ) {
+                $("#dlg_new_pwd1").attr('type', 'text');
+            } else {
+                $("#dlg_new_pwd1").attr('type', 'password');
+            }
+        });
+
+        $("#dlg_new_show2").click(function() {
+            if( $("#dlg_new_show2").is(':checked') == true ) {
+                $("#dlg_new_pwd2").attr('type', 'text');
+            } else {
+                $("#dlg_new_pwd2").attr('type', 'password');
+            }
+        });
+
+        function showError(message) {
+            $("#dlg_error > .message").html(message);
+            $("#dlg_error").show();
+            setTimeout(function() {
+                $("#dlg_error").hide();
+            }, 3*1000);
+        }
+
+        $("#modal_ok").click(function() {
+            var new_pwd1 = $("#dlg_new_pwd1").val();
+            if( new_pwd1 != null && new_pwd1.length > 0 ) {
+                var new_pwd2 = SHA_256($("#dlg_new_pwd2").val());
+                new_pwd1 = SHA_256(new_pwd1);
+                if( new_pwd1 != new_pwd2 ) {
+                    $("#dlg_new_pwd1").focus();
+                    showError("신규 비밀번호를 정확히 입력 하세요.");
+                    return;
+                }
+            }
+
+            var usr_info = {
+                usr_email: $("#dlg_usr_email").html(),
+                usr_name : $("#dlg_usr_name").val(),
+                usr_phone: $("#dlg_usr_phone").val(),
+                usr_pwd  : SHA_256($("#dlg_usr_pwd").val()),
+                new_pwd  : new_pwd1,
+            };
+            window.SBalance.request("/main/user/update", usr_info)
+            .then(function(res) {
+                console.log("update:", res);
+                if( res.error == null ) {
+                    showError('사용자 정보 업데이트중 알수 없는 오류가 발생했습니다.');
+                    return;
+                }
+                if( res.error.success != 'Y' ) {
+                    showError(res.error.message)
+                    return;
+                }
+                if( res.data.affectedRows <= 0 ) {
+                    showError('입력 정보 오류로 사용자 정보 업데이트를 실패 했습니다.');
+                    return;
+                }
+                window.dmodal.close(true);
+            });
+        });
+    });
+</script>

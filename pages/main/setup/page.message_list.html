@@ -1,0 +1,283 @@
+
+<div page-declare="dpage" class="w-100 h-100" onload="onPageLoad(this);">
+    <div class="sticky-top bg-white border d-flex flex-row align-items-center m-0 mb-1">
+        <div class="p-1">
+            <input class="form-check-input" type="checkbox" id="item_all">
+            <label class="form-check-label" for="item_all" id="item_qty">선택</label>
+        </div>
+        <div class="p-1 me-auto">
+            <select class="col-attach form-select fs_item" id="head_disp">
+                <option class="fs_item" value="KRW" selected>모두 보기</option>
+                <option class="fs_item" value="USD">저장된거만 보기</option>
+                <option class="fs_item" value="USD">장치거만 보기</option>
+            </select>
+        </div>
+        <div class="p-1">
+            <button type="button" class="btn btn-primary" id="btn_add">추가하기</button>
+            <button type="button" class="btn btn-primary" id="btn_refresh">재조회</button>
+        </div>
+    </div>
+
+    <div class="card w-100 mb-1">
+        <div class="card-header d-flex align-items-center pb-1" style="height:35px;">
+            <div class="" id="item_cnt"></div>
+        </div>
+        <div class="card-body p-0 collapse show group_x">
+        </div>
+    </div>
+</div>
+
+<script>
+function onPageLoad(epage)
+{
+    var spage = epage.getPage();
+    var pparam = epage.getParam();
+
+    console.log("pparam:", pparam);
+
+    var mkeys = {};
+    pparam.lists.forEach(function(mitem, midx) {
+        mitem.msg_str = mitem.msg_body.replace(/(\s*|\r\n|\r|\n)/g, '')
+
+        var key = SHA_256(mitem.msg_str);
+        mkeys[key] = mkeys[key] || {
+            lists : [],
+        };
+        mitem.key = key;
+        mitem.midx = midx;
+        mkeys[key].lists.push(mitem);
+        // console.log("key:" + key + ";" + mitem.msg_body);
+        if( mitem.msg_time == "015201" ) {
+            console.log(`BODY 1: ${key}[${mitem.msg_str}]`);
+        }
+        // console.log(`BODY: [${mitem.msg_body.replace(/(\s*|\r\n|\r|\n)/g, '')}]`);
+    });
+
+    function requery_lists(arg_date1, arg_date2, arg_lists)
+    {
+        var inbound = {
+            date1 : arg_date1,
+            date2 : arg_date2,
+        };
+
+        var disp_lists = arg_lists.slice();
+        window.SBalance.request("/main/message/lists", inbound)
+        .then(function(res) {
+            console.log("/main/message/lists:", res);
+            spage.find("#item_qty").html(`선택`);
+
+            var obj_body = spage.find(".card-body");
+            obj_body.empty();
+
+            // Server와 비교하여 동일만 메시지를 찾는다.
+            res.data.forEach(function(citem) {
+                if( citem.msg_body == null )
+                    return;
+                citem.msg_str = citem.msg_body.replace(/(\s*|\r\n|\r|\n)/g, '');
+                var key = SHA_256(citem.msg_str);
+
+                if( citem.msg_time == "120306" ) {
+                    console.log(`BODY 2: ${key}[${citem.msg_str}]`);
+                }
+                var mentry = mkeys[key];
+                if( mentry != null ) {
+                    // console.log("found:" + key + ";" + JSON.stringify(mentry));
+                    console.log("found:" + key + ";");
+                    var mitem;
+                    for( mitem of mentry.lists ) {
+                        if( (mitem.is_found  == null) &&
+                            (mitem.msg_phone == citem.msg_phone) &&
+                            (mitem.msg_date  == citem.msg_date) &&
+                            (mitem.msg_str   == citem.msg_str)
+                        ) {
+                            mitem.is_found = true;
+                            citem.is_added = true;
+                            // console.log("citem:", citem);
+                            break;
+                        }
+                    }
+                }
+            });
+            // Client에 존재하지 않는걸 추가한다.
+            res.data.forEach(function(citem) {
+                if( citem.msg_body == null )
+                    return;
+                if( citem.is_added == null ) {
+                    citem.is_found = false;
+                    disp_lists.push(citem);
+                }
+            });
+            // 정렬한다.
+            disp_lists.sort(function(left,right) {
+                if( left.msg_date > right.msg_date ) return -1;
+                else
+                if( left.msg_date < right.msg_date ) return 1;
+
+                if( left.msg_time > right.msg_time ) return -1;
+                else
+                if( left.msg_time < right.msg_time ) return 1;
+
+                return 0;
+            });
+
+            spage.find("#item_cnt").html(`건수: ${disp_lists.length} 건`);
+
+            var grid_row = `
+    <div class="col-1 border-end d-flex align-items-center p-1 justify-content-center">
+        <input class="form-check-input" type="checkbox" id="msg_check">
+    </div>
+    <div class="col-2 border-end d-flex align-items-center p-1" id="msg_phone">수신번호</div>
+    <div class="col-2 border-end d-flex align-items-center p-1 justify-content-center" id="msg_date">날짜</div>
+    <div class="col-2 border-end d-flex align-items-center p-1 justify-content-center" id="msg_time">시간</div>
+    <div class="col-5 d-flex align-items-center p-1" id="msg_body">내용</div>
+    `;
+            console.log("list... :", disp_lists);
+            disp_lists.forEach(function(mitem) {
+                //console.log("mitem... :" + JSON.stringify(mitem));
+                
+                var obj_row = $("<div/>");
+                obj_row.addClass(`row border border-top-0 border-start-0 border-end-0 m-0 h-100`)
+                .css("min-height", "54px")
+                .html(grid_row);
+
+                if( mitem.is_found == true ) {
+                    // exist: server & client
+                    obj_row.addClass("bg-light text-secondary");
+                    obj_row.find("#msg_check").prop("disabled", true);
+                }
+                else
+                if( mitem.is_found == false ) {
+                    // exist: server only
+                    obj_row.addClass("bg-light text-danger");
+                    obj_row.find("#msg_check").prop("disabled", true);
+                }
+                else {
+                    // exist: client only
+                    obj_row.addClass("bg-light text-primary");
+                }
+                delete mitem.is_found;
+
+                obj_row.find("#msg_check").change(function() {
+                    console.log("ASDF");
+                    spage.find("#item_qty").html(`선택: ${obj_body.find("#msg_check:checked").length} 건`);
+                });
+                obj_row.find("#msg_check").prop("midx", mitem.midx);
+
+                obj_row.find("#msg_phone").html(mitem.msg_phone);
+                obj_row.find("#msg_date").html(
+                    mitem.msg_date.substring(4,6) + '-' +
+                    mitem.msg_date.substring(6,8)
+                );
+                obj_row.find("#msg_time").html(
+                    mitem.msg_time.substring(0,2) + ':' +
+                    mitem.msg_time.substring(2,4) + ':' +
+                    mitem.msg_time.substring(4,6)
+                );
+                obj_row.find("#msg_body").html(mitem.msg_body);
+
+                obj_body.append(obj_row);
+            });
+        });
+    }
+
+    spage.find("#item_all").click(function() {
+        spage.find("#msg_check:not(:disabled)").prop("checked", spage.find("#item_all").prop('checked'));
+        spage.find("#item_qty").html(`선택: ${spage.find("#msg_check:checked").length} 건`);
+    });
+
+    spage.find("#btn_add").click(function() {
+        var jchecks = spage.find("#msg_check:checked");
+        var rows = jchecks.toArray();
+        if( rows.length <= 0 ) {
+            window.toast({
+                title_class: "bg-secondary text-white",
+                title_text: "문자 읽기",
+                mesg_text: "추가할 문자를 선택해 주세요.",
+            });
+            return;
+        }
+
+        var inbound = {
+            is_break : false,
+            update : function(value) {},
+            init : function() {
+                console.log("aaa:", this);
+            },
+        };
+        var pmodal = window.openModal('/main/modal/modal.progressp.html', inbound, function(result) {
+            if( result == null ) {
+                inbound.is_break = true;
+            }
+        });
+        inbound._oninit = function() {
+            inbound.update( 0 );
+
+            rows.reduce(function(next, ritem, ridx) {
+                return next.then(function() {
+                    return new Promise(function(resolve, reject) {
+                        setTimeout(function() {
+                            if( inbound.is_break == true ) {
+                                reject('취소 되었습니다.');
+                                return;
+                            }
+
+                            var midx  = $(ritem).prop("midx");
+                            var mitem = pparam.lists[midx];
+                            console.log("row:", midx, mitem);
+
+                            window.SBalance.request("/api/message/insert", mitem)
+                            .then(function(res) {
+                                console.log("/api/message/insert res:", res);
+
+                                inbound.update( Math.floor((ridx + 1) * 100 / rows.length) );
+                                if( res.error.success == 'Y' ) {
+                                    return resolve();
+                                } else {
+                                    return reject(res.error.message);
+                                }
+                            }); 
+                        }, 1000);
+                    });
+                });
+            }, Promise.resolve())
+            .then(function() {
+                setTimeout(function() {
+                    console.log("finished...");
+                    pmodal.close(true);
+                    window.toast({
+                        title_class: "bg-success text-white",
+                        title_text: "문자 읽기",
+                        mesg_text: "선택된 문자가 추가 되었습니다.",
+                    });
+                    requery_lists(pparam.date1, pparam.date2, pparam.lists);
+                }, 0);
+            })
+            .catch(function(err) {
+                setTimeout(function() {
+                    console.log("error...", err);
+                    pmodal.close(false);
+                    if( inbound.is_break == true ) {
+                        window.toast({
+                            title_class: "bg-danger text-white",
+                            title_text: "문자 읽기",
+                            mesg_text: `${err}`,
+                        });
+                    } else {
+                        window.toast({
+                            title_class: "bg-danger text-white",
+                            title_text: "문자 읽기",
+                            mesg_text: `선택된 문자의 처리가 실패 했습니다.(${err})`,
+                        });
+                    }
+                }, 0);
+            });
+        };
+    });
+
+    requery_lists(pparam.date1, pparam.date2, pparam.lists);
+
+    spage.find("#btn_refresh").click(function() {
+        requery_lists(pparam.date1, pparam.date2, pparam.lists);
+    });
+}
+</script>

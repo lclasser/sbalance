@@ -1,0 +1,138 @@
+<page class="w-80 h-100 p-0 pt-2 pb-2 d-block"
+    style="position:fixed; margin: auto; left:0; right:0; top:0; width:80%; display:none; "
+    onopen="onOpened(this);" onload="onLoaded(this);" onclose="onClosed(this);">
+    <div id="dialog_modal" class="modal fade show position-relative d-flex justify-content-center align-items-center" tabindex="-1" role="dialog" data-bs-focus="false" data-bs-backdrop="static" aria-labelledby="dialog_modal" aria-hidden="true">
+        <div class="sb-modal modal-dialog modal-dialog-centered modal-dialog-scrollable m-0" role="document"  style="min-width:100%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal_title">분류 선택</h5>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                
+                <div class="modal-body overflow-auto">
+                    <div id="dlg_list"></div>
+                </div>
+        
+                <div class="modal-footer">
+                    <button type="button" id="modal_ok" class="btn btn-lg btn-primary">설정</button>
+                    <button type="button" class="btn btn-lg btn-secondary" data-bs-dismiss="modal">취소</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</page>
+
+<script>
+function onOpened(dpopver) {
+    console.log("dpopver:", dpopver);
+    var pparam = dpopver.getParam();
+
+    const template_card = `
+    <div class="card-header d-flex align-items-center p-1" style="height:35px;">
+        <div class="me-auto" id="item_title"></div>
+        <div class="ms-1 ps-4">
+            <button type="button" class="transparent-bgcolor"
+                data-bs-toggle="collapse" data-bs-target=".group_x" aria-expanded="false" aria-controls=".group_x">
+                <div class="collapse hide group_x"><img style="height:24px;" src="/public/image/card_down.svg"></div>
+                <div class="collapse show group_x"><img style="height:24px;" src="/public/image/card_up.svg"></div>
+            </button>
+        </div>
+    </div>
+    <div class="card-body p-0">
+        <ul class="list-group list-group-flush collapse show group_x"></ul>
+    </div>
+    </ul>`;
+
+    function groupAdd(parent, citem) {
+        var grp_index = `pvgroup_${citem.ci_idx}`;
+        var group_card = $("<div/>").addClass("sb-card card border w-100 mb-1").html(template_card);
+        group_card.find("#item_title").html(citem.cg_name);
+        group_card.find(".group_x").removeClass("group_x").addClass(grp_index);
+        group_card.find(`[data-bs-target=".group_x"]`).attr("data-bs-target", `.${grp_index}`);
+        group_card.find(`[aria-controls=".group_x"]`).attr("aria-controls", `${grp_index}`);
+        parent.append(group_card);
+        return group_card;
+    }
+
+    function itemAdd(group_card, citem, selected) {
+        group_card.find(".list-group").append(
+            `<li class="list-group-item list-group-item-action ${selected==true?"active":""}"
+                ci_idx="${citem.ci_idx}"
+                ci_name="${citem.ci_name}"
+                cg_name="${citem.cg_name}"
+            >${citem.ci_name}</li>`
+        );
+    }
+
+    var selected = false;
+    var dlg_list = dpopver.find("#dlg_list");
+    // 미분류
+    var group_item = groupAdd(dlg_list, {ci_idx: 0, cg_name:"미분류", });
+    if( (pparam.ci_idx || 0) == 0 )
+        selected = true;
+    itemAdd(group_item, {
+        ci_idx: 0,
+        ci_name:"미분류",
+        cg_name:"미분류"
+    }, selected);
+
+    // 조회 분류
+    window.SBalance.request("/main/category/item/select")
+    .then(function(res) {
+        console.log("/main/category/item/select:", res);
+        var grp_list = {};
+        res.data.forEach(function(citem) {
+            var group_item = grp_list[citem.cg_name];
+            if( group_item == null ) {
+                group_item = groupAdd(dlg_list, citem);
+                grp_list[citem.cg_name] = group_item;
+            }
+            if( selected == false && pparam.ci_idx == citem.ci_idx ) {
+                selected = true;
+                itemAdd(group_item, citem, true);
+            } else {
+                itemAdd(group_item, citem, false);
+            }
+        });
+
+        dlg_list.find(".list-group-item").click(function() {
+            // var is_active = $(this).hasClass("active");
+            dlg_list.find(".list-group-item").removeClass("active");
+            $(this).addClass("active");
+        });
+        dlg_list.find(".list-group-item").dblclick(function() {
+            if( $(this).hasClass("active") == true ) {
+                dpopver.find("#modal_ok").click();
+            }
+        });
+        dpopver.$body.css("disply", "block");
+    });
+
+    dpopver.find("#modal_ok").click(function() {
+        var result = {};
+
+        var sel_item = dlg_list.find(".list-group-item.active");
+        var ci_idx  = sel_item.attr("ci_idx");
+        var ci_name = sel_item.attr("ci_name");
+        var cg_name = sel_item.attr("cg_name");
+        console.log("ci_idx:", ci_idx, sel_item);
+        if( ci_idx != null && Number.isInteger(parseInt(ci_idx)) ) {
+            dpopver.close({
+                ci_idx: ci_idx,
+                ci_name: ci_name,
+                cg_name: cg_name,
+            });
+            return;
+        }
+        dpopver.close(null);
+    });
+}
+
+function onLoaded(dpopver) {
+    console.log("onLoaded:", dpopver);
+}
+
+function onClosed(dpopver) {
+    console.log("onClosed:", dpopver);
+}
+</script>

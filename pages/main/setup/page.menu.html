@@ -1,0 +1,27 @@
+<div page-declare="dpage" class="w-100 h-100" onload="onPageLoad(this);" onclose="onPageClose(this);">
+    <ul class="list-group">
+        <li class="list-group-item fs-3" style="height:50px;" page-link="/main/setup/page.user.html">사용자 정보</li>
+        <li class="list-group-item fs-3" style="height:50px;" page-link="/main/setup/page.wallet.html">지갑 설정</li>
+        <!-- <li class="list-group-item fs-3" style="height:50px;" page-link="/main/setup/page.wallet.html">공유 설정(지갑)</li> -->
+        <li class="list-group-item fs-3" style="height:50px;" page-link="/main/setup/page.message.html">문자 설정</li>
+        <li class="list-group-item fs-3" style="height:50px;" page-link="/main/setup/page.category.html">분류 설정</li>
+        <li class="list-group-item fs-3" style="height:50px;" page-link="/main/setup/page.match.html">매칭 설정</li>
+        <li class="list-group-item fs-3 text-black-50" style="height:50px;">자산 설정</li>
+        <li class="list-group-item fs-3 text-black-50" style="height:50px;">테마 설정</li>
+        <li class="list-group-item fs-3 text-black-50" style="height:50px;">제공 업체</li>
+        <li class="list-group-item fs-3" style="height:50px;" onclick="javascript:window.SBalance.onSignout();">로그 아웃</li>
+    </ul>
+</div>
+
+<script>
+function onPageLoad(epage)
+{
+    STracer("page.menu.html").log("onPageLoad...", epage);
+}
+
+function onPageClose(epage)
+{
+    STracer("page.menu.html").log("onPageClose:", epage);
+}
+
+</script>

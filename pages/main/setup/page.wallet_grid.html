@@ -1,0 +1,89 @@
+<div page-declare="dpage" class="w-100 h-100" onload="onPageLoad(this);" onclose="onPageClose(this);">
+    <div class="nav-link p-0" style="right:20px; bottom:50px; position:fixed;">
+        <i class="menu-icons fa-solid fa-bars" data-bs-toggle="dropdown" aria-expanded="false"></i>
+        <ul class="dropdown-menu" aria-labelledby="dropdown" style="width:220px;">
+            <li><a class="dropdown-item d-flex align-items-center p-2" href="javascript:void(0);" id="mnu_wallet_add">
+                <span class="menu-content me-auto">지갑 추가하기</span>
+                <i class="menu-icons fa-solid fa-circle-plus"></i>
+            </a></li>
+            <li><a class="dropdown-item d-flex align-items-center p-2" href="javascript:void(0);" id="mnu_link_req">
+                <span class="menu-content me-auto">공유 요청하기</span>
+                <i class="menu-icons fa-solid fa-square-share-nodes"></i>
+            </a></li>
+        </ul>
+    </div>
+    <div id="list_items" class="overflow-hidden"></div>
+</div>
+
+<script>
+function print_wallet(spage, listgrid) {
+    return window.SBalance.request("/main/account/list", null)
+    .then(function(res) {
+        listgrid.removeAllRows();
+
+        STracer("page.wallet.html").log("res.data:", res.data);
+        res.data.forEach(function(item, idx) {
+            switch( item.acc_type ) {
+            case 'A': item.type_name = "자동"; break;
+            case 'S': item.type_name = "본인"; break;
+            case 'L':
+                item.type_name = "공유";
+                item.link_cnt = "";
+                break;
+            default : item.type_name = "-"; break;
+            }
+            listgrid.insertRow(item);
+        });
+    });
+}
+
+function onPageLoad(epage)
+{
+    var spage = epage.getPage();
+
+    STracer("page.wallet.html").dbg("onPageLoad...");
+
+    // Component 생성
+    var ebody = spage.find("#list_items").get(0);
+    var listgrid = new CompSGridList(ebody, {
+        "col-height" : 35,
+        "row-height" : 40,
+        "row-bgcolor" : function(row) { return null; },
+        "row-fgcolor" : function(row) { return '#ffffff'; },
+        "border-color" : "#000000", // "rgb(147, 147, 147)",
+    });
+    listgrid.createGrid([
+        { id : 'acc_company', width: '30%', type: 'string', text: '금융사',},
+        { id : 'acc_alias'  , width: '30%', type: 'string', text: '별칭' , },
+        { id : 'type_name'  , width: '20%', type: 'string', text: '소유', },
+        { id : 'link_cnt'   , width: '25%', type: 'string', text: '공유' },
+    ]);
+    listgrid.onClickRow = function(item) {
+        window.openModal('/main/modal/modal.wallet.html', item.data, function(result) {
+            if( result != null ) print_wallet(spage, listgrid);
+        });
+    };
+
+    // 메뉴 : 지갑 추가
+    spage.find("#mnu_wallet_add").click(function() {
+        window.openModal('/main/modal/modal.wallet.html', {
+            title : "지갑 추가",
+        }, function(result) {
+            if( result == true ) print_wallet(spage, listgrid);
+        });
+    });
+    // 메뉴 : 공유 요청
+    spage.find("#mnu_link_req").click(function() {
+        var svalue = `/api/link?type=link&modal=wallet&key=${window.SBalance.getSignin('share_key')}`;
+        STracer("page.wallet.html").log("공유 요청:", svalue);
+        window.SBalance.shareLink(svalue);
+    });
+
+    print_wallet(spage, listgrid);
+}
+
+function onPageClose(epage)
+{
+    STracer("page.wallet.html").dbg("onPageClose:", epage);
+}
+</script>

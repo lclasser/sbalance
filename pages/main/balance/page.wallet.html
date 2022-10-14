@@ -1,0 +1,63 @@
+
+<div page-declare="dpage" class="w-100 h-100" onload="onPageLoad(this);" onclose="onPageClose(this);" name="page.wallet.html">
+    <div id="sub_page" class="overflow-hidden"></div>
+</div>
+
+<script>
+function onPageLoad(epage)
+{
+    STracer("page.wallet.html").log("onPageOpen...");
+    var dpage = epage.getPage();
+
+    // dpage.getFrame().getBalanceSum().hide();
+
+    var sframe = dpage.createFrame("sub_page");
+    sframe.on('page_open', function(event, opage) {
+        this.addHistory(opage);
+        this.setHistoryPath();
+    });
+    sframe.on('page_load', function(event, opage) {
+        $(`[page-file="${opage.getFile()}"]`).addClass("active");
+    });
+    sframe.on('page_close', function(event, opage) {
+        var $btop = dpage && dpage.find("#balance_top");
+    });
+    sframe.on('backward', function() {
+        return sframe.backHistory();
+    });
+    
+    sframe.setHistoryPath = function() {
+        var titles = [];
+        sframe.getHistory().forEach(function(hist) {
+            titles.push(hist.title);
+        });
+        dpage.getFrame().setPagePath(titles, function() {
+            sframe.backHistory();
+        });
+    }
+    sframe.backHistory = function() {
+        var opage = sframe.popHistory();
+        if( opage != null ) {
+            sframe.openPage(opage.getFile(), opage.getTitle(), null, function(hpage) {
+                sframe.setHistoryPath();
+            });
+            return true;
+        }
+    };
+
+    sframe.getBalanceSum = function() {
+        var $bsum = dpage.getFrame().getBalanceSum();
+        return $bsum;
+    }
+    sframe.openPage("/main/balance/page.wallet_group.html", "지갑");
+}
+
+function onPageClose(epage)
+{
+    STracer("page.wallet.html").dbg("onPageClose:", epage);
+
+    var dpage = epage.getPage();
+    // dpage.getFrame().getBalanceSum().show();
+}
+
+</script>

@@ -1,0 +1,175 @@
+<style>
+    #card_list {
+        margin-bottom: 5rem;
+    }
+</style>
+
+<div page-declare="dpage" class="w-100 h-100" onload="onPageLoad(this);" onclose="onPageClose(this);">
+    <div id="card_list"></div>
+</div>
+
+<script>
+
+function onPageLoad(epage)
+{
+    var dpage = epage.getPage();
+
+    dpage.getFrame().setMenuCenter('menu_center_apps.svg', function() {
+        console.log('onsetMenuCenter');
+        var pparam = {
+            callback : function() {
+                refresh_list();
+            }
+        };
+        window.popver("/main/popver/menu.setup.category.html", pparam);
+    });
+
+    const template_card = `
+    <div class="row card-header d-flex align-items-center m-0" style="height:35px;">
+        <div class="col-auto p-0 pe-1"><button class="btn btn-warning btn-sm" type="button" id="btn_modify">수정</button></div>
+        <div class="col-5 text-truncate p-1" id="item_title"></div>
+        <div class="col text-truncate p-1 text-secondary" id="item_owner"></div>
+        <div class="col-auto p-1" style="text-align: right;">
+            <button class="btn btn-success btn-sm me-1" type="button" id="btn_insert">추가</button>
+
+            <button type="button" class="transparent-bgcolor" 
+                data-bs-toggle="collapse" data-bs-target=".group_x" 
+                aria-expanded="false" aria-controls=".group_x">
+                <div class="collapse hide group_x"><img style="height:24px;" src="/public/image/card_down.svg"></div>
+                <div class="collapse show group_x"><img style="height:24px;" src="/public/image/card_up.svg"></div>
+            </button>
+        </div>
+    </div>
+    <div class="card-body p-0 collapse show group_x">
+    </div>`;
+
+    function addCardGroup(gitem) {
+        var $obj_card = $("<div/>").addClass("sb-card card w-100 mb-1").html(template_card);
+        var grp_index = `group_${gitem.cg_key}`;
+
+        var group_name = gitem.cg_name;
+        if( gitem.cg_type == 'L' ) {
+            group_name = gitem.org_desc;
+            $obj_card.find("#item_owner").html(`${gitem.org_user} (${gitem.org_email})`);
+
+            $obj_card.find("#btn_modify").html("공유");
+            $obj_card.find("#btn_modify").removeClass("btn-warning").addClass("btn-primary");
+        } else {
+            if( gitem.lnk_cnt > 0 )
+                $obj_card.find("#item_owner").html(`(${gitem.lnk_cnt})`);
+        }
+        $obj_card.find("#item_title").html(group_name);
+        $obj_card.find(".group_x").removeClass("group_x").addClass(grp_index);
+        $obj_card.find(`[data-bs-target=".group_x"]`).attr("data-bs-target", `.${grp_index}`);
+        $obj_card.find(`[aria-controls=".group_x"]`).attr("aria-controls", `${grp_index}`);
+        $obj_card.find("#btn_insert").click(function() {
+            var iitem = {
+                title : `'${group_name}'의 분류 추가`,
+                btn_confirm : "추가",
+                cg_key  : (gitem.cg_type == 'L') ? gitem.cg_name : gitem.cg_key,
+                cg_type : gitem.cg_type,
+            };
+            window.openModal('/main/modal/modal.setup_citem.html', iitem, function(result) {
+                if( result != null ) refresh_list();
+            });
+        });
+        $obj_card.find("#btn_modify").click(function() {
+            var mitem = {
+                title : `그룹 수정`,
+                cg_key  : (gitem.cg_type == 'L') ? gitem.cg_name : gitem.cg_key,
+                cg_name : (gitem.cg_type == 'L') ? gitem.org_desc : gitem.cg_name,
+                cg_type : gitem.cg_type,
+            };
+            window.openModal('/main/modal/modal.setup_cgroup.html', mitem, function(result) {
+                if( result != null ) refresh_list();
+            });
+        });
+        return $obj_card;
+    }
+
+    const template_item = `
+    <div class="col-5 d-flex"><span class="text-truncate" id="ci_name">분류</span></div>
+    <div class="col d-flex" id="ci_type">종류</div>
+    <div class="col-2 d-flex justify-content-end" id="ci_budget">목표</div>
+    `;
+    
+    function itemAdd($obj_body, citem) {
+        var $obj_row = $(`<div class="row align-items-center m-0 h-100"/>`)
+        .css("min-height", "54px")
+        .html(template_item);
+
+        $obj_row.find("#ci_name").html(citem.ci_name);
+        $obj_row.find("#ci_type").html( getStringByCateType(citem.ci_type) );
+        if( toInteger(citem.ci_budget) != 0 ) {
+            $obj_row.find("#ci_budget").html( thousandFormatter(citem.ci_budget) );
+        } else {
+            $obj_row.find("#ci_budget").html("");
+        }
+        $obj_row.click(function() {
+            var mitem = {
+                cg_key     : citem.cg_key,
+                cg_type    : citem.cg_type,
+                ci_idx     : citem.ci_idx,
+                ci_type    : citem.ci_type,
+                ci_name    : citem.ci_name,
+                ci_budget  : toNumber(citem.ci_budget),
+                title      : "분류 수정",
+                btn_confirm: "수정",
+            };
+            if( citem.cg_type == 'L' ) mitem.cg_key = citem.cg_link;
+            console.log("modify:", mitem);
+            window.openModal('/main/modal/modal.setup_citem.html', mitem, function(result) {
+                if( result != null ) refresh_list();
+            });
+        });
+
+        if( $obj_body.children().length > 0 ) {
+            $obj_body.append( $(`<div class="seperater"/>`) );
+        }
+        $obj_body.append($obj_row);
+    }
+
+    function refresh_list() {
+        var categroup = null;
+        var cateitems = null;
+        Promise.resolve()
+        .then(function() {
+            return window.SBalance.request("/main/category/group/select")
+            .then(function(res) {
+                console.log("res:", res);
+                categroup = res.data;
+            })
+        })
+        .then(function() {
+            return window.SBalance.request("/main/category/item/select")
+            .then(function(res) {
+                cateitems = res.data;
+            });
+        })
+        .then(function() {
+            var $card_list =  dpage.find("#card_list");
+            $card_list.empty();
+
+            var grp_items = {};
+            categroup.forEach(function(cgroup) {
+                grp_items[cgroup.cg_key] = grp_items[cgroup.cg_key] || addCardGroup(cgroup);
+                $card_list.append(grp_items[cgroup.cg_key]);
+            });
+            cateitems.forEach(function(citem) {
+                var $obj_group = grp_items[citem.cg_key];
+                if( $obj_group != null ) {
+                    itemAdd($obj_group.find(".card-body"), citem);
+                }
+            });
+        });
+    }
+
+    refresh_list();
+}
+
+function onPageClose(epage)
+{
+    STracer("page.category.html").dbg("onPageClose:", epage);
+}
+
+</script>
