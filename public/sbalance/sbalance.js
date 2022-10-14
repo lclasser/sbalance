@@ -347,6 +347,7 @@ window.openModal = function(dlg_file, param, callback) {
                     SBalance.setTimewait(false);
                 })
                 .catch(function(err) {
+                    console.log("doModal: get err:", err);
                     self.close();
                     SBalance.setTimewait(false);
                     if( err.status == 401 ) {
