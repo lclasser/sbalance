@@ -1,0 +1,33 @@
+<div class="sb-modal modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="modal_title">비밀번호 찾기</h5>
+            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <!-- email -->
+            <div class="sb-input" style="margin-bottom: 16px;">
+                비밀번호를 찾을 email 주소를 입력해 주세요.
+            </div>
+            <div class="sb-input" style="margin-bottom: 16px;">
+                <input type="email" id="in_email" placeholder=" " required>
+                <label for="in_email">Email</label>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-lg sb-normal modal-button-ok">전송</button>
+            <button type="button" class="btn btn-lg sb-cancel" data-bs-dismiss="modal">닫기</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function() {
+        $(".modal-button-ok").click(function() {
+            window.SBalance.request("/sign/out")
+            .then(function(res) {
+                window.dmodal.close(res);
+            });
+        });
+    });
+</script>
