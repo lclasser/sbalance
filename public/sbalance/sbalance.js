@@ -155,8 +155,8 @@ function createSBalance()
                 if( window.SBInterface.getMode() == 'web' ) {
                     this.onSignout();
                 } else {
-                    window.openModal('/public/modal/modal.exit.html', null, function(result) {
-                        // console.log("modal.exit result:", result);
+                    window.openModal('/modal/modal.exit.html', null, function(result) {
+                        console.log("modal.exit result:", result);
                         self.is_closing = false;
                         if( result != null ) {
                             window.SBInterface.exit();
