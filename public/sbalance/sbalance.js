@@ -131,11 +131,7 @@ function createSBalance()
 
         onBackPressed : function() {
             var self = this;
-            var is_modal = false;
-            if( self.is_closing == true ) {
-                return;
-            }
-            self.is_closing = true;
+            var is_exit = false;
             if( window.dmodal != null && window.dmodal.isOpen() != false ) {
                 window.dmodal.close(null);
             }
@@ -144,16 +140,20 @@ function createSBalance()
                 if( self.getFrame().send('backward') == null ) {
                     // 열린 Dialog 가 없으면 Exit Dialog 표시
                     console.log("modal.exit doModal...");
-                    is_modal = true;
+                    is_exit = true;
                 }
             }
             else {
-                is_modal = true;
+                is_exit = true;
             }
 
-            if( is_modal == true ) {
+            if( is_exit == true ) {
+                if( self.is_closing == true ) return;
+                self.is_closing = true;
                 if( window.SBInterface.getMode() == 'web' ) {
-                    this.onSignout();
+                    this.onSignout(function(is_logout) {
+                        self.is_closing = false;
+                    });
                 } else {
                     window.openModal('/modal/modal.exit.html', null, function(result) {
                         console.log("modal.exit result:", result);
@@ -170,7 +170,7 @@ function createSBalance()
             console.log("onRefresh:", $("page"));
             self.getFrame() && self.getFrame().send('refresh');
         },
-        onSignout : function() {
+        onSignout : function(callback) {
             var self = this;
             if( self.getFrame() == null ) {
                 window.location = "/";
@@ -180,6 +180,8 @@ function createSBalance()
                         window.SBInterface.onSignout();
                         onMainDestroy();
                         window.location = "/?type=passive";
+                    } else {
+                        callback && callback(false);
                     }
                 });
             }
