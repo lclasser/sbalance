@@ -3,7 +3,6 @@
     <div id="list_daily" class="overflow-hidden" style="padding-bottom: 50px;"></div>
 </div>
 
-<script type="text/javascript" src="https://lclasser.github.io/sbalance/pages/main/balance/page.daily.js"></script>
 <script type="text/javascript" language="javascript">
 function onPageOpen(epage)
 {
@@ -24,7 +23,7 @@ $(document).ready(function() {
 });
 window.addEventListener("DOMContentLoaded", function(event){
     STracer("page.daily.html").log(`document.addEventListener("DOMContentLoaded", function(event){...`);
-        
+
     var dpage = epage.getPage();
     var _balances = dpage.getReference('balances');
 
