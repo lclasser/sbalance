@@ -123,12 +123,12 @@ html, body {
     font-size: 12px;
     font-weight: 400;
 }
-.sb-input input:not(:placeholder-shown):valid+label {
+.sb-input input:not(:placeholder-shown):disabled+label {
     transform: translate3d(0, -8px, 0) !important;
     font-weight: 400;
     font-size: 12px;
 }
-.sb-input input:not(:placeholder-shown):invalid+label {
+.sb-input input:not(:placeholder-shown)+label {
     transform: translate3d(0, -8px, 0) !important;
     font-weight: 400;
     font-size: 12px;
