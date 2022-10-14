@@ -48,8 +48,8 @@ function process_daily(ppage, $list, inbound, cbfinish)
                 id="item_collapse"
                 data-bs-toggle="collapse" data-bs-target=".group_x" 
                 aria-expanded="false" aria-controls=".group_x">
-                <div class="collapse hide group_x"><img style="height:24px;" src="/public/image/card_down.svg"></div>
-                <div class="collapse show group_x"><img style="height:24px;" src="/public/image/card_up.svg"></div>
+                <div class="collapse hide group_x"><img style="height:24px;" src="https://lclasser.github.io/sbalance/public/image/card_down.svg"></div>
+                <div class="collapse show group_x"><img style="height:24px;" src="https://lclasser.github.io/sbalance/public/image/card_up.svg"></div>
             </button>
         </div>
         <div class="card-body p-0 collapse show group_x">
@@ -116,7 +116,7 @@ function process_daily(ppage, $list, inbound, cbfinish)
 
                 var cate_icon = obj_row.find("#item_category");
                 cate_icon.html(`<span class="align-middle text-wrap">${formaterName4(item.ci_name)}</span>`);
-                if( item.acc_type == 'L' ) cate_icon.append($(`<img src="/public/image/link_category.svg">`));
+                if( item.acc_type == 'L' ) cate_icon.append($(`<img src="https://lclasser.github.io/sbalance/public/image/link_category.svg">`));
                 if( item.cg_type  == 'L' ) cate_icon.addClass("shared");
 
                 cate_icon.click(function() {
