@@ -1,4 +1,4 @@
-
+console.log("page.daily.js");
 function process_daily(ppage, $list, inbound, cbfinish)
 {
     console.log("process_daily...");

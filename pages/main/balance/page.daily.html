@@ -44,12 +44,11 @@ function onPageLoad(epage)
         return true; // event-stop
     });
 
-    // page_query();
+    page_query();
 }
 
 $(function() {
     STracer("page.daily.html").log("$(function() {...");
-    process_daily();
 });
 $(document).ready(function() {
     STracer("page.daily.html").log("$(document).ready(function() {...");
