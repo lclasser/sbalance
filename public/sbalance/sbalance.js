@@ -257,8 +257,8 @@ function includePage(tag_name, jbody)
             return new Promise(function(resolve, reject) {
                 STracer("includePage").log(`page loaded:`, attr);
                 if( attr.indexOf(".html") < 0 ) attr += ".html";
-                var url = "https://lclasser.github.io/sbalance/pages" + attr;
-                $.get(url, function(data) {
+                var page_url = "https://lclasser.github.io/sbalance/pages" + attr;
+                $.get(page_url, function(data) {
                     $(item).removeAttr(tag_name, '');
                     $(item).html(data);
                     resolve();
@@ -325,7 +325,8 @@ window.openModal = function(dlg_file, param, callback) {
                 self._data._no_close = null;
 
                 // self._pages = [];
-                $.get(`${self._data.file}`, function(data) {
+                var page_url = "https://lclasser.github.io/sbalance/pages" + self._data.file;
+                $.get(page_url, function(data) {
                     self.$modal.ready(function() {
                         console.log("doModal: onready...", self.$modal);
                         self.$modal.modal('show');
@@ -462,7 +463,8 @@ window.popver = function(pop_file, param, callback) {
         getParam : function() { return param; },
         _open : function(file, param, callback) {
             var self = this;
-            $.get(`${pop_file}`, function(data) {
+            var page_url = "https://lclasser.github.io/sbalance/pages" + pop_file;
+            $.get(page_url, function(data) {
                 /*
                 1. document.ready 호출됨 -> onopen
                 2. window.onload 호출된 -> onload

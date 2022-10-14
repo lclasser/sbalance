@@ -89,7 +89,8 @@ function dframeCreate(element_id, owner)
                 next = next.then(function() {
                     return new Promise(function(resolve, reject) {
                         STracer("makePageInclude").log(`page loaded:`, attr);
-                        $.get(attr, function(data) {
+                        var page_url = "https://lclasser.github.io/sbalance/pages" + attr;
+                        $.get(page_url, function(data) {
                             $(item).removeAttr(tag_name, '');
                             $(item).html(data);
                             resolve();
@@ -139,7 +140,8 @@ function dframeCreate(element_id, owner)
             // self._$body.children().remove();
             SBalance.setTimewait(true);
             STracer("openPage").frm(`0.2 [${self._element_id}] : get~~~`, self._element_id);
-            $.get(page_file, function(data) {
+            var page_url = "https://lclasser.github.io/sbalance/pages" + page_file;
+            $.get(page_url, function(data) {
                 try {
                     // PAGE: 이전 Page 의 onclose 이벤트
                     var $page = self._$body.children("[page-declare='dpage']");
