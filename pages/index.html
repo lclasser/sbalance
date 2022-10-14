@@ -121,9 +121,6 @@
             // 로그인 정보를 유지하기 위해, index.html에서 signin을 해야한다.
             STracer("index.html").log(`window.onload:${location.href}, args:${window.SBalance.getArgs()}`);
 
-            console.log("process_daily call...");
-            process_daily(null);
-
             window.SBalance.onDisplay = function(type_main) {
                 return Promise.resolve()
                 .then(function() {
