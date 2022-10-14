@@ -28,7 +28,7 @@
         color: #222223;
         border: 0;
     }
-    .signin-submit:active {
+    .signin-submit:not(:disabled):active {
         border: 1px solid #FFC84C;
         background: #FC792F;
     }
@@ -87,7 +87,7 @@
                         <span class="caption">Remember me</span>
                     </label>
                     <span class="ms-auto">
-                        <a href="#" class="sb-link" onclick="onForgot(); return false;">Forgot Password</a>
+                        <a href="#" class="sb-link" onclick="doForgot(); return false;">Forgot Password</a>
                     </span>
                 </div>
             </div>
@@ -128,6 +128,11 @@
         }
     });
 
+    function setDisable(is) {
+        $("button[type='submit']").attr("disabled", is);
+        $("input").attr("disabled", is);
+        $(".sb-link").attr("disabled", is);
+    }
     function doSignin(is_sign, auto_pwd) {
         if( is_sign != true ) {
             window.SBalance.onSignin(false, null);
@@ -140,16 +145,13 @@
         };
         console.log("signin: (is_auto:" + (auto_pwd ? 'yes' : 'no') + ")", inbound);
 
-        $("#in_email").attr("disabled", "disabled");
-        $("#in_pwd").attr("disabled", "disabled");
+        setDisable(true);
         window.SBalance.request("/sign/in", inbound)
         .then(function(res) {
             var saved = null;
             
-            $("#in_email").attr("disabled");
-            $("#in_pwd").attr("disabled");
-
             if( res.error != null && res.error.success != 'Y' ) {
+                setDisable(false);
                 window.toast({
                     title_class: "bg-secondary text-white",
                     title_text: "Sign-In",
@@ -171,11 +173,15 @@
             if( window.SBalance.onSignin(is_sign, res.data, saved) == true ) {
                 // alert("doSignin: Success!");
             }
+        })
+        .catch(function(err) {
+            console.log("doSignin err:", err);
+            setDisable(true);
         });
         return false;
     }
 
-    function onForgot() {
+    function doForgot() {
         window.openModal('/modal/modal.forgot.html', function(result) {
             STracer("signin.html").log("modal.forgot.html result:", result);
         });
