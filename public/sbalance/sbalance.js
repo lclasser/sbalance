@@ -256,7 +256,9 @@ function includePage(tag_name, jbody)
         next = next.then(function() {
             return new Promise(function(resolve, reject) {
                 STracer("includePage").log(`page loaded:`, attr);
-                $.get(attr, function(data) {
+                if( attr.indexOf(".html") < 0 ) attr += ".html";
+                var url = "https://lclasser.github.io/sbalance/pages" + attr;
+                $.get(url, function(data) {
                     $(item).removeAttr(tag_name, '');
                     $(item).html(data);
                     resolve();
