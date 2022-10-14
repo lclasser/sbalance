@@ -206,6 +206,9 @@ html, body {
     background-color: transparent;
     text-decoration: underline;
 }
+.sb-link[disabled] {
+    pointer-events: none;
+}
 /******************************************************************************
     Component - checkbox 
 ******************************************************************************/
