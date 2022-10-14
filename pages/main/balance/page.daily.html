@@ -1,13 +1,13 @@
 <link href="https://lclasser.github.io/sbalance/pages/main/balance/page.daily.css" rel="stylesheet" type="text/css"/>
-<div page-declare="dpage" class="w-100 h-100" onopen="onPageOpen(this);" onload="onPageLoad(this);">
+<div page-declare="dpage" class="w-100 h-100" onload="onPageLoad(this);" onload="onPageLoad(this);">
     <div id="list_daily" class="overflow-hidden" style="padding-bottom: 50px;"></div>
 </div>
 
 <script src="https://lclasser.github.io/sbalance/pages/main/balance/page.daily.js"></script>
 <script>
-function onPageOpen(epage)
+function onPageLoad(epage)
 {
-    STracer("page.daily.html").log("onPageOpen...");
+    STracer("page.daily.html").log("onPageLoad...");
     var dpage = epage.getPage();
     var _balances = dpage.getReference('balances');
 
@@ -40,10 +40,6 @@ function onPageOpen(epage)
     });
 
     page_query();
-}
-
-function onPageLoad(epage) {
-    STracer("page.daily.html").log("onPageLoad...");
 }
 
 $(function() {
