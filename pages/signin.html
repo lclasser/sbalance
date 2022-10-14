@@ -107,7 +107,7 @@
 
         if( window.SBalance != null ){
             if( window.SBalance.getMode() == 'web' ) {
-                $(".signin-down").show();
+                $(".signin-down").show(); // App Download
             }
             if( window.SBalance.isRememberMe() == true ) {
                 console.log("SIGNIN: auto signin...");
@@ -140,9 +140,15 @@
         };
         console.log("signin: (is_auto:" + (auto_pwd ? 'yes' : 'no') + ")", inbound);
 
+        $("#in_email").attr("disabled", "disabled");
+        $("#in_pwd").attr("disabled", "disabled");
         window.SBalance.request("/sign/in", inbound)
         .then(function(res) {
             var saved = null;
+            
+            $("#in_email").attr("disabled");
+            $("#in_pwd").attr("disabled");
+
             if( res.error != null && res.error.success != 'Y' ) {
                 window.toast({
                     title_class: "bg-secondary text-white",
