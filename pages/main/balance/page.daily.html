@@ -13,6 +13,18 @@ function onPageOpen(epage)
 function onPageLoad(epage)
 {
     STracer("page.daily.html").log("onPageLoad...");
+
+}
+
+$(function() {
+    STracer("page.daily.html").log("$(function() {...");
+});
+$(document).ready(function() {
+    STracer("page.daily.html").log("$(document).ready(function() {...");
+});
+window.addEventListener("DOMContentLoaded", function(event){
+    STracer("page.daily.html").log(`document.addEventListener("DOMContentLoaded", function(event){...`);
+        
     var dpage = epage.getPage();
     var _balances = dpage.getReference('balances');
 
@@ -45,15 +57,5 @@ function onPageLoad(epage)
     });
 
     page_query();
-}
-
-$(function() {
-    STracer("page.daily.html").log("$(function() {...");
-});
-$(document).ready(function() {
-    STracer("page.daily.html").log("$(document).ready(function() {...");
-});
-window.addEventListener("DOMContentLoaded", function(event){
-    STracer("page.daily.html").log(`document.addEventListener("DOMContentLoaded", function(event){...`);
 });
 </script>
