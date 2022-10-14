@@ -5,7 +5,6 @@ function process_daily(ppage, $list, inbound, cbfinish)
     window.SBalance.request("/main/message/daily", inbound)
     .then(function(res) {
         // stracer.log("res:", res);
-        
         var qry_result = {
             sum_count : 0,
             sum_withdraw : amountAdd(),
