@@ -1,4 +1,4 @@
-<div page-declare="dpage" class="w-100 h-100" onload="onPageLoad(this);" onclose="onPageClose(this);">
+<div page-declare="dpage" class="w-100 h-100" onopen="onPageOpen(this);" onclose="onPageClose(this);">
     <style>
         /* 날짜 버튼 */
         #page-balance .daily-button {
@@ -127,9 +127,9 @@
 </div>
 
 <script>
-function onPageLoad(epage)
+function onPageOpen(epage)
 {
-    STracer("page.balance.html").dbg("onPageLoad:", epage);
+    STracer("page.balance.html").dbg("onPageOpen:", epage);
 
     var dpage = epage.getPage();
     // 화면 선택
