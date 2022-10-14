@@ -109,15 +109,13 @@
     <!-- <script src="https://lclasser.github.io/sbalance/public/sbalance/page.js"></script> -->
     <script src="https://lclasser.github.io/sbalance/public/sbalance/dframe.js"></script>
     <script src="https://lclasser.github.io/sbalance/public/sbalance/dpage.js"></script>
-    <!-- preload -->
-    <script src="https://lclasser.github.io/sbalance/pages/main/balance/page.daily.js"></script>
 
     <link href="https://lclasser.github.io/sbalance/public/sbalance/comp.slist.css" rel="stylesheet">
     <script src="https://lclasser.github.io/sbalance/public/sbalance/comp.slist.js"></script>
     <script>
-        onMainInit();
-
         window.onload = function() {
+            onMainInit();
+
             // 로그인 정보를 유지하기 위해, index.html에서 signin을 해야한다.
             STracer("index.html").log(`window.onload:${location.href}, args:${window.SBalance.getArgs()}`);
 
