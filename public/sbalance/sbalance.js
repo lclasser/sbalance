@@ -47,8 +47,8 @@ function createSBalance()
     } else {
         console.log("Mobile-Mode...");
 
-        console.log = function() {};
-        console.debug = function() {};
+        // console.log = function() {};
+        // console.debug = function() {};
     }
 
     const screen_waitor = $("#screen-waitor");
@@ -109,7 +109,13 @@ function createSBalance()
                                 window.location = "/";
                             }, 0);
                         }
-                        reject(new Error(result.error.message));
+                        // reject(new Error(result.error.message));
+                        window.toast({
+                            title_class: "bg-danger text-white",
+                            title_text: "정보 오류",
+                            mesg_text: result.error.message,
+                        });
+                        resolve(null);
                     } else {
                         resolve(result);
                     }
