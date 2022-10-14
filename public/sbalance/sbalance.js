@@ -56,6 +56,7 @@ function createSBalance()
         m_cache : {},
         m_signin : null,
         m_mframe : null,
+        is_closing : false,
         // user-declare
         // pre-declear
         getMode : function() { return window.SBInterface.getMode(); },
@@ -131,6 +132,10 @@ function createSBalance()
         onBackPressed : function() {
             var self = this;
             var is_modal = false;
+            if( self.is_closing == true ) {
+                return;
+            }
+            self.is_closing = true;
             if( window.dmodal != null && window.dmodal.isOpen() != false ) {
                 window.dmodal.close(null);
             }
@@ -152,6 +157,7 @@ function createSBalance()
                 } else {
                     window.openModal('/public/modal/modal.exit.html', null, function(result) {
                         // console.log("modal.exit result:", result);
+                        self.is_closing = false;
                         if( result != null ) {
                             window.SBInterface.exit();
                         }
