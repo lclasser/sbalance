@@ -78,8 +78,8 @@ function inquire_category(spage, inbound, callback)
             return;
         }
 
-        var cpage = spage.getFrame().getOwner();
-        var bbody = cpage.getFrame().get$body();
+        var ppage = spage.getFrame().getOwner();
+        var bbody = ppage.getFrame().get$body();
 
         spage.find("#list_items").empty();
         res.data.forEach(function(item) {
@@ -246,7 +246,7 @@ function inquire_category(spage, inbound, callback)
 
                 obj_row.click(function(event) {
                     // event.preventDefault();
-                    cpage.scroll_pos = bbody.scrollTop();
+                    ppage.scroll_pos = bbody.scrollTop();
 
                     console.log("row:", citem);
                     if( cgroup.ci_idxs != null ) {
@@ -281,7 +281,7 @@ function inquire_category(spage, inbound, callback)
             spage.find("#list_items").append(obj_card);
         });
 
-        cpage.scroll_pos && bbody.scrollTop(cpage.scroll_pos);
+        ppage.scroll_pos && bbody.scrollTop(ppage.scroll_pos);
         callback(qry_result);
     });
 }
