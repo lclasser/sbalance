@@ -251,8 +251,16 @@ function inquire_category(spage, inbound, callback)
                     return false;
                 });
 
-                obj_row.bind( "taphold", function(event) {
-                    alert("You longclicked. Nice!");
+                obj_row.on("mousedown", function () {
+                    $(this).data("check-delay", setTimeout(function () {
+                        console.log("zxcv");
+                    }, 500));
+                }).on("mouseup", function () {
+                    clearTimeout($(this).data("check-delay"));
+                    console.log("#######mouseup");  // Remove this line
+                }).on("mouseout", function () {
+                    clearTimeout($(this).data("check-delay"));
+                    console.log("#######mouseout");  // Remove this line
                 });
 
                 if( ipos > 0 ) {
