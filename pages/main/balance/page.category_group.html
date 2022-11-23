@@ -243,12 +243,13 @@ function inquire_category(spage, inbound, callback)
 
                 obj_row.click(function(event) {
                     // event.preventDefault();
+                    var $fbody = spage.getFrame().get$body();
                     console.log("1:", spage.page_scroll);
-                    console.log("2:", spage.getFrame().page_scroll);
+                    console.log("2:", $fbody.page_scroll);
 
-                    var height = spage.getFrame().scrollTop();
+                    var height = $fbody.scrollTop();
                     console.log("scrolltop:", height);
-                    spage.getFrame().page_scroll = height;
+                    $fbody.page_scroll = height;
                     spage.page_scroll = height;
 
                     console.log("row:", citem);
