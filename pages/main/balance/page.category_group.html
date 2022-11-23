@@ -78,6 +78,9 @@ function inquire_category(spage, inbound, callback)
             return;
         }
 
+        var cpage = spage.getFrame().getOwner();
+        var bbody = cpage.getFrame().get$body();
+
         spage.find("#list_items").empty();
         res.data.forEach(function(item) {
             if( item.ci_type == 'E' ) {
@@ -243,16 +246,7 @@ function inquire_category(spage, inbound, callback)
 
                 obj_row.click(function(event) {
                     // event.preventDefault();
-                    var cpage = spage.getFrame().getOwner();
-                    var bbody = cpage.getFrame().get$body();
-
-                    console.log("1:", cpage.scroll_pos);
-                    console.log("2:", bbody.scroll_pos);
-
-                    var height = bbody.scrollTop();
-                    console.log("scrolltop:", height);
-                    bbody.scroll_pos = height;
-                    cpage.scroll_pos = height;
+                    cpage.scroll_pos = bbody.scrollTop();
 
                     console.log("row:", citem);
                     if( cgroup.ci_idxs != null ) {
@@ -286,6 +280,8 @@ function inquire_category(spage, inbound, callback)
 
             spage.find("#list_items").append(obj_card);
         });
+
+        cpage.scroll_pos && bbody.scrollTop(cpage.scroll_pos);
         callback(qry_result);
     });
 }
