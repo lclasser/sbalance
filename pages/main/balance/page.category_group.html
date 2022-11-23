@@ -246,8 +246,7 @@ function inquire_category(spage, inbound, callback)
                     console.log("1:", spage.page_scroll);
                     console.log("2:", spage.getFrame().page_scroll);
 
-                    var $lists = spage.find("#list_items");
-                    var height = $lists.scrollTop();
+                    var height = spage.getFrame().scrollTop();
                     console.log("scrolltop:", height);
                     spage.getFrame().page_scroll = height;
                     spage.page_scroll = height;
