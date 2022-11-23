@@ -252,6 +252,7 @@ function inquire_category(spage, inbound, callback)
                 });
 
                 obj_row.on("mousedown", function () {
+                    console.log("#######mousedown");  // Remove this line
                     $(this).data("check-delay", setTimeout(function () {
                         console.log("zxcv");
                     }, 500));
