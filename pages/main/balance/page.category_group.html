@@ -251,6 +251,10 @@ function inquire_category(spage, inbound, callback)
                     return false;
                 });
 
+                obj_row.longclick(1000, function(){
+                    alert("You longclicked. Nice!");
+                });
+                
                 if( ipos > 0 ) {
                     obj_body.append( $(`<div class="seperater m-0 w-100"/>`) );
                 }
