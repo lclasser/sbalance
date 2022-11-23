@@ -101,7 +101,7 @@ function createSBalance()
 
         request : function(url, inbound, callback) {
             SBalance.setTimewait(true);
-            return new Promise(function(resolve, reject) {
+            var caller = new Promise(function(resolve, reject) {
                 $.post(url, inbound).done(function(result) {
                     if( result.error != null && result.error.success != 'Y' ) {
                         if( result.error.code != null ) {
@@ -125,11 +125,14 @@ function createSBalance()
                     var err_svr = new Error(`서버 응답 오류 입니다. (${error||status})`);
                     err_svr.kind = "server";
                     reject(err_svr);
-                })
-                .always(function() {
-                    SBalance.setTimewait(false);
                 });
             });
+            setTimeout(function() {
+                caller.finally(function() {
+                    SBalance.setTimewait(false);
+                });
+            }, 0);
+            return caller;
         },
 
         onBackPressed : function() {
