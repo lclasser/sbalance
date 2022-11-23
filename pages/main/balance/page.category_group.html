@@ -243,6 +243,14 @@ function inquire_category(spage, inbound, callback)
 
                 obj_row.click(function(event) {
                     // event.preventDefault();
+                    console.log("1:", spage.page_scroll);
+                    console.log("2:", spage.getFrame().page_scroll);
+
+                    var height = $(window).scrollTop();
+                    console.log("scrolltop:", height);
+                    spage.getFrame().page_scroll = height;
+                    spage.page_scroll = height;
+
                     console.log("row:", citem);
                     if( cgroup.ci_idxs != null ) {
                         citem.ci_idxs = cgroup.ci_idxs;
@@ -265,13 +273,11 @@ function inquire_category(spage, inbound, callback)
                 if( obj_card.cdelay != null ) {
                     clearTimeout(obj_card.cdelay);
                     obj_card.cdelay = null;
-                    console.log("#######mouseup");  // Remove this line
                 }
             }).on("mouseout", function () {
                 if( obj_card.cdelay != null ) {
                     clearTimeout(obj_card.cdelay);
                     obj_card.cdelay = null;
-                    console.log("#######mouseout");  // Remove this line
                 }
             });
 
