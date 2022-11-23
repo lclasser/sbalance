@@ -51,7 +51,7 @@ function createSBalance()
         // console.debug = function() {};
     }
 
-    const screen_waitor = $("#screen-waitor");
+    const $screen_waitor = $("#screen-waitor");
     window.SBalance = {
         m_cache : {},
         m_signin : null,
@@ -66,9 +66,9 @@ function createSBalance()
         },
         setTimewait(is_wait) { 
             if( is_wait == true ) {
-                screen_waitor.css("display", "block");
+                $screen_waitor.css("display", "block");
             } else {
-                screen_waitor.css("display", "none");
+                $screen_waitor.css("display", "none");
             }
         },
         readMessage : function(inbound, _onRead, _onFinish) {
@@ -100,9 +100,9 @@ function createSBalance()
         setFrame : function(frame) { this.m_mframe = frame; },
 
         request : function(url, inbound, callback) {
+            SBalance.setTimewait(true);
             return new Promise(function(resolve, reject) {
-                $.post(url, inbound)
-                .done(function(result) {
+                $.post(url, inbound).done(function(result) {
                     if( result.error != null && result.error.success != 'Y' ) {
                         if( result.error.code != null ) {
                             STracer("request").err(`error:`, result.error);
@@ -125,6 +125,9 @@ function createSBalance()
                     var err_svr = new Error(`서버 응답 오류 입니다. (${error||status})`);
                     err_svr.kind = "server";
                     reject(err_svr);
+                })
+                .always(function() {
+                    SBalance.setTimewait(false);
                 });
             });
         },
