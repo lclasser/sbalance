@@ -251,23 +251,23 @@ function inquire_category(spage, inbound, callback)
                     return false;
                 });
 
-                obj_row.on("mousedown", function () {
-                    console.log("#######mousedown");  // Remove this line
-                    $(this).data("check-delay", setTimeout(function () {
-                        console.log("zxcv");
-                    }, 500));
-                }).on("mouseup", function () {
-                    clearTimeout($(this).data("check-delay"));
-                    console.log("#######mouseup");  // Remove this line
-                }).on("mouseout", function () {
-                    clearTimeout($(this).data("check-delay"));
-                    console.log("#######mouseout");  // Remove this line
-                });
-
                 if( ipos > 0 ) {
                     obj_body.append( $(`<div class="seperater m-0 w-100"/>`) );
                 }
                 obj_body.append(obj_row);
+            });
+
+            obj_card.on("mousedown", function () {
+                console.log("#######mousedown");  // Remove this line
+                $(this).data("check-delay", setTimeout(function () {
+                    console.log("zxcv");
+                }, 500));
+            }).on("mouseup", function () {
+                clearTimeout($(this).data("check-delay"));
+                console.log("#######mouseup");  // Remove this line
+            }).on("mouseout", function () {
+                clearTimeout($(this).data("check-delay"));
+                console.log("#######mouseout");  // Remove this line
             });
 
             spage.find("#list_items").append(obj_card);
