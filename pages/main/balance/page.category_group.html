@@ -245,14 +245,14 @@ function inquire_category(spage, inbound, callback)
                     // event.preventDefault();
                     var cpage = spage.getFrame().getOwner();
                     var bbody = cpage.getFrame().get$body();
-                    bbody.scrollTop();
-                    console.log("1:", spage.page_scroll);
-                    console.log("2:", bbody.page_scroll);
+
+                    console.log("1:", cpage.scroll_pos);
+                    console.log("2:", bbody.scroll_pos);
 
                     var height = bbody.scrollTop();
                     console.log("scrolltop:", height);
-                    bbody.page_scroll = height;
-                    spage.page_scroll = height;
+                    bbody.scroll_pos = height;
+                    cpage.scroll_pos = height;
 
                     console.log("row:", citem);
                     if( cgroup.ci_idxs != null ) {
