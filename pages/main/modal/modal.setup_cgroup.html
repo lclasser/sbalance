@@ -24,7 +24,7 @@
             <div class="input-row">
                 <div class="input-col">
                     <label class="input-label col-2">순서</label>
-                    <input class="input-value form-control" type="number" placeholder="그룹 번호" id="dlg_sort">
+                    <input class="input-value form-control" type="number" placeholder="그룹 순서" id="dlg_sort">
                 </div>
             </div>
 
@@ -53,42 +53,45 @@
 
 <script>
 $(function() {
-    var modal = window.dmodal.getModal();
+    var $modal = window.dmodal.getModal();
     var param = window.dmodal.getParam();
     console.log("modal.category_group param:", param);
 
+    eventInputNumber($modal.find("#dlg_sort")[0]);
+
     if( param == null ) {
         // 신규
-        modal.find("#modal_ok").html("추가");
-        modal.find("#modal_del").hide();
+        $modal.find("#modal_ok").html("추가");
+        $modal.find("#modal_del").hide();
     } else {
-        param.title   && modal.find("#modal_title").html(param.title);
-        param.cg_name && modal.find("#dlg_name").val(param.cg_name);
+        param.title   && $modal.find("#modal_title").html(param.title);
+        param.cg_name && $modal.find("#dlg_name").val(param.cg_name);
+        param.cg_sort && $modal.find("#dlg_sort").val(param.cg_sort);
 
         if( param.cg_type == 'L' ) {
             // 공유
-            modal.find("#modal_ok").hide();
-            modal.find("#modal_del").html("해제");
-            modal.find("#dlg_name").attr('readonly', 'readonly');
+            $modal.find("#modal_ok").hide();
+            $modal.find("#modal_del").html("해제");
+            $modal.find("#dlg_name").attr('readonly', 'readonly');
             
             window.SBalance.request('/main/category/group/owner', {cg_key: param.cg_key})
             .then(function(res) {
                 var info = res.data[0];
                 if( info != null ) {
-                    modal.find("#dlg_sharer").html(`${info.usr_name} (${info.usr_email})`);
+                    $modal.find("#dlg_sharer").html(`${info.usr_name} (${info.usr_email})`);
                 } else {
-                    modal.find("#dlg_sharer").html('공유가 해제되었습니다.');
+                    $modal.find("#dlg_sharer").html('공유가 해제되었습니다.');
                 }
-                modal.find("#dlg_sharer").parent().parent().show();
+                $modal.find("#dlg_sharer").parent().parent().show();
             });
         }
         else {
             // 수정
-            modal.find("#modal_del").show();
-            modal.find("#modal_ok").html("수정");
+            $modal.find("#modal_del").show();
+            $modal.find("#modal_ok").html("수정");
 
             function requestLinking() {
-                var $dlg_sharing = modal.find("#dlg_sharing");
+                var $dlg_sharing = $modal.find("#dlg_sharing");
                 window.SBalance.request("/main/category/group/linking", {cg_key: param.cg_key})
                 .then(function(res) {
                     $dlg_sharing.empty();
@@ -128,7 +131,7 @@ $(function() {
                                         if( res.error != null && res.error.success != 'Y' ) {
                                             window.toast({
                                                 title_class: "bg-danger text-white",
-                                                title_text: modal.find("#modal_title").text(),
+                                                title_text: $modal.find("#modal_title").text(),
                                                 mesg_text: `공유 해제를 실패 했습니다. (${res.error.message})`,
                                             });
                                         } else {
@@ -150,9 +153,9 @@ $(function() {
 
     $("#modal_del").click(function() {
         window.openModal('/main/modal/modal.confirm.html', {
-            title   : `${modal.find("#modal_del").html()} 확인`,
-            content : `"${param.cg_name}" 그룹을 ${modal.find("#modal_del").html()} 하시겠습니까?`,
-            btn_confirm : modal.find("#modal_del").html(),
+            title   : `${$modal.find("#modal_del").html()} 확인`,
+            content : `"${param.cg_name}" 그룹을 ${$modal.find("#modal_del").html()} 하시겠습니까?`,
+            btn_confirm : $modal.find("#modal_del").html(),
             btn_cancel  : "취소"
         }, function(result) {
             if( result ==  true ) {
@@ -172,6 +175,7 @@ $(function() {
         var inbound = {
             cg_key  : param && param.cg_key,
             cg_name: $("#dlg_name").val(),
+            cg_sort: $("#dlg_sort").val(),
         };
 
         var cg_url = "/main/category/group/update";
