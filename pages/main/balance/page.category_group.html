@@ -161,9 +161,7 @@ function inquire_category(spage, inbound, callback)
                 </div>
             </div>
             <button type="button" class="transparent-bgcolor ms-auto p-0" 
-                id="item_collapse"
-                data-bs-toggle="collapse" data-bs-target=".group_x" 
-                aria-expanded="true" aria-controls=".group_x">
+                id="item_collapse" data-bs-toggle="collapse" data-bs-target=".group_x" aria-controls=".group_x" aria-expanded="true">
                 <div class="collapse hide group_x"><img style="height:24px;" src="https://lclasser.github.io/sbalance/public/image/card_down.svg"></div>
                 <div class="collapse show group_x"><img style="height:24px;" src="https://lclasser.github.io/sbalance/public/image/card_up.svg"></div>
             </button>
@@ -215,6 +213,8 @@ function inquire_category(spage, inbound, callback)
             if( ptemp.collapse[cg_key] == true ) {
                 // item_collapse.bootstrapToggle('on');
             } else {
+                item_collapse.find(".collapse").collapse("toggle");
+                obj_card.find(".card-body").collapse("toggle");
                 // item_collapse.bootstrapToggle('off');
             }
 
