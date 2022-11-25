@@ -208,7 +208,7 @@ function inquire_category(spage, inbound, callback)
             obj_card.find(".group_x").removeClass("group_x").addClass(grp_index);
             item_collapse.click(function() {
                 ptemp.collapse = ptemp.collapse || {};
-                ptemp.collapse[cg_key] = item_collapse.attr("aria-expanded");
+                ptemp.collapse[cg_key] = item_collapse.prop("aria-expanded");
                 console.log("ptemp.collapse:", ptemp.collapse);
             });
 
