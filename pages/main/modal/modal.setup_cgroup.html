@@ -73,6 +73,7 @@ $(function() {
             $modal.find("#modal_ok").hide();
             $modal.find("#modal_del").html("해제");
             $modal.find("#dlg_name").attr('readonly', 'readonly');
+            $modal.find("#dlg_sort").attr('readonly', 'readonly');
             
             window.SBalance.request('/main/category/group/owner', {cg_key: param.cg_key})
             .then(function(res) {

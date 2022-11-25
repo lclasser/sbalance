@@ -34,6 +34,13 @@
 
             <div class="input-row">
                 <div class="input-col">
+                    <label class="input-label col-auto p-1">순서</label>
+                    <input class="input-value form-control" type="text" placeholder="분류 순서" id="dlg_sort">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-col">
                     <label class="input-label col-auto p-1">예산 금액</label>
                     <input class="input-value form-control" type="text" placeholder="예산 금액" id="dlg_budget">
                 </div>
@@ -84,6 +91,10 @@ $(function() {
         $modal.find('#dlg_cgroup').attr("disabled","disabled");
         $modal.find('#dlg_cgroup').parent().attr("disabled","disabled");
     }
+
+    // ci_sort
+    param.ci_sort && $modal.find("#dlg_sort").val(param.ci_sort);
+    eventInputNumber($modal.find("#dlg_sort")[0]);
 
     switch( param.ci_type ) {
     case 'N':
