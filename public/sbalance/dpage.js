@@ -8,6 +8,7 @@ function dpageCreate(page_title, page_file, page_param, page_frame)
         getFrame   : function() { return this.frame; },  frame : page_frame , 
         getParent  : function() { return this.frame.getOwner(); },
         get$page   : function() { return this.$page; },  $page : null       , 
+        getTemper  : function() { return this.temper; }, temper : {},
         createFrame: function(element_id) {
             var dframe = dframeCreate(element_id, this);
             dframe && dframe.makePageLink(this.$page);

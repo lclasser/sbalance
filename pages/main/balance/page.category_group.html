@@ -78,8 +78,9 @@ function inquire_category(spage, inbound, callback)
             return;
         }
 
-        var ppage = spage.getFrame().getOwner();
+        var ppage = spage.getFrame().getPage();
         var bbody = ppage.getFrame().get$body();
+        var ptemp = ppage.getTemper();
 
         spage.find("#list_items").empty();
         res.data.forEach(function(item) {
@@ -205,6 +206,11 @@ function inquire_category(spage, inbound, callback)
             item_collapse.attr("data-bs-target", `.${grp_index}`);
             item_collapse.attr("aria-controls", `.${grp_index}`);
             obj_card.find(".group_x").removeClass("group_x").addClass(grp_index);
+            item_collapse.click(function() {
+                ptemp.collapse = ptemp.collapse || {};
+                ptemp.collapse[cg_key] = obj_card.find(".card-body").hasClass("show");
+                console.log("ptemp.collapse:", ptemp.collapse);
+            });
 
             // Group에 Row별 세팅
             var obj_body = obj_card.find(".card-body");
@@ -246,7 +252,7 @@ function inquire_category(spage, inbound, callback)
 
                 obj_row.click(function(event) {
                     // event.preventDefault();
-                    ppage.scroll_pos = bbody.scrollTop();
+                    ptemp.scroll_pos = bbody.scrollTop();
 
                     console.log("row:", citem);
                     if( cgroup.ci_idxs != null ) {
@@ -281,7 +287,7 @@ function inquire_category(spage, inbound, callback)
             spage.find("#list_items").append(obj_card);
         });
 
-        ppage.scroll_pos && bbody.scrollTop(ppage.scroll_pos);
+        ptemp.scroll_pos && bbody.scrollTop(ptemp.scroll_pos);
         callback(qry_result);
     });
 }
