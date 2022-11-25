@@ -78,7 +78,7 @@ function inquire_category(spage, inbound, callback)
             return;
         }
 
-        var ppage = spage.getFrame().getPage();
+        var ppage = spage.getFrame().getOwner();
         var bbody = ppage.getFrame().get$body();
         var ptemp = ppage.getTemper();
 
