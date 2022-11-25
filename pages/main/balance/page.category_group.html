@@ -177,7 +177,7 @@ function inquire_category(spage, inbound, callback)
         <div class="d-flex align-items-center justify-content-end p-0" style="width:29px;"></div>`;
         console.log("clists:", clists);
 
-        Object.keys(clists).sort().forEach(function(cg_key, gpos) {
+        Object.keys(clists).forEach(function(cg_key, gpos) {
             var cgroup = clists[cg_key];
             // console.log("data:", cgroup);
 
