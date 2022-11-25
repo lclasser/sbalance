@@ -179,7 +179,7 @@ function inquire_category(spage, inbound, callback)
 
         Object.keys(clists).sort().forEach(function(cg_key, gpos) {
             var cgroup = clists[cg_key];
-            console.log("data:", cgroup);
+            // console.log("data:", cgroup);
 
             // Group 생성 (card)
             var grp_index = `group_${gpos}`;
@@ -208,14 +208,11 @@ function inquire_category(spage, inbound, callback)
             obj_card.find(".group_x").removeClass("group_x").addClass(grp_index);
             item_collapse.click(function() {
                 ptemp.collapse[cg_key] = item_collapse.attr("aria-expanded");
-                console.log("ptemp.collapse:", ptemp.collapse);
+                // console.log("ptemp.collapse:", ptemp.collapse);
             });
             if( ptemp.collapse[cg_key] == 'false' ) {
                 item_collapse.find(".collapse").collapse("toggle");
                 obj_card.find(".card-body").collapse("toggle");
-                // item_collapse.bootstrapToggle('off');
-            } else {
-                // item_collapse.bootstrapToggle('on');
             }
 
             // Group에 Row별 세팅
