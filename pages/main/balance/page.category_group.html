@@ -201,13 +201,14 @@ function inquire_category(spage, inbound, callback)
             obj_card.find(".amount-budget")
             .html(`${amountFormat(cgroup.sms_unit, cgroup.grp_budget)}`);
 
+            ptemp.collapse = ptemp.collapse || {};
+
             // Group : Collapse Button
             var item_collapse = obj_card.find("#item_collapse");
             item_collapse.attr("data-bs-target", `.${grp_index}`);
             item_collapse.attr("aria-controls", `.${grp_index}`);
             obj_card.find(".group_x").removeClass("group_x").addClass(grp_index);
             item_collapse.click(function() {
-                ptemp.collapse = ptemp.collapse || {};
                 ptemp.collapse[cg_key] = item_collapse.prop("aria-expanded");
                 console.log("ptemp.collapse:", ptemp.collapse);
             });
