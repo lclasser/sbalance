@@ -79,6 +79,7 @@ function onPageLoad(epage)
                 cg_key  : (gitem.cg_type == 'L') ? gitem.cg_name : gitem.cg_key,
                 cg_name : (gitem.cg_type == 'L') ? gitem.org_desc : gitem.cg_name,
                 cg_type : gitem.cg_type,
+                cg_sort : gitem.cg_sort,
             };
             window.openModal('/main/modal/modal.setup_cgroup.html', mitem, function(result) {
                 if( result != null ) refresh_list();
