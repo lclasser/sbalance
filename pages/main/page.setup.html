@@ -4,27 +4,28 @@
     }
     .setup_head {
         min-height: 1em;
-        font-weight: 400;
-        font-size: 18px;
-        line-height: 20px;
         height: 56px;
-        color: #DBD5D2;
-        
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
         padding: 8px 16px !important;
     }
-    .usr_name {
+    .setup_head span {
+        font-weight: 400;
+        font-size: 18px;
+        line-height: 20px;
+        color: #DBD5D2;
+    }
+    .setup_head .usr_name {
         background: linear-gradient(167.94deg, #FFC84C 0%, #FC8032 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
         text-fill-color: transparent;
         font-weight: 600;
-        font-size: 18px;
-        line-height: 20px;
+        --font-size: 18px;
+        --line-height: 20px;
     }
     .setup_row {
         display: flex;
@@ -39,7 +40,7 @@
 <div page-declare="dpage" class="w-100 h-100" onload="onPageLoad(this);" onclose="onPageClose(this);">
     <div class="h-100 w-100 d-flex flex-column" id="page-setup">
         <div class="w-100 setup_head">
-            <div class="setup_title"><span class="usr_name">이수희</span><span>님</span></div>
+            <div class="setup_title"><span class="usr_name"></span><span>님</span></div>
             <img src="https://lclasser.github.io/sbalance/public/image/setup_btn.svg">
         </div>
 
