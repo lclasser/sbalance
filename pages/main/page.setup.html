@@ -1,12 +1,42 @@
-
+<style>
+    div {
+        background: #222223;
+    }
+    .setup_head {
+        min-height: 1em;
+        font-weight: 400;
+        font-size: 18px;
+        line-height: 20px;
+        color: #DBD5D2;
+    }
+    .usr_name {
+        background: linear-gradient(167.94deg, #FFC84C 0%, #FC8032 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
+        font-weight: 600;
+        font-size: 18px;
+        line-height: 20px;
+    }
+    .setup_row {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 16px;
+        height: 56px;
+        --width: 100%;
+    }
+</style>
 <div page-declare="dpage" class="w-100 h-100" onload="onPageLoad(this);" onclose="onPageClose(this);">
-    <div class="h-100" style="height: 100vh; display: flex; flex-direction: column;">
-
-        <div class="w-100 theme_view mb-1" style="min-height: 1em; display: flex;">
-            <div class="border border-primary m-1 p-1 w-100 fs-3" id="view_title">설정</div>
+    <div class="h-100 w-100 d-flex flex-column" id="page-setup">
+        <div class="w-100 p-1 d-flex flex-row justify-content-between setup_head">
+            <div class="setup_title"><span class="usr_name">이수희</span><span>님</span></div>
+            <img src="https://lclasser.github.io/sbalance/public/image/setup_btn.svg">
         </div>
 
-        <div class="p-1 pt-0 position-relative" style="flex: 1; overflow: auto;" id="view_body">
+        <div class="p-1" style="flex: 1; overflow: auto;" id="view_body">
         </div>
     </div>
 </div>
