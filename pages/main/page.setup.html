@@ -71,7 +71,7 @@ function onPageLoad(epage)
         var title = bframe.getHistory().map(function(item) {
             return item.title + " > ";
         });
-        dpage.find("#view_title").html( title );
+        dpage.find(".setup_head").html( title );
         bframe.makePageLink(bframe.get$body());
     });
     bframe.on('page_close', function(event, opage) {
@@ -87,7 +87,7 @@ function onPageLoad(epage)
         dpage.find(".usr_name").text(usr_name);
     }
 
-    dpage.find("#view_title").click(function() {
+    dpage.find(".setup_head").click(function() {
         bframe.backHistory();
     });
 }
