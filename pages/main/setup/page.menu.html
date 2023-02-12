@@ -2,7 +2,6 @@
     .menu_row {
         display: flex;
         flex-direction: row !important;
-        align-items: flex-start !important;
         justify-content: space-between !important;
         padding: 20px 0px 20px 8px;
         gap: 12px;
@@ -23,22 +22,57 @@
 <div page-declare="dpage" class="w-100 h-100" onload="onPageLoad(this);" onclose="onPageClose(this);">
     <ul class="list-group">
         <li class="list-group-item menu_row" page-link="/main/setup/page.user.html">
-            <div class="menu_item">
-                사용자 정보
-            </div>
+            <div class="menu_item">사용자 정보</div>
             <div class="menu_item">
                 <img src="https://lclasser.github.io/sbalance/public/image/menu_right.svg">
             </div>
         </li>
-        <li class="list-group-item menu_item" page-link="/main/setup/page.wallet.html">지갑 설정</li>
+        <li class="list-group-item menu_item" page-link="/main/setup/page.wallet.html">
+            <div class="menu_item">지갑 설정</div>
+            <div class="menu_item">
+                <img src="https://lclasser.github.io/sbalance/public/image/menu_right.svg">
+            </div>
+        </li>
         <!-- <li class="list-group-item menu_item" page-link="/main/setup/page.wallet.html">공유 설정(지갑)</li> -->
-        <li class="list-group-item menu_item" page-link="/main/setup/page.message.html">문자 설정</li>
-        <li class="list-group-item menu_item" page-link="/main/setup/page.category.html">분류 설정</li>
-        <li class="list-group-item menu_item" page-link="/main/setup/page.match.html">매칭 설정</li>
-        <li class="list-group-item menu_item text-black-50">자산 설정</li>
-        <li class="list-group-item menu_item text-black-50">테마 설정</li>
-        <li class="list-group-item menu_item text-black-50">제공 업체</li>
-        <li class="list-group-item menu_item" onclick="javascript:window.SBalance.onSignout();">로그 아웃</li>
+        <li class="list-group-item menu_item" page-link="/main/setup/page.message.html">
+            <div class="menu_item">문자 설정</div>
+            <div class="menu_item">
+                <img src="https://lclasser.github.io/sbalance/public/image/menu_right.svg">
+            </div>
+        </li>
+        <li class="list-group-item menu_item" page-link="/main/setup/page.category.html">
+            <div class="menu_item">분류 설정</div>
+            <div class="menu_item">
+                <img src="https://lclasser.github.io/sbalance/public/image/menu_right.svg">
+            </div>
+        </li>
+        <li class="list-group-item menu_item" page-link="/main/setup/page.match.html">
+            <div class="menu_item">매칭 설정</div>
+            <div class="menu_item">
+                <img src="https://lclasser.github.io/sbalance/public/image/menu_right.svg">
+            </div>
+        </li>
+        <li class="list-group-item menu_item text-black-50">
+            <div class="menu_item">자산 설정</div>
+            <div class="menu_item">
+                <img src="https://lclasser.github.io/sbalance/public/image/menu_right.svg">
+            </div>
+        </li>
+        <li class="list-group-item menu_item text-black-50">
+            <div class="menu_item">테마 설정</div>
+            <div class="menu_item">
+                <img src="https://lclasser.github.io/sbalance/public/image/menu_right.svg">
+            </div>
+        </li>
+        <li class="list-group-item menu_item text-black-50">
+            <div class="menu_item">제공 업체</div>
+            <div class="menu_item">
+                <img src="https://lclasser.github.io/sbalance/public/image/menu_right.svg">
+            </div>
+        </li>
+        <li class="list-group-item menu_item" onclick="javascript:window.SBalance.onSignout();">
+            <div class="menu_item">로그 아웃</div>
+        </li>
     </ul>
 </div>
 
