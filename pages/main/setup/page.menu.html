@@ -1,9 +1,15 @@
 <style>
-    .menu_item {
-        left: 8px;
-        height: Hug (64px);
+    .menu_row {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: space-between;
         padding: 20px 0px 20px 8px;
         gap: 12px;
+        left: 8px;
+        height: Hug (64px);
+    }
+    .menu_item {
         font-family: 'Noto Sans';
         font-style: normal;
         font-weight: 600;
@@ -15,7 +21,14 @@
 </style>
 <div page-declare="dpage" class="w-100 h-100" onload="onPageLoad(this);" onclose="onPageClose(this);">
     <ul class="list-group">
-        <li class="list-group-item menu_item" page-link="/main/setup/page.user.html">사용자 정보</li>
+        <li class="list-group-item menu_row" page-link="/main/setup/page.user.html">
+            <div class="menu_item">
+                사용자 정보
+            </div>
+            <div class="menu_item">
+                <img src="https://lclasser.github.io/sbalance/public/image/menu_right.svg">
+            </div>
+        </li>
         <li class="list-group-item menu_item" page-link="/main/setup/page.wallet.html">지갑 설정</li>
         <!-- <li class="list-group-item menu_item" page-link="/main/setup/page.wallet.html">공유 설정(지갑)</li> -->
         <li class="list-group-item menu_item" page-link="/main/setup/page.message.html">문자 설정</li>
