@@ -212,7 +212,7 @@ function inquire_calendar(dpage, inbound, callback)
 
                 if( ndata.item != null ) {
                     var dparam = {
-                        day : item_date.getDate(),
+                        day : item_date.getDate().toString(),
                     };
                     console.log("click:", dparam);
                     $item_td.click(function() {
