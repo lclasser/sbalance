@@ -157,10 +157,13 @@ function inquire_calendar(dpage, inbound, callback)
             {
                 var $item_td = $(templ_day);
 
+                // ndata.item 이 not-null 일 경우 데이터가 있는거
                 ndata.item = null;
+                // Server에서 가져온 리스트 만큼만...
                 if( ndata.pos < res.data.length ) {
                     ndata.date = formaterDate_fromFmtDate(res.data[ndata.pos].sms_date);
                 }
+                // 날짜가 현재 loop 중인 날짜와 같으면...
                 if( item_date.getMonth() == ndata.date.getMonth() &&
                     item_date.getDate()  == ndata.date.getDate() )
                 {
