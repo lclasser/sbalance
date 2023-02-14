@@ -219,7 +219,7 @@ function inquire_calendar(dpage, inbound, callback)
                         // event.preventDefault();
                         // ptemp.scroll_pos = bbody.scrollTop();
                         console.log("dparam:", dparam);
-                        dpage.getFrame().openPage("/main/balance/page.calendar_item.html", dparam);
+                        dpage.getFrame().openPage("/main/balance/page.calendar_item.html", `${dparam.day} 일`, dparam);
                         return false;
                     });
                 }
