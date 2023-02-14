@@ -215,10 +215,11 @@ function inquire_calendar(dpage, inbound, callback)
                         day : item_date.getDate().toString(),
                     };
                     console.log("click:", dparam);
+                    $item_td.dparam = dparam;
                     $item_td.click(function() {
                         // event.preventDefault();
                         // ptemp.scroll_pos = bbody.scrollTop();
-                        console.log("dparam:", dparam);
+                        console.log("dparam:", this.dparam);
                         dpage.getFrame().openPage("/main/balance/page.calendar_item.html", `${dparam.day} 일`, dparam);
                         return false;
                     });
