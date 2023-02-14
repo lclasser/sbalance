@@ -211,15 +211,14 @@ function inquire_calendar(dpage, inbound, callback)
                 );
 
                 if( ndata.item != null ) {
-                    ndata.item.dparam = {
-                        day : item_date.getDate().toString(),
-                    };
-                    console.log("click:", ndata.item.dparam);
                     $item_td.click(function() {
+                        var click_date = $item_td.find(".sbc_head").attr("cdate");
+                        var dparam = {
+                            day : formaterFmtDate_fromDate(click_date),
+                        };
                         // event.preventDefault();
                         // ptemp.scroll_pos = bbody.scrollTop();
-                        console.log("dparam:", ndata.item.dparam);
-                        dpage.getFrame().openPage("/main/balance/page.calendar_item.html", `${dparam.day} 일`, ndata.item.dparam);
+                        dpage.getFrame().openPage("/main/balance/page.calendar_item.html", `${dparam.day} 일`, dparam);
                         return false;
                     });
                 }
