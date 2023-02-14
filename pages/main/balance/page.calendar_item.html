@@ -17,10 +17,7 @@ function onPageLoad(epage)
         var inbound = {
             year  : _balances.now_date.getFullYear(),
             month : (_balances.now_date.getMonth() + 1),
-            sms_class : $bsum && $bsum[0].getSummaryClass(),
-            // ci_idx : (dparam.ci_idxs == null) ? "0" : Object.keys(dparam.ci_idxs),
-            // sms_category : dparam.ci_idx || "0",
-            sms_category : (dparam.ci_idxs == null) ? (dparam.ci_idx || "0") : Object.keys(dparam.ci_idxs),
+            day   : dparam.day,
         };
         process_daily(dpage, dpage.find("#list_items"), inbound, function(qry_result) {
             $bsum && $bsum[0].setSummaryResult(qry_result, page_query);

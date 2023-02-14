@@ -10,7 +10,6 @@ function onPageLoad(epage)
 
     var sframe = dpage.createFrame("sub_page");
     sframe.on('page_open', function(event, opage) {
-        console.log("page_open:", event, opage);
         this.addHistory(opage);
         this.setHistoryPath();
     });

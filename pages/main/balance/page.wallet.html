@@ -1,4 +1,3 @@
-
 <div page-declare="dpage" class="w-100 h-100" onload="onPageLoad(this);" onclose="onPageClose(this);" name="page.wallet.html">
     <div id="sub_page" class="overflow-hidden"></div>
 </div>
@@ -9,8 +8,6 @@ function onPageLoad(epage)
     STracer("page.wallet.html").log("onPageOpen...");
     var dpage = epage.getPage();
 
-    // dpage.getFrame().getBalanceSum().hide();
-
     var sframe = dpage.createFrame("sub_page");
     sframe.on('page_open', function(event, opage) {
         this.addHistory(opage);
@@ -20,10 +17,10 @@ function onPageLoad(epage)
         $(`[page-file="${opage.getFile()}"]`).addClass("active");
     });
     sframe.on('page_close', function(event, opage) {
-        var $btop = dpage && dpage.find("#balance_top");
+        // var $btop = dpage && dpage.find("#balance_top");
     });
     sframe.on('backward', function() {
-        return sframe.backHistory();
+        return this.backHistory();
     });
     
     sframe.setHistoryPath = function() {
@@ -36,9 +33,9 @@ function onPageLoad(epage)
         });
     }
     sframe.backHistory = function() {
-        var opage = sframe.popHistory();
+        var opage = this.popHistory();
         if( opage != null ) {
-            sframe.openPage(opage.getFile(), opage.getTitle(), null, function(hpage) {
+            this.openPage(opage.getFile(), opage.getTitle(), null, function(hpage) {
                 sframe.setHistoryPath();
             });
             return true;

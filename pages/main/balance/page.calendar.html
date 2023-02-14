@@ -1,255 +1,60 @@
-<style>
-    .scalendar {
-        width: 100%;
-    }
-    
-    .scalendar table {
-        border-collapse: collapse;
-        border: 0.5px solid #7a7d7c;
-        width: 100%;
-    }
-    .scalendar table thead th {
-        height: 23px;
-        color: #7a7d8c;
-        text-align: right;
-        border: 0.5px solid #7a7d7c;
-    }
-    
-    .scalendar td {
-        height: 81px;
-        min-height: 81px;
-        padding: 3px;
-        vertical-align: top;
-        border-collapse: collapse;
-        border: 0.5px solid #7a7d7c;
-        max-width: 50px;
-    }
-    .scalendar .sbc_td {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .scalendar .sbc_head {
-        font-size: 12px;
-    }
-    .scalendar .sbc_head ._day {
-        text-align: right;
-    }
-    .scalendar .sbc_head .sbc_curr {
-        color: #000000;
-    }
-    .scalendar .sbc_head .sbc_nurr {
-        color: #7a7d7c;
-    }
-    .scalendar .sbc_head ._day.sbc_curr.week_red {
-        color: #ff0000;
-    }
-    .scalendar .sbc_head ._day.sbc_curr.week_blue {
-        color: #0000ff;
-    }
-    .scalendar .sbc_head ._day.sbc_curr.week_norm {
-        color: #babdbc;
-    }
-    
-    .scalendar .sbc_body {
-        width: 100%;
-        height:100%;
-        color: #babdbc;
-    }
-    .scalendar .sbc_body #amt,#unit {
-        font-size: 12px;
-    }
-    .scalendar .sbc_body .amount-deposit {
-        justify-content: flex-end;
-    }
-</style>
-
-<div page-declare="dpage" class="w-100 h-100" onopen="onPageOpen(this);" onload="onPageLoad(this);">
-    <div class="scalendar w-100">
-        <table cellspacing="0" cellpadding="0">
-            <colgroup>
-                <col width="13%">
-                <col width="13%">
-                <col width="13%">
-                <col width="13%">
-                <col width="13%">
-                <col width="13%">
-                <col width="13%">
-            </colgroup>
-            <thead>
-                <tr>
-                    <th scope="col"><span>일</span></th>
-                    <th scope="col"><span>월</span></th>
-                    <th scope="col"><span>화</span></th>
-                    <th scope="col"><span>수</span></th>
-                    <th scope="col"><span>목</span></th>
-                    <th scope="col"><span>금</span></th>
-                    <th scope="col"><span>토</span></th>
-                </tr>
-            </thead>
-            <tbody class="_calendarTableBody">
-
-            </tbody>
-        </table>
-    </div>
+<div page-declare="dpage" class="w-100 h-100" onload="onPageLoad(this);" onclose="onPageClose(this);" name="page.calendar.html">
+    <div id="sub_page" class="overflow-hidden"></div>
 </div>
 
 <script>
-function getAmountUnit(amount)
+function onPageLoad(epage)
 {
-    var loop_cnt = 0;
-    var temp;
-    var unit = ['', 'k', 'm', 'g', 't', 'p'];
-
-    while( true ) {
-        temp = Math.floor(amount / 1000).toString().length;
-        if( temp > 3 ) {
-            amount = Math.floor(amount / 1000);
-            loop_cnt++;
-        } else {
-            return obj_amount = {
-                amt: thousandFormatter(amount),
-                unit: unit[loop_cnt],
-                cnt: loop_cnt,
-            }
-        }
-    }
-}
-
-function inquire_calendar(dpage, inbound, callback)
-{
-    console.log("inbound:", inbound);
-    return window.SBalance.request("/main/message/calendar", inbound)
-    .then(function(res) {
-        console.log("inquire_calendar:", res);
-
-        var qry_result = {
-            sum_count : 0,
-            sum_withdraw : amountAdd(),
-            sum_deposit : amountAdd(),
-        };
-        const templ_week = `<tr>`;
-        const templ_day = `
-        <td><div  class="sbc_td">
-            <div class="sbc_head"> <div class="_day">4</div> </div>
-            <div class="sbc_body"> </div>
-        </div></td>
-        `;
-        dpage.find("._calendarTableBody").empty();
-
-        var cal_date = new Date(inbound.year, inbound.month - 1, 1);
-        var item_date = new Date(cal_date);
-        item_date.setDate(item_date.getDate() - cal_date.getDay());
-
-        var pdata = {
-            item : null,
-            pos : 0,
-            date : null,
-        };
-        var $row_week;
-        for( wpos=0; wpos< 5; wpos++ )
-        {
-            $row_week = $(templ_week);
-
-            for( dpos=0; dpos< 7; dpos++ )
-            {
-                var $item_td = $(templ_day);
-
-                if( pdata.date == null ) {
-                    if( pdata.pos < res.data.length ) {
-                        pdata.date = formaterDate_fromFmtDate(res.data[pdata.pos].sms_date);
-                    }
-                    pdata.item = {
-                        withdraw_amount : 0,
-                        deposit_amount : 0,
-                    };
-                }
-
-                // head
-                var sbc_head = $item_td.find(".sbc_head");
-                sbc_head.attr("cdate", formaterFmtDate_fromDate(item_date));
-
-                var _day = sbc_head.find("._day");
-                _day.html(item_date.getDate());
-                if( item_date.getMonth() == cal_date.getMonth() ) {
-                    // 당월 임
-                    _day.addClass("sbc_curr");
-                } else {
-                    // 당월 아님
-                    _day.addClass("sbc_nurr");
-                }
-
-                switch( item_date.getDay() ) {
-                case 0:  _day.addClass("week_red"); break;
-                case 6:  _day.addClass("week_blue"); break;
-                default: _day.addClass("week_norm"); break;
-                }
-
-                if( pdata.date != null ) {
-                    if( item_date.getMonth() == pdata.date.getMonth() &&
-                        item_date.getDate()  == pdata.date.getDate() ) {
-                        pdata.date = null;
-                        pdata.item = res.data[pdata.pos];
-                        pdata.pos++;
-
-                        amountAdd(qry_result.sum_withdraw, pdata.item.withdraw_amount);
-                        amountAdd(qry_result.sum_deposit, pdata.item.deposit_amount);
-                        qry_result.sum_count++;
-                    }
-                }
-
-                // body
-                var sbc_body = $item_td.find(".sbc_body");
-                sbc_body.append(
-                    `<div class="d-flex justify-content-end amount-withdraw">` +
-                        `<div class="text-truncate" id="amt">${moneyFormatter(pdata.item.withdraw_amount)}</div>` +
-                    `</div>`
-                );
-                sbc_body.append(
-                    `<div class="d-flex justify-content-end amount-deposit">` +
-                        `<div class="text-truncate" id="amt">${moneyFormatter(pdata.item.deposit_amount)}</div>` + 
-                    `</div>`
-                );
-
-                item_date.setDate(item_date.getDate() + 1);
-                $row_week.append($item_td);
-                // console.log("pos:", dpos, $row_week[0], $item_td[0]);
-            }
-
-            dpage.find("._calendarTableBody").append($row_week);
-            //break;
-        }
-
-        callback(qry_result);
-    });
-}
-
-function onPageOpen(epage)
-{
+    STracer("page.calendar.html").log("onPageOpen...");
     var dpage = epage.getPage();
-    var _balances = dpage.getReference('balances');
 
-    function page_query() {
-        var $bsum = dpage.getFrame().getBalanceSum();
-        var inbound = {
-            year  : _balances.now_date.getFullYear(),
-            month : (_balances.now_date.getMonth() + 1),
-            sms_class : $bsum && $bsum[0].getSummaryClass(),
-        };
-
-        inquire_calendar(dpage, inbound, function(qry_result) {
-            $bsum && $bsum[0].setSummaryResult(qry_result, page_query);
+    var sframe = dpage.createFrame("sub_page");
+    sframe.on('page_open', function(event, opage) {
+        this.addHistory(opage);
+        this.setHistoryPath();
+    });
+    sframe.on('page_load', function(event, opage) {
+        $(`[page-file="${opage.getFile()}"]`).addClass("active");
+    });
+    sframe.on('page_close', function(event, opage) {
+        // var $btop = dpage && dpage.find("#balance_top");
+    });
+    sframe.on('backward', function() {
+        return this.backHistory();
+    });
+    
+    sframe.setHistoryPath = function() {
+        var titles = [];
+        sframe.getHistory().forEach(function(hist) {
+            titles.push(hist.title);
+        });
+        dpage.getFrame().setPagePath(titles, function() {
+            sframe.backHistory();
         });
     }
-    
-    dpage.on('refresh', function(event, value) {
-        STracer("page.calendar.html").log(`event.refresh:`, event, value);
-        page_query();
-        return true; // event-stop
-    });
+    sframe.backHistory = function() {
+        var opage = this.popHistory();
+        if( opage != null ) {
+            this.openPage(opage.getFile(), opage.getTitle(), null, function(hpage) {
+                sframe.setHistoryPath();
+            });
+            return true;
+        }
+    };
 
-    page_query();
+    sframe.getBalanceSum = function() {
+        var $bsum = dpage.getFrame().getBalanceSum();
+        return $bsum;
+    }
+    sframe.openPage("/main/balance/page.calendar_group.html", "달력");
 }
+
+function onPageClose(epage)
+{
+    STracer("page.calendar.html").dbg("onPageClose:", epage);
+
+    var dpage = epage.getPage();
+    // dpage.getFrame().getBalanceSum().show();
+}
+
 </script>
