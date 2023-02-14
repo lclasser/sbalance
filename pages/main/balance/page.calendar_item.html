@@ -13,8 +13,8 @@ function onPageLoad(epage)
     var $bsum = dpage.getFrame().getBalanceSum();
     var _balances = dpage.getReference('balances');
 
-    console.log("calendar_item:", dparam);
     function page_query() {
+        console.log("calendar_item:", dparam);
         var inbound = {
             year  : _balances.now_date.getFullYear(),
             month : (_balances.now_date.getMonth() + 1),
