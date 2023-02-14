@@ -188,6 +188,7 @@ function inquire_calendar(dpage, inbound, callback)
                 }
 
                 if( pdata.date != null ) {
+                    // 당월 이면서 데이터의 날짜와 같을 경우 표시
                     if( item_date.getMonth() == pdata.date.getMonth() &&
                         item_date.getDate()  == pdata.date.getDate() ) {
                         pdata.date = null;
