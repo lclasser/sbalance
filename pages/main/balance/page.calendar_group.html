@@ -143,7 +143,7 @@ function inquire_calendar(dpage, inbound, callback)
         var item_date = new Date(cal_date);
         item_date.setDate(item_date.getDate() - cal_date.getDay());
 
-        var pdata = {
+        var ndata = {
             item : null,
             pos : 0,
             date : null,
@@ -157,14 +157,19 @@ function inquire_calendar(dpage, inbound, callback)
             {
                 var $item_td = $(templ_day);
 
-                if( pdata.date == null ) {
-                    if( pdata.pos < res.data.length ) {
-                        pdata.date = formaterDate_fromFmtDate(res.data[pdata.pos].sms_date);
-                    }
-                    pdata.item = {
-                        withdraw_amount : 0,
-                        deposit_amount : 0,
-                    };
+                ndata.item = null;
+                if( ndata.pos < res.data.length ) {
+                    ndata.date = formaterDate_fromFmtDate(res.data[ndata.pos].sms_date);
+                }
+                if( item_date.getMonth() == ndata.date.getMonth() &&
+                    item_date.getDate()  == ndata.date.getDate() )
+                {
+                    ndata.item = res.data[ndata.pos];
+                    ndata.pos++;
+
+                    amountAdd(qry_result.sum_withdraw, ndata.item.withdraw_amount);
+                    amountAdd(qry_result.sum_deposit , ndata.item.deposit_amount);
+                    qry_result.sum_count++;
                 }
 
                 // head
@@ -187,38 +192,24 @@ function inquire_calendar(dpage, inbound, callback)
                 default: _day.addClass("week_norm"); break;
                 }
 
-                if( pdata.date != null ) {
-                    // 당월 이면서 데이터의 날짜와 같을 경우 표시
-                    if( item_date.getMonth() == pdata.date.getMonth() &&
-                        item_date.getDate()  == pdata.date.getDate() ) {
-                        pdata.date = null;
-                        pdata.item = res.data[pdata.pos];
-                        pdata.pos++;
-
-                        amountAdd(qry_result.sum_withdraw, pdata.item.withdraw_amount);
-                        amountAdd(qry_result.sum_deposit, pdata.item.deposit_amount);
-                        qry_result.sum_count++;
-                    }
-                }
-
                 // body
                 var sbc_body = $item_td.find(".sbc_body");
                 // 지출
                 sbc_body.append(
                     `<div class="d-flex justify-content-end amount-withdraw">` +
-                        `<div class="text-truncate" id="amt">${moneyFormatter(pdata.item.withdraw_amount)}</div>` +
+                        `<div class="text-truncate" id="amt">${moneyFormatter(ndata.item && ndata.item.withdraw_amount)}</div>` +
                     `</div>`
                 );
                 // 수입
                 sbc_body.append(
                     `<div class="d-flex justify-content-end amount-deposit">` +
-                        `<div class="text-truncate" id="amt">${moneyFormatter(pdata.item.deposit_amount)}</div>` + 
+                        `<div class="text-truncate" id="amt">${moneyFormatter(ndata.item && ndata.item.deposit_amount)}</div>` + 
                     `</div>`
                 );
 
-                if( pdata.date != null ) {
+                if( ndata.item != null ) {
                     var dparam = {
-                        day : pdata.date.getDate(),
+                        day : item_date.getDate(),
                     };
                     console.log("click:", dparam);
                     $item_td.click(function() {
