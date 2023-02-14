@@ -212,7 +212,7 @@ function inquire_calendar(dpage, inbound, callback)
 
                 if( ndata.item != null ) {
                     $item_td.click(function() {
-                        var click_date = this.find(".sbc_head").attr("cdate");
+                        var click_date = $(this).find(".sbc_head").attr("cdate");
                         var dparam = {
                             day : formaterDate_fromFmtDate(click_date).getDate(),
                         };
