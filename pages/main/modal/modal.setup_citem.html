@@ -93,7 +93,7 @@ $(function() {
     }
 
     // ci_sort
-    param.ci_sort && $modal.find("#dlg_sort").val(param.ci_sort);
+    param.ci_sort && $modal.find("#dlg_sort").val(param.ci_sort || 100);
     eventInputNumber($modal.find("#dlg_sort")[0]);
 
     switch( param.ci_type ) {
@@ -148,13 +148,18 @@ $(function() {
         if( target_cg_key == param.cg_key ) {
             target_cg_key = null;
         }
+        var ci_sort = $modal.find("#dlg_sort").val();
+        if( ci_sort == null || ci_sort.length <= 0 ) {
+            ci_sort = 100;
+        }
 
         var inbound = {
-            cg_key  : param.cg_key,
             ci_idx  : param.ci_idx,
+            cg_key  : param.cg_key,
             ci_name : $modal.find("#dlg_name").val(),
             ci_type : $modal.find("#dlg_catetype option:selected").val(),
             ci_budget : toInteger($modal.find("#dlg_budget").val()),
+            ci_sort : ci_sort,
             target_cg_key : target_cg_key,
         };
         console.log("category update:", inbound);
