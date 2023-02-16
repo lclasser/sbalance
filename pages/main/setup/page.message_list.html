@@ -140,6 +140,7 @@ function onPageLoad(epage)
                     // exist: client only
                     obj_row.addClass("bg-light text-primary");
                 }
+                delete mitem.is_found;
 
                 obj_row.find("#msg_check").change(function() {
                     console.log("ASDF");
