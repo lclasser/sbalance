@@ -111,10 +111,11 @@ function onPageLoad(epage)
             });
             // 정렬한다.
             disp_lists.sort(function(left,right) {
+                // Date
                 if( left.msg_date > right.msg_date ) return -1;
                 else
                 if( left.msg_date < right.msg_date ) return 1;
-
+                // Time
                 if( left.msg_time > right.msg_time ) return -1;
                 else
                 if( left.msg_time < right.msg_time ) return 1;
