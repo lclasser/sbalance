@@ -13,7 +13,6 @@ function process_daily(ppage, $list, inbound, cbfinish)
         if( res.data == null || res.data.length <= 0 ) {
             $list.html(`<div class="row m-1" style="height:30px;">데이터가 없습니다.</div>`);
             cbfinish && cbfinish(qry_result);
-            cbfinish = null;
             return;
         }
 
@@ -138,7 +137,7 @@ function process_daily(ppage, $list, inbound, cbfinish)
                                     title_text: "분류 정보",
                                     mesg_text: "분류를 설정 하였습니다.",
                                 });
-                                process_daily(ppage, $list, inbound);
+                                process_daily(ppage, $list, inbound, cbfinish);
                             } else {
                                 window.toast({
                                     title_class: "bg-secondary text-white",
@@ -258,7 +257,7 @@ function process_daily(ppage, $list, inbound, cbfinish)
                         STracer("page.daily.js").log("modal.balance_message.html result:", result);
                         if( result == null )
                             return;
-                        process_daily(ppage, $list, inbound);
+                        process_daily(ppage, $list, inbound, cbfinish);
                     });
                     return false;
                 });
@@ -276,6 +275,5 @@ function process_daily(ppage, $list, inbound, cbfinish)
         });
 
         cbfinish && cbfinish(qry_result);
-        cbfinish = null;
     });
 }
