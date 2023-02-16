@@ -79,36 +79,27 @@ function onPageLoad(epage)
                 if( citem.msg_time == "120306" ) {
                     console.log(`BODY 2: ${key}[${citem.msg_str}]`);
                 }
-                var mentry = mkeys[key];
-                if( mentry != null ) {
-                    // console.log("found:" + key + ";" + JSON.stringify(mentry));
-                    console.log("found:" + key + ";");
-                    var mitem;
-                    for( mitem of mentry.lists ) {
-                        if( (mitem.is_found  == null) &&
-                            (mitem.msg_phone == citem.msg_phone) &&
-                            (mitem.msg_event == citem.msg_event) &&
-                            (mitem.msg_date  == citem.msg_date) &&
-                            (mitem.msg_time  == citem.msg_time) &&
-                            (mitem.msg_str   == citem.msg_str)
-                        ) {
-                            mitem.is_found = true;
-                            citem.is_added = true;
-                            // console.log("citem:", citem);
-                            break;
-                        }
+
+                var found = disp_lists.find(function(element) {
+                    if( (element.is_found  == null) &&
+                        (element.msg_phone == citem.msg_phone) &&
+                        (element.msg_event == citem.msg_event) &&
+                        (element.msg_date  == citem.msg_date) &&
+                        (element.msg_time  == citem.msg_time) &&
+                        (element.msg_str   == citem.msg_str)
+                    ) {
+                        return true;
                     }
-                }
-            });
-            // Client에 존재하지 않는걸 추가한다.
-            res.data.forEach(function(citem) {
-                if( citem.msg_body == null )
-                    return;
-                if( citem.is_added == null ) {
+                });
+                if( found != null ) {
+                    found.is_found = true;
+                } else {
+                    // Client에 존재하지 않는걸 추가한다.
                     citem.is_found = false;
                     disp_lists.push(citem);
                 }
             });
+
             // 정렬한다.
             disp_lists.sort(function(left,right) {
                 // Date
@@ -137,7 +128,6 @@ function onPageLoad(epage)
             console.log("list... :", disp_lists);
             disp_lists.forEach(function(mitem) {
                 //console.log("mitem... :" + JSON.stringify(mitem));
-                
                 var obj_row = $("<div/>");
                 obj_row.addClass(`row border border-top-0 border-start-0 border-end-0 m-0 h-100`)
                 .css("min-height", "54px")
@@ -158,7 +148,6 @@ function onPageLoad(epage)
                     // exist: client only
                     obj_row.addClass("bg-light text-primary");
                 }
-                delete mitem.is_found;
 
                 obj_row.find("#msg_check").change(function() {
                     console.log("ASDF");
