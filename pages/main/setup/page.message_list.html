@@ -87,7 +87,9 @@ function onPageLoad(epage)
                     for( mitem of mentry.lists ) {
                         if( (mitem.is_found  == null) &&
                             (mitem.msg_phone == citem.msg_phone) &&
+                            (mitem.msg_event == citem.msg_event) &&
                             (mitem.msg_date  == citem.msg_date) &&
+                            (mitem.msg_time  == citem.msg_time) &&
                             (mitem.msg_str   == citem.msg_str)
                         ) {
                             mitem.is_found = true;
