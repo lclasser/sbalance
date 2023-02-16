@@ -76,7 +76,7 @@ function onPageLoad(epage)
                 var found = disp_lists.find(function(element) {
                     if( (element.msg_phone == citem.msg_phone) &&
                         (element.msg_date  == citem.msg_date) &&
-                        (element.msg_time  == citem.msg_time) &&
+                        // (element.msg_time  == citem.msg_time) && // android 수신 시간과 insert시 시간이 다름
                         (element.msg_str   == citem.msg_str)
                     ) {
                         return true;
