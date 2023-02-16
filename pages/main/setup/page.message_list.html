@@ -35,25 +35,16 @@ function onPageLoad(epage)
 
     console.log("pparam:", pparam);
 
-    /*
-    var mkeys = {};
     pparam.lists.forEach(function(mitem, midx) {
         mitem.msg_str = mitem.msg_body.replace(/(\s*|\r\n|\r|\n)/g, '')
-
-        var key = SHA_256(mitem.msg_str);
-        mkeys[key] = mkeys[key] || {
-            lists : [],
-        };
-        mitem.key = key;
+        mitem.key = SHA_256(mitem.msg_str);
         mitem.midx = midx;
-        mkeys[key].lists.push(mitem);
         // console.log("key:" + key + ";" + mitem.msg_body);
         if( mitem.msg_time == "015201" ) {
             console.log(`BODY 1: ${key}[${mitem.msg_str}]`);
         }
         // console.log(`BODY: [${mitem.msg_body.replace(/(\s*|\r\n|\r|\n)/g, '')}]`);
     });
-    */
 
     function requery_lists(arg_date1, arg_date2, arg_lists)
     {
