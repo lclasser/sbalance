@@ -24,12 +24,10 @@ function onPageLoad(epage)
             var msg_date = ''
                 + now_date.getFullYear()
                 + ('0' + (now_date.getMonth()+1).toString()).slice(-2)
-                + ('0' + (now_date.getDate()).toString()).slice(-2)
             ;
             var str_date = ''
                 + ('0' + (now_date.getMonth()+1).toString()).slice(-2)
                 + '/'
-                + ('0' + (now_date.getDate()).toString()).slice(-2)
             ;
             var pos;
             var lists = [];
@@ -38,27 +36,27 @@ function onPageLoad(epage)
                     "usr_key": window.SBalance.getSignin().usr_key,
                     "dev_key":"a024124e-e94c-3996-b21d-2b3b989661bf",
                     "msg_phone":"15447200",
-                    "msg_date":msg_date, "msg_time":`0152${("00"+pos).slice(-2)}`,
+                    "msg_date":msg_date+"16", "msg_time":`0152${("00"+pos).slice(-2)}`,
                     "msg_body":`[Web발신]
-신한카드(6441)승인 최*호 30,000원(일시불)${str_date} 01:52 고양휴게소(  누적7,110,3${("00"+pos).slice(-2)}원  \n`
+신한카드(6441)승인 최*호 30,000원(일시불)${str_date}16 01:52 고양휴게소(  누적7,110,3${("00"+pos).slice(-2)}원  \n`
                     ,"msg_event":"onRead"
                 });
                 lists.push({
                     "usr_key": window.SBalance.getSignin().usr_key,
                     "dev_key":"a024124e-e94c-3996-b21d-2b3b989661bf",
                     "msg_phone":"15447200",
-                    "msg_date":msg_date, "msg_time":`0152${("00"+pos).slice(-2)}`,
+                    "msg_date":msg_date+"12", "msg_time":`0152${("00"+pos).slice(-2)}`,
                     "msg_body":`[Web발신]
-신한카드(1580)승인 최*호       27,490원(일시불)${('0' + (now_date.getMonth()+1).toString()).slice(-2)}/12 21:44  쿠팡          누적6,905,354원  \n`
+신한카드(1580)승인 최*호       27,490원(일시불)${str_date}/12 21:44  쿠팡          누적6,905,354원  \n`
                     ,"msg_event":"onRead"
                 });
                 lists.push({
                     "usr_key": window.SBalance.getSignin().usr_key,
                     "dev_key":"a024124e-e94c-3996-b21d-2b3b989661bf",
                     "msg_phone":"15447200",
-                    "msg_date":msg_date, "msg_time":`0152${("00"+pos).slice(-2)}`,
+                    "msg_date":msg_date+"14", "msg_time":`0152${("00"+pos).slice(-2)}`,
                     "msg_body":`[Web발신]
-[신한체크승인]     최*호(8273) ${('0' + (now_date.getMonth()+1).toString()).slice(-2)}/14                 15:07  (금액)5,700원 티머니 법인택시  \n`
+[신한체크승인]     최*호(8273) ${str_date}/14                 15:07  (금액)5,700원 티머니 법인택시  \n`
                     ,"msg_event":"onRead"
                 });
             }
