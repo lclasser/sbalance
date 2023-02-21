@@ -20,7 +20,7 @@
 
     <div class="card w-100 mb-1">
         <div class="card-header d-flex align-items-center pb-1" style="height:35px;">
-            <div class="" id="item_cnt"></div>
+            <div class="" id="item_title">비교</div>
         </div>
         <div class="card-body p-0 collapse show group_x">
         </div>
@@ -98,8 +98,6 @@ function onPageLoad(epage)
 
                 return 0;
             });
-
-            spage.find("#item_cnt").html(`건수: ${disp_lists.length} 건`);
 
             var grid_row = `
     <div class="col-1 border-end d-flex align-items-center p-1 justify-content-center">
