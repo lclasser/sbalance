@@ -40,9 +40,6 @@ function onPageLoad(epage)
         mitem.key = SHA_256(mitem.msg_str);
         mitem.midx = midx;
         // console.log("key:" + key + ";" + mitem.msg_body);
-        if( mitem.msg_time == "015201" ) {
-            console.log(`BODY 1: ${key}[${mitem.msg_str}]`);
-        }
         // console.log(`BODY: [${mitem.msg_body.replace(/(\s*|\r\n|\r|\n)/g, '')}]`);
     });
 
@@ -70,7 +67,8 @@ function onPageLoad(epage)
                 var key = SHA_256(citem.msg_str);
 
                 var found = disp_lists.find(function(element) {
-                    if( (element.msg_phone == citem.msg_phone) &&
+                    if( (element.is_found  != true) &&
+                        (element.msg_phone == citem.msg_phone) &&
                         (element.msg_date  == citem.msg_date) &&
                         // (element.msg_time  == citem.msg_time) && // android 수신 시간과 insert시 시간이 다름
                         (element.msg_str   == citem.msg_str)
@@ -135,6 +133,7 @@ function onPageLoad(epage)
                     // exist: client only
                     obj_row.addClass("bg-light text-primary");
                 }
+                delete mitem.is_found;
 
                 obj_row.find("#msg_check").change(function() {
                     console.log("ASDF");
