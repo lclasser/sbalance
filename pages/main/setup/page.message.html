@@ -24,12 +24,12 @@ function onPageLoad(epage)
             var msg_date = ''
                 + now_date.getFullYear()
                 + ('0' + (now_date.getMonth()+1).toString()).slice(-2)
-                + '01'; // + ('0' + (now_date.getDate()).toString()).slice(-2)
+                + ('0' + (now_date.getDate()).toString()).slice(-2)
             ;
             var str_date = ''
                 + ('0' + (now_date.getMonth()+1).toString()).slice(-2)
                 + '/'
-                + '31'; // + ('0' + (now_date.getDate()).toString()).slice(-2)
+                + ('0' + (now_date.getDate()).toString()).slice(-2)
             ;
             var pos;
             var lists = [];
@@ -64,8 +64,8 @@ function onPageLoad(epage)
             }
 
             var inbound = {
-                date1: msg_date,
-                date2: msg_date,
+                date1: msg_date.slice(0,4) + '01',
+                date2: msg_date.slice(0,4) + '31',
                 lists: lists,
             };
             spage.getFrame().openPage("/main/setup/page.message_list.html", "문자 읽기", inbound);
