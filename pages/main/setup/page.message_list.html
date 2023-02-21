@@ -1,15 +1,15 @@
 
 <div page-declare="dpage" class="w-100 h-auto" onload="onPageLoad(this);">
     <div class="sticky-top bg-white border d-flex flex-row align-items-center m-0 mb-1">
-        <div class="p-1">
+        <div class="p-1 me-auto">
             <input class="form-check-input" type="checkbox" id="item_all">
             <label class="form-check-label" for="item_all" id="item_qty">선택</label>
         </div>
-        <div class="p-1 me-auto">
+        <div class="p-1">
             <select class="col-attach form-select fs_item" id="head_disp">
-                <option class="fs_item" value="KRW" selected>모두 보기</option>
-                <option class="fs_item" value="USD">저장된거만 보기</option>
-                <option class="fs_item" value="USD">장치거만 보기</option>
+                <option class="fs_item" value="ALL" selected>모두 보기</option>
+                <option class="fs_item" value="SERVER">저장된거만 보기</option>
+                <option class="fs_item" value="CLIENT">장치거만 보기</option>
             </select>
         </div>
         <div class="p-1">
@@ -54,7 +54,7 @@ function onPageLoad(epage)
         window.SBalance.request("/main/message/lists", inbound)
         .then(function(res) {
             console.log("/main/message/lists:", res);
-            spage.find("#item_qty").html(`선택`);
+            // spage.find("#item_qty").html(`선택`);
 
             var obj_body = spage.find(".card-body");
             obj_body.empty();
@@ -137,7 +137,7 @@ function onPageLoad(epage)
 
                 obj_row.find("#msg_check").change(function() {
                     console.log("ASDF");
-                    spage.find("#item_qty").html(`선택: ${obj_body.find("#msg_check:checked").length} 건`);
+                    spage.find("#item_qty").html(`선택: ${obj_body.find("#msg_check:checked").length} 건/ ${disp_lists.length} 건`);
                 });
                 obj_row.find("#msg_check").prop("midx", mitem.midx);
 
@@ -155,12 +155,14 @@ function onPageLoad(epage)
 
                 obj_body.append(obj_row);
             });
+            
+            spage.find("#item_qty").html(`선택: ${spage.find("#msg_check:checked").length} 건/ ${disp_lists.length} 건`);
         });
     }
 
     spage.find("#item_all").click(function() {
         spage.find("#msg_check:not(:disabled)").prop("checked", spage.find("#item_all").prop('checked'));
-        spage.find("#item_qty").html(`선택: ${spage.find("#msg_check:checked").length} 건`);
+        spage.find("#item_qty").html(`선택: ${spage.find("#msg_check:checked").length} 건/ ${disp_lists.length} 건`);
     });
 
     spage.find("#btn_add").click(function() {
