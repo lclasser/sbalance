@@ -160,7 +160,7 @@ function onPageLoad(epage)
             spage.find("#item_qty").html(`선택: ${spage.find("#msg_check:checked").length} 건/ ${disp_lists.length} 건`);
             spage.find("#item_all").click(function() {
                 spage.find("#msg_check:not(:disabled)").prop("checked", spage.find("#item_all").prop('checked'));
-                spage.find("#item_qty").html(`선택: ${spage.find("#msg_check:checked").length} 건/ ${pparam.lists.length} 건`);
+                spage.find("#item_qty").html(`선택: ${spage.find("#msg_check:checked").length} 건/ ${disp_lists.length} 건`);
                 console.log("clicked");
             });
         });
