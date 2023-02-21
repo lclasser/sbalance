@@ -6,7 +6,7 @@
             <label class="form-check-label" for="item_all" id="item_qty">선택</label>
         </div>
         <div class="p-1">
-            <select class="col-attach form-select fs_item" id="head_disp">
+            <select class="col-attach form-select fs_item" id="disp_type">
                 <option class="fs_item" value="ALL" selected>모두 보기</option>
                 <option class="fs_item" value="SERVER">저장된거만 보기</option>
                 <option class="fs_item" value="CLIENT">장치거만 보기</option>
@@ -50,7 +50,10 @@ function onPageLoad(epage)
             date2 : arg_date2,
         };
 
+        var disp_type = $modal.find("#disp_type option:selected").val();
+
         var disp_lists = arg_lists.slice();
+
         window.SBalance.request("/main/message/lists", inbound)
         .then(function(res) {
             console.log("/main/message/lists:", res);
@@ -155,13 +158,14 @@ function onPageLoad(epage)
             });
             
             spage.find("#item_qty").html(`선택: ${spage.find("#msg_check:checked").length} 건/ ${disp_lists.length} 건`);
+            spage.find("#item_all").click(function() {
+                spage.find("#msg_check:not(:disabled)").prop("checked", spage.find("#item_all").prop('checked'));
+                spage.find("#item_qty").html(`선택: ${spage.find("#msg_check:checked").length} 건/ ${pparam.lists.length} 건`);
+                console.log("clicked");
+            });
         });
     }
-
-    spage.find("#item_all").click(function() {
-        spage.find("#msg_check:not(:disabled)").prop("checked", spage.find("#item_all").prop('checked'));
-        spage.find("#item_qty").html(`선택: ${spage.find("#msg_check:checked").length} 건/ ${pparam.lists.length} 건`);
-    });
+    requery_lists(pparam.date1, pparam.date2, pparam.lists);
 
     spage.find("#btn_add").click(function() {
         var jchecks = spage.find("#msg_check:checked");
@@ -251,8 +255,6 @@ function onPageLoad(epage)
             });
         };
     });
-
-    requery_lists(pparam.date1, pparam.date2, pparam.lists);
 
     spage.find("#btn_refresh").click(function() {
         requery_lists(pparam.date1, pparam.date2, pparam.lists);
