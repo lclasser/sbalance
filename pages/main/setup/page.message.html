@@ -24,12 +24,12 @@ function onPageLoad(epage)
             var msg_date = ''
                 + now_date.getFullYear()
                 + ('0' + (now_date.getMonth()+1).toString()).slice(-2)
-                + ('0' + (now_date.getDate()).toString()).slice(-2)
+                + '01'; // + ('0' + (now_date.getDate()).toString()).slice(-2)
             ;
             var str_date = ''
                 + ('0' + (now_date.getMonth()+1).toString()).slice(-2)
                 + '/'
-                + ('0' + (now_date.getDate()).toString()).slice(-2)
+                + '31'; // + ('0' + (now_date.getDate()).toString()).slice(-2)
             ;
             var pos;
             var lists = [];

@@ -69,10 +69,6 @@ function onPageLoad(epage)
                 citem.msg_str = citem.msg_body.replace(/(\s*|\r\n|\r|\n)/g, '');
                 var key = SHA_256(citem.msg_str);
 
-                if( citem.msg_time == "120306" ) {
-                    console.log(`BODY 2: ${key}[${citem.msg_str}]`);
-                }
-
                 var found = disp_lists.find(function(element) {
                     if( (element.msg_phone == citem.msg_phone) &&
                         (element.msg_date  == citem.msg_date) &&
