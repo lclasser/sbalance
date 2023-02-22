@@ -55,7 +55,7 @@ function onOpened(dpopver) {
     }
 
     function itemAdd(group_card, citem, selected) {
-        group_card.find(".list-group").append(
+        return group_card.find(".list-group").append(
             `<li class="list-group-item list-group-item-action ${selected==true?"active":""}"
                 ci_idx="${citem.ci_idx}"
                 ci_name="${citem.ci_name}"
@@ -83,6 +83,7 @@ function onOpened(dpopver) {
     .then(function(res) {
         console.log("/main/category/item/select:", res);
         var grp_list = {};
+        var focus_item = null;
         res.data.forEach(function(citem) {
             var group_item = grp_list[citem.cg_name];
             if( group_item == null ) {
@@ -91,11 +92,17 @@ function onOpened(dpopver) {
             }
             if( selected == false && pparam.ci_idx == citem.ci_idx ) {
                 selected = true;
-                itemAdd(group_item, citem, true);
+                focus_item = itemAdd(group_item, citem, true);
             } else {
                 itemAdd(group_item, citem, false);
             }
         });
+
+        if( focus_item != null ) {
+            focus_item[0].scrollIntoView({
+                block: 'center',
+            });
+        }
 
         dlg_list.find(".list-group-item").click(function() {
             // var is_active = $(this).hasClass("active");
