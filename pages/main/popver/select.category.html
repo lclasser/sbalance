@@ -68,8 +68,10 @@ function onOpened(dpopver) {
     var dlg_list = dpopver.find("#dlg_list");
     // 미분류
     var group_item = groupAdd(dlg_list, {ci_idx: 0, cg_name:"미분류", });
-    if( (pparam.ci_idx || 0) == 0 )
+    if( (pparam.ci_idx || 0) == 0 ) {
         selected = true;
+    }
+
     itemAdd(group_item, {
         ci_idx: 0,
         ci_name:"미분류",
