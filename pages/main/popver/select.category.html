@@ -75,10 +75,8 @@ function onOpened(dpopver) {
     // 미분류
     var group_item = groupAdd(dlg_list, {ci_idx: 0, cg_name:"미분류", });
 
-    var _ci_idx = pparam.ci_idx;
-    if( (_ci_idx || 0) == 0 ) {
-        _ci_idx = window.last_category;
-        if( (_ci_idx || 0) == 0 ) {
+    if( (pparam.ci_idx || 0) == 0 ) {
+        if( (window.last_category || 0) == 0 ) {
             selected = true;
         }
     }
