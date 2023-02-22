@@ -68,8 +68,13 @@ function onOpened(dpopver) {
     var dlg_list = dpopver.find("#dlg_list");
     // 미분류
     var group_item = groupAdd(dlg_list, {ci_idx: 0, cg_name:"미분류", });
-    if( (pparam.ci_idx || 0) == 0 ) {
-        selected = true;
+
+    var _ci_idx = pparam.ci_idx;
+    if( (_ci_idx || 0) == 0 ) {
+        _ci_idx = window.last_category;
+        if( (_ci_idx || 0) == 0 ) {
+            selected = true;
+        }
     }
 
     itemAdd(group_item, {
@@ -90,7 +95,7 @@ function onOpened(dpopver) {
                 group_item = groupAdd(dlg_list, citem);
                 grp_list[citem.cg_name] = group_item;
             }
-            if( selected == false && pparam.ci_idx == citem.ci_idx ) {
+            if( selected == false && _ci_idx == citem.ci_idx ) {
                 selected = true;
                 focus_item = itemAdd(group_item, citem, true);
             } else {
@@ -99,9 +104,7 @@ function onOpened(dpopver) {
         });
 
         if( focus_item != null ) {
-            focus_item[0].scrollIntoView({
-                block: 'center',
-            });
+            focus_item[0].scrollIntoView({ block: 'center', });
         }
 
         dlg_list.find(".list-group-item").click(function() {
@@ -126,6 +129,7 @@ function onOpened(dpopver) {
         var cg_name = sel_item.attr("cg_name");
         console.log("ci_idx:", ci_idx, sel_item);
         if( ci_idx != null && Number.isInteger(parseInt(ci_idx)) ) {
+            window.last_category = ci_idx;
             dpopver.close({
                 ci_idx: ci_idx,
                 ci_name: ci_name,
