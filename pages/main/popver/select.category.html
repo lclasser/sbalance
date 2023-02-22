@@ -1,3 +1,9 @@
+<style>
+    .list-group-item.focus:not(.active) {
+        color: #cecece;
+        background-color: #555555;
+    }
+</style>
 <page class="w-80 h-100 p-0 pt-2 pb-2 d-block"
     style="position:fixed; margin: auto; left:0; right:0; top:0; width:80%; display:none; "
     onopen="onOpened(this);" onload="onLoaded(this);" onclose="onClosed(this);">
@@ -95,9 +101,17 @@ function onOpened(dpopver) {
                 group_item = groupAdd(dlg_list, citem);
                 grp_list[citem.cg_name] = group_item;
             }
-            if( selected == false && _ci_idx == citem.ci_idx ) {
-                selected = true;
-                focus_item = itemAdd(group_item, citem, true);
+            if( selected == false ) {
+                if( citem.ci_idx == pparam.ci_idx ) {
+                    dlg_list.find(".list-group-item").removeClass("focus");
+                    selected = true;
+                    focus_item = itemAdd(group_item, citem, true);
+                }
+                else
+                if( citem.ci_idx == window.last_category ) {
+                    focus_item = itemAdd(group_item, citem, false);
+                    focus_item.addClass("focus");
+                }
             } else {
                 itemAdd(group_item, citem, false);
             }
@@ -110,6 +124,7 @@ function onOpened(dpopver) {
         dlg_list.find(".list-group-item").click(function() {
             // var is_active = $(this).hasClass("active");
             dlg_list.find(".list-group-item").removeClass("active");
+            dlg_list.find(".list-group-item").removeClass("focus");
             $(this).addClass("active");
         });
         dlg_list.find(".list-group-item").dblclick(function() {
