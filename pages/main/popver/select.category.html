@@ -101,17 +101,16 @@ function onOpened(dpopver) {
                 group_item = groupAdd(dlg_list, citem);
                 grp_list[citem.cg_name] = group_item;
             }
-            if( selected == false ) {
-                if( citem.ci_idx == pparam.ci_idx ) {
-                    dlg_list.find(".list-group-item").removeClass("focus");
-                    selected = true;
-                    focus_item = itemAdd(group_item, citem, true);
-                }
-                else
-                if( citem.ci_idx == window.last_category ) {
-                    focus_item = itemAdd(group_item, citem, false);
-                    focus_item.addClass("focus");
-                }
+            
+            if( selected == false && citem.ci_idx == pparam.ci_idx ) {
+                dlg_list.find(".list-group-item").removeClass("focus");
+                selected = true;
+                focus_item = itemAdd(group_item, citem, true);
+            }
+            else
+            if( selected == false && citem.ci_idx == window.last_category ) {
+                focus_item = itemAdd(group_item, citem, false);
+                focus_item.addClass("focus");
             } else {
                 itemAdd(group_item, citem, false);
             }
