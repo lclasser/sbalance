@@ -86,7 +86,7 @@ function createSBalance()
             }
         },
         shareLink : function(link_text) {
-            return window.SBInterface.shareLink('https://sbalance.duckdns.org:8083', link_text);
+            return window.SBInterface.shareLink('https://sbalance.duckdns.org', link_text);
         },
         isRememberMe : function() { return window.SBInterface.isRememberMe(); },
         getRememberMe : function() { return JSON.parse(window.SBInterface.getRememberMe()); },
