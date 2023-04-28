@@ -166,7 +166,7 @@ function createSBalance() {
             self.is_closing = false;
           });
         } else {
-          window.openModal('/modal/modal.exit.html', null, function (result) {
+          window.openModal('https://lclasser.github.io/sbalance/pages/modal/modal.exit.html', null, function (result) {
             console.log("modal.exit result:", result);
             self.is_closing = false;
             if (result != null) {
@@ -186,7 +186,7 @@ function createSBalance() {
       if (self.getFrame() == null) {
         window.location = "/";
       } else {
-        window.openModal('/main/modal/modal.signout.html', null, function (result) {
+        window.openModal('https://lclasser.github.io/sbalance/pages/main/modal/modal.signout.html', null, function (result) {
           if (result && result.data && result.data.location != null) {
             window.SBInterface.onSignout();
             onMainDestroy();
