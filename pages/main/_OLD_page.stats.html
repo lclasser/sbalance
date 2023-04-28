@@ -24,16 +24,16 @@
                             <div class="container-fluid p-0">
                                 <ul class="nav nav-pills">
                                     <li class="nav-item">
-                                        <a class="nav-link fs-5" page-link="/main/stats/page.daily.html" href="#" data-bs-toggle="pill" role="tab" aria-controls="pills-daily" aria-selected="true">일별</a>
+                                        <a class="nav-link fs-5" page-link="https://lclasser.github.io/sbalance/pages/main/stats/page.daily.html" href="#" data-bs-toggle="pill" role="tab" aria-controls="pills-daily" aria-selected="true">일별</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link fs-5 disabled" href="#" data-bs-toggle="pill" role="tab" aria-controls="pills-calendar" aria-selected="false">달력</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link fs-5" page-link="/main/stats/page.category.html" href="#" data-bs-toggle="pill" role="tab" aria-controls="pills-month" aria-selected="false">분류</a>
+                                        <a class="nav-link fs-5" page-link="https://lclasser.github.io/sbalance/pages/main/stats/page.category.html" href="#" data-bs-toggle="pill" role="tab" aria-controls="pills-month" aria-selected="false">분류</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link fs-5" page-link="/main/stats/page.wallet.html" href="#" data-bs-toggle="pill" role="tab" aria-controls="pills-settle" aria-selected="false">지갑</a>
+                                        <a class="nav-link fs-5" page-link="https://lclasser.github.io/sbalance/pages/main/stats/page.wallet.html" href="#" data-bs-toggle="pill" role="tab" aria-controls="pills-settle" aria-selected="false">지갑</a>
                                     </li>
                                 </ul>
                             </div>
@@ -77,7 +77,7 @@ function onPageLoad(epage)
     bframe.makePageLink(dpage.get$page());
 
     bframe.on('page_open', function(event, opage) {
-        if( opage.getFile() == "/main/stats/page.daily.html" )
+        if( opage.getFile() == "https://lclasser.github.io/sbalance/pages/main/stats/page.daily.html" )
             dpage.find("#balance_top").attr('style','display:none !important');
     });
     bframe.on('page_load', function(event, opage) {
@@ -89,7 +89,7 @@ function onPageLoad(epage)
         $btop.find("[for=sum_deposit]").html("");
         $btop.find("[for=sum_withdraw]").html("");
     });
-    bframe.openPage("/main/stats/page.daily.html");
+    bframe.openPage("https://lclasser.github.io/sbalance/pages/main/stats/page.daily.html");
 
     // 화면 기능
     var $btop = dpage.find("#balance_top");
@@ -118,7 +118,7 @@ function onPageLoad(epage)
         /* var param = {
             key: '180883efaf2faf9f53f0b46bcad52838',
         };
-        dpage.openModal('/main/modal/modal.link_wallet.html', param);
+        dpage.openModal('https://lclasser.github.io/sbalance/pages/main/modal/modal.link_wallet.html', param);
         */$btop
         SBalance.onRefresh();
         // dpage.getFrame().send('refresh', 'refresh-data');

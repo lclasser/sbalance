@@ -82,7 +82,7 @@ function onPageLoad(epage)
     bframe.on('backward', function() {
         return bframe.backHistory();
     });
-    bframe.openPage("/main/setup/page.menu.html", "설정");
+    bframe.openPage("https://lclasser.github.io/sbalance/pages/main/setup/page.menu.html", "설정");
 
     var usr_name = window.SBalance.getSignin('usr_name');
     if( usr_name != null ) {

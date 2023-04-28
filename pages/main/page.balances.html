@@ -98,10 +98,10 @@
                 </div>
                 <!-- 일별,달력,분류,지갑 등 -->
                 <div class="d-flex ms-1">
-                    <div class="daily-type" page-link="/main/balance/page.daily.html">일별</div>
-                    <div class="daily-type" page-link="/main/balance/page.calendar.html">달력</div>
-                    <div class="daily-type" page-link="/main/balance/page.category.html">분류</div>
-                    <div class="daily-type" page-link="/main/balance/page.wallet.html">지갑</div>
+                    <div class="daily-type" page-link="https://lclasser.github.io/sbalance/pages/main/balance/page.daily.html">일별</div>
+                    <div class="daily-type" page-link="https://lclasser.github.io/sbalance/pages/main/balance/page.calendar.html">달력</div>
+                    <div class="daily-type" page-link="https://lclasser.github.io/sbalance/pages/main/balance/page.category.html">분류</div>
+                    <div class="daily-type" page-link="https://lclasser.github.io/sbalance/pages/main/balance/page.wallet.html">지갑</div>
                 </div>
                 <!-- 필터 -->
                 <div class="d-flex ms-auto h-100 me-1">
@@ -251,7 +251,7 @@ function onPageLoad(epage)
         $bsum.find("[for=sum_deposit]").html("");
         $bsum.find("[for=sum_withdraw]").html("");
     });
-    bframe.openPage("/main/balance/page.daily.html", "일별");
+    bframe.openPage("https://lclasser.github.io/sbalance/pages/main/balance/page.daily.html", "일별");
 }
 
 function onPageClose(epage)

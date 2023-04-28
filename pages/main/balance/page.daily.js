@@ -125,7 +125,7 @@ function process_daily(ppage, $list, inbound, cbfinish) {
         if (item.cg_type == 'L') cate_icon.addClass("shared");
         cate_icon.click(function () {
           console.log("cate_icon click.");
-          window.popver("/main/popver/select.category.html", {
+          window.popver("/sbalance/pages/main/popver/select.category.html", {
             ci_idx: item.ci_idx || 0
           }, function (result) {
             if (result == null) return;
@@ -279,7 +279,7 @@ function process_daily(ppage, $list, inbound, cbfinish) {
           var sel_row = date_list[key];
           var sel_item = sel_row.items[idx];
           STracer("page.daily.js").log("row:", sel_item);
-          window.openModal('/main/modal/modal.balance_message.html', sel_item, function (result) {
+          window.openModal('/sbalance/pages/main/modal/modal.balance_message.html', sel_item, function (result) {
             STracer("page.daily.js").log("modal.balance_message.html result:", result);
             if (result == null) return;
             process_daily(ppage, $list, inbound, cbfinish);

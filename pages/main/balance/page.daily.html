@@ -18,7 +18,7 @@ function onPageLoad(epage)
 
     dpage.getFrame().setMenuCenter('menu_center_plus.svg', function() {
         console.log('onsetMenuCenter');
-        window.openModal('/main/modal/modal.balance_message.html', null, function(result) {
+        window.openModal('https://lclasser.github.io/sbalance/pages/main/modal/modal.balance_message.html', null, function(result) {
             STracer("page.daily.html").log("modal.balance_message.html result:", result);
             if( result == null )
                 return;
