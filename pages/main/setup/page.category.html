@@ -136,14 +136,14 @@ function onPageLoad(epage)
         var cateitems = null;
         Promise.resolve()
         .then(function() {
-            return window.SBalance.request("https://lclasser.github.io/sbalance/pages/main/category/group/select")
+            return window.SBalance.request("/main/category/group/select")
             .then(function(res) {
                 console.log("res:", res);
                 categroup = res.data;
             })
         })
         .then(function() {
-            return window.SBalance.request("https://lclasser.github.io/sbalance/pages/main/category/item/select")
+            return window.SBalance.request("/main/category/item/select")
             .then(function(res) {
                 cateitems = res.data;
             });
