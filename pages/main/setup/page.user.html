@@ -43,7 +43,7 @@ function onPageLoad(epage)
     displayPage();
 
     $("#modify").click(function() {
-        window.openModal('/main/modal/modal.user_info.html', null, function(result) {
+        window.openModal('https://lclasser.github.io/sbalance/pages/main/modal/modal.user_info.html', null, function(result) {
             console.log("modal.user_info.html result:", result);
             if( result == true ) {
                 displayPage();

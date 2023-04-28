@@ -40,7 +40,7 @@ function onOpened(dpopver) {
         switch( $selected.prop("id") ) {
         case "mnu_wallet_add":
             {
-                window.openModal('/main/modal/modal.setup_wallet.html', { title : "지갑 추가", }, function(result) {
+                window.openModal('https://lclasser.github.io/sbalance/pages/main/modal/modal.setup_wallet.html', { title : "지갑 추가", }, function(result) {
                     if( result == true ) {
                         pparam.callback && pparam.callback();
                     }

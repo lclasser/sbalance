@@ -117,7 +117,7 @@ $(function() {
                             var share_key = $(this).parent().parent().find("#share_key").val();
                             var link_user = $(this).parent().parent().find("#link_user").html();
                             var link_email = $(this).parent().parent().find("#link_email").html();
-                            window.openModal('/main/modal/modal.confirm.html', {
+                            window.openModal('https://lclasser.github.io/sbalance/pages/main/modal/modal.confirm.html', {
                                 title   : `공유 해제 확인`,
                                 content : `"${link_user} (${link_email})" 와 분류 공유를 해제 하시겠습니까?`,
                                 btn_confirm : "해제",
@@ -153,7 +153,7 @@ $(function() {
     }
 
     $("#modal_del").click(function() {
-        window.openModal('/main/modal/modal.confirm.html', {
+        window.openModal('https://lclasser.github.io/sbalance/pages/main/modal/modal.confirm.html', {
             title   : `${$modal.find("#modal_del").html()} 확인`,
             content : `"${param.cg_name}" 그룹을 ${$modal.find("#modal_del").html()} 하시겠습니까?`,
             btn_confirm : $modal.find("#modal_del").html(),

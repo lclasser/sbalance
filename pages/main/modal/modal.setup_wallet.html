@@ -216,7 +216,7 @@ $(function() {
     modal.find("#modal_del").click(function() {
         // 지갑 삭제
         console.log("[modal.wallet.html] modal.confirm.html 1");
-        window.openModal('/main/modal/modal.confirm.html', {
+        window.openModal('https://lclasser.github.io/sbalance/pages/main/modal/modal.confirm.html', {
             title   : "삭제 확인",
             content : `삭제 하시겠습니까?`,
             btn_confirm : "삭제",
@@ -249,7 +249,7 @@ $(function() {
     });
     modal.find("#modal_rel").click(function() {
         // 지갑 공유 해제
-        window.openModal('/main/modal/modal.confirm.html', {
+        window.openModal('https://lclasser.github.io/sbalance/pages/main/modal/modal.confirm.html', {
             title   : "공유 해제 확인",
             content : `공유된 지갑을 해제 하시겠습니까?`,
             btn_confirm : "해제",

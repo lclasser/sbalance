@@ -61,7 +61,7 @@ window.SBalance.request("/main/match/lists")
                     mat_amount   : item.mat_amount,
                     mat_contents : item.mat_contents,
                 };
-                window.openModal('/main/modal/modal.setup_match.html', param, function(result) {
+                window.openModal('https://lclasser.github.io/sbalance/pages/main/modal/modal.setup_match.html', param, function(result) {
                     inquire_match(dpage);
                 });
             });

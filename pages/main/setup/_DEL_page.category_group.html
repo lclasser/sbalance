@@ -48,7 +48,7 @@ function onPageLoad(epage)
         group_card.find(`[data-bs-target=".group_x"]`).attr("data-bs-target", `.${grp_name}`);
         group_card.find(`[aria-controls=".group_x"]`).attr("aria-controls", `${grp_name}`);
         group_card.find("#btn_modify").click(function() {
-            spage.getFrame().openPage('/main/setup/page.category_list.html', '분류 항목', cate_item);
+            spage.getFrame().openPage('https://lclasser.github.io/sbalance/pages/main/setup/page.category_list.html', '분류 항목', cate_item);
         });
         group_card.find("#btn_insert").click(function() {
             var item = {
@@ -56,14 +56,14 @@ function onPageLoad(epage)
                 btn_confirm : "추가",
                 cate_group : cate_item.cate_group,
             };
-            spage.openModal('/main/modal/modal.info_citem.html', item, function(result) {
+            spage.openModal('https://lclasser.github.io/sbalance/pages/main/modal/modal.info_citem.html', item, function(result) {
                 if( result != null ) {
                     refresh_list();
                 }
             });
         });
         group_card.find("#btn_delete").click(function() {
-            spage.openModal('/main/modal/modal.confirm.html', {
+            spage.openModal('https://lclasser.github.io/sbalance/pages/main/modal/modal.confirm.html', {
                 title   : "삭제 확인",
                 content : `"${cate_item.cate_group}" 그룹을 삭제 하시겠습니까?`,
                 btn_confirm : "삭제",
@@ -95,7 +95,7 @@ function onPageLoad(epage)
         
         const cb_modifyItem = function(result) {
             
-            spage.openModal('/main/modal/modal.info_citem.html', item, cb_modifyItem);
+            spage.openModal('https://lclasser.github.io/sbalance/pages/main/modal/modal.info_citem.html', item, cb_modifyItem);
         }
 
         var group_item = $(template_item);
@@ -115,7 +115,7 @@ function onPageLoad(epage)
                 if( result == null )
                     return;
                 if( result.btn_delete == true ) {
-                    spage.openModal('/main/modal/modal.confirm.html', {
+                    spage.openModal('https://lclasser.github.io/sbalance/pages/main/modal/modal.confirm.html', {
                         title   : "삭제 확인",
                         content : `"${ritem.cate_item}" 분류를 삭제 하시겠습니까?`,
                         btn_confirm : "삭제",
@@ -132,12 +132,12 @@ function onPageLoad(epage)
                                 }
                             });
                         } else {
-                            spage.openModal('/main/modal/modal.info_citem.html', ritem, cb_modifyItem);
+                            spage.openModal('https://lclasser.github.io/sbalance/pages/main/modal/modal.info_citem.html', ritem, cb_modifyItem);
                         }
                     });
                 }
             };
-            spage.openModal('/main/modal/modal.info_citem.html', mitem, cb_modifyItem);
+            spage.openModal('https://lclasser.github.io/sbalance/pages/main/modal/modal.info_citem.html', mitem, cb_modifyItem);
         });
 
         group_card.find(".list-group").append(group_item);
@@ -161,7 +161,7 @@ function onPageLoad(epage)
     $("#group_add").click(function() {
         console.log("group_add: click");
 
-        spage.openModal('/main/modal/modal.info_cgroup.html', null, function(result) {
+        spage.openModal('https://lclasser.github.io/sbalance/pages/main/modal/modal.info_cgroup.html', null, function(result) {
             console.log("modal.info_cgroup.html result:", result);
             if( result != null && result.length > 0 ) {
                 var inbound = {

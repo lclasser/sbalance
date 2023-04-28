@@ -262,7 +262,7 @@ function inquire_category(spage, inbound, callback)
                     if( cgroup.ci_idxs != null ) {
                         citem.ci_idxs = cgroup.ci_idxs;
                     }
-                    spage.getFrame().openPage("/main/balance/page.category_item.html", citem.ci_name || "미분류", citem);
+                    spage.getFrame().openPage("https://lclasser.github.io/sbalance/pages/main/balance/page.category_item.html", citem.ci_name || "미분류", citem);
                     return false;
                 });
 

@@ -88,11 +88,11 @@ function onPageLoad(epage)
                 date2: msg_date.slice(0,4) + '31',
                 lists: lists,
             };
-            spage.getFrame().openPage("/main/setup/page.message_list.html", "문자 읽기", inbound);
+            spage.getFrame().openPage("https://lclasser.github.io/sbalance/pages/main/setup/page.message_list.html", "문자 읽기", inbound);
             return;
         }
 
-        window.openModal('/main/modal/modal.date_range.html', null, function(result) {
+        window.openModal('https://lclasser.github.io/sbalance/pages/main/modal/modal.date_range.html', null, function(result) {
             if( result != null ) {
                 console.log("date range:", result);
 
@@ -117,7 +117,7 @@ function onPageLoad(epage)
                     console.log("onFinish:["+readCount+"] " + lists.length);
 
                     inbound.lists = lists;
-                    spage.getFrame().openPage("/main/setup/page.message_list.html", "문자 읽기", inbound);
+                    spage.getFrame().openPage("https://lclasser.github.io/sbalance/pages/main/setup/page.message_list.html", "문자 읽기", inbound);
                 });
             } else {
             }

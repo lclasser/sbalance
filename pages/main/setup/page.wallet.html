@@ -92,7 +92,7 @@ function inquire_wallet(dpage)
                 obj_row.find("#link_cnt").html(witem.link_cnt);
 
                 obj_row.click(function() {
-                    window.openModal('/main/modal/modal.setup_wallet.html', witem, function(result) {
+                    window.openModal('https://lclasser.github.io/sbalance/pages/main/modal/modal.setup_wallet.html', witem, function(result) {
                         if( result != null )
                             inquire_wallet(dpage);
                         return;

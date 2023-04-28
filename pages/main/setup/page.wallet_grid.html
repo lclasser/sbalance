@@ -59,14 +59,14 @@ function onPageLoad(epage)
         { id : 'link_cnt'   , width: '25%', type: 'string', text: '공유' },
     ]);
     listgrid.onClickRow = function(item) {
-        window.openModal('/main/modal/modal.wallet.html', item.data, function(result) {
+        window.openModal('https://lclasser.github.io/sbalance/pages/main/modal/modal.wallet.html', item.data, function(result) {
             if( result != null ) print_wallet(spage, listgrid);
         });
     };
 
     // 메뉴 : 지갑 추가
     spage.find("#mnu_wallet_add").click(function() {
-        window.openModal('/main/modal/modal.wallet.html', {
+        window.openModal('https://lclasser.github.io/sbalance/pages/main/modal/modal.wallet.html', {
             title : "지갑 추가",
         }, function(result) {
             if( result == true ) print_wallet(spage, listgrid);
