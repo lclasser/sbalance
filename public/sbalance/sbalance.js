@@ -349,7 +349,7 @@ window.openModal = function (dlg_file, param, callback) {
         self._data._no_close = null;
 
         // self._pages = [];
-        var page_url = "https://lclasser.github.io/sbalance/pages" + self._data.file;
+        var page_url = self._data.file;
         $.get(page_url, function (data) {
           self.$modal.ready(function () {
             console.log("doModal: onready...", self.$modal);
@@ -480,7 +480,7 @@ window.popver = function (pop_file, param, callback) {
     },
     _open: function (file, param, callback) {
       var self = this;
-      var page_url = "https://lclasser.github.io/sbalance/pages" + pop_file;
+      var page_url = pop_file;
       $.get(page_url, function (data) {
         /*
         1. document.ready 호출됨 -> onopen
