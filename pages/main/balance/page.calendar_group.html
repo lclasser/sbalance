@@ -164,7 +164,8 @@ function inquire_calendar(dpage, inbound, callback)
                     ndata.date = formaterDate_fromFmtDate(res.data[ndata.pos].sms_date);
                 }
                 // 날짜가 현재 loop 중인 날짜와 같으면...
-                if( item_date.getMonth() == ndata.date.getMonth() &&
+                if( ndata.date != null &&
+                    item_date.getMonth() == ndata.date.getMonth() &&
                     item_date.getDate()  == ndata.date.getDate() )
                 {
                     ndata.item = res.data[ndata.pos];
