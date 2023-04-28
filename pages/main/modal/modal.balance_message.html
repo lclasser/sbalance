@@ -223,7 +223,7 @@
         $modal.find("#sms_category").attr("ci_idx", param.ci_idx);
         $modal.find("#sms_category").on('click', function() {
             var ci_idx = $modal.find("#sms_category").attr("ci_idx");
-            window.popver("/main/popver/select.category.html", {ci_idx: ci_idx}, function(result) {
+            window.popver("https://lclasser.github.io/sbalance/pages/main/popver/select.category.html", {ci_idx: ci_idx}, function(result) {
                 if( result != null ) {
                     $modal.find("#sms_category").attr("ci_idx", result.ci_idx);
                     if( result.ci_idx > 0 ) {
