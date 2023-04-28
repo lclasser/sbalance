@@ -54,8 +54,8 @@ function process_daily(ppage, $list, inbound, cbfinish) {
                 id="item_collapse"
                 data-bs-toggle="collapse" data-bs-target=".group_x" 
                 aria-expanded="false" aria-controls=".group_x">
-                <div class="collapse hide group_x"><img style="height:24px;" src="/sbalance/public/image/card_down.svg"></div>
-                <div class="collapse show group_x"><img style="height:24px;" src="/sbalance/public/image/card_up.svg"></div>
+                <div class="collapse hide group_x"><img style="height:24px;" src="https://lclasser.github.io/sbalance/public/image/card_down.svg"></div>
+                <div class="collapse show group_x"><img style="height:24px;" src="https://lclasser.github.io/sbalance/public/image/card_up.svg"></div>
             </button>
         </div>
         <div class="card-body p-0 collapse show group_x">
@@ -121,11 +121,11 @@ function process_daily(ppage, $list, inbound, cbfinish) {
         var obj_row = $(`<div class="row m-0 h-100"/>`).css("min-height", "54px").html(grid_row);
         var cate_icon = obj_row.find("#item_category");
         cate_icon.html(`<span class="align-middle text-wrap">${formaterName4(item.ci_name)}</span>`);
-        if (item.acc_type == 'L') cate_icon.append($(`<img src="/sbalance/public/image/link_category.svg">`));
+        if (item.acc_type == 'L') cate_icon.append($(`<img src="https://lclasser.github.io/sbalance/public/image/link_category.svg">`));
         if (item.cg_type == 'L') cate_icon.addClass("shared");
         cate_icon.click(function () {
           console.log("cate_icon click.");
-          window.popver("/sbalance/pages/main/popver/select.category.html", {
+          window.popver("https://lclasser.github.io/sbalance/pages/main/popver/select.category.html", {
             ci_idx: item.ci_idx || 0
           }, function (result) {
             if (result == null) return;
@@ -279,7 +279,7 @@ function process_daily(ppage, $list, inbound, cbfinish) {
           var sel_row = date_list[key];
           var sel_item = sel_row.items[idx];
           STracer("page.daily.js").log("row:", sel_item);
-          window.openModal('/sbalance/pages/main/modal/modal.balance_message.html', sel_item, function (result) {
+          window.openModal('https://lclasser.github.io/sbalance/pages/main/modal/modal.balance_message.html', sel_item, function (result) {
             STracer("page.daily.js").log("modal.balance_message.html result:", result);
             if (result == null) return;
             process_daily(ppage, $list, inbound, cbfinish);
