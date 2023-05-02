@@ -8,7 +8,7 @@ function process_daily(_,g,h,w){console.log("process_daily..."),window.SBalance.
                 data-ad-layout="in-article"
                 data-ad-format="fluid"
                 data-ad-client="ca-pub-7340654800983393"
-                data-ad-slot="6742985599"></ins>`];Object.keys(p).reverse().forEach(function(c,a){a%5==0&&d<l.length&&(g.append($('<div class="row m-0 h-100"/>').css("min-height","54px").css("padding","3px").html(l[d])),d++,(adsbygoogle=window.adsbygoogle||[]).push({}));var o=p[c],a="group_"+a,e=$('<div class="sb-card card"/>'),s=(e.html(`
+                data-ad-slot="6742985599"></ins>`];Object.keys(p).reverse().forEach(function(c,a){a%5==0&&d<l.length&&(g.append($('<div class="row m-0 h-100"/>').css("min-height","60px").css("padding","3px").html(l[d])),d++,(adsbygoogle=window.adsbygoogle||[]).push({}));var o=p[c],a="group_"+a,e=$('<div class="sb-card card"/>'),s=(e.html(`
         <div class="card-header">
             <div class="daily-day">1 일 </div>
             <div class="daily-week me-auto"></div>
