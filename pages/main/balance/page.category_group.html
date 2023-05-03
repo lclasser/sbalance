@@ -115,6 +115,14 @@ function inquire_category(spage, inbound, callback)
                 break;
             }
 
+            switch( item.acc_display ) {
+            case 'E':
+                is_accum = false;
+                break;
+            case 'H':
+                return;
+            }
+
             if( is_accum == true ) {
                 switch( item.sms_class ) {
                 case 'W': // 출금

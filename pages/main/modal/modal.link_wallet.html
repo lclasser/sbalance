@@ -60,22 +60,20 @@ $(function() {
             $("#dlg_link_title").html(
                 `"${param.linker_name} (${param.linker_email})"님께 공유할 계좌를 선택하세요.`
             );
-        })
+        });
     })
     .then(function() {
         // 계좌 조회
-        return window.SBalance.request("/main/account/list")
+        return window.SBalance.request("/main/shared/account/list", {share_key: param.key})
         .then(function(res) {
             console.log("res:", res);
             res.data.forEach(function(item, idx) {
-                switch( item.acc_type ) {
-                case 'A':
-                case 'S':
-                    listgrid.insertRow(item);
-                    break;
+                if( item.share_acc_name == null ) {
+                    var row_obj = listgrid.insertRow(item);
+                    console.log("row_obj:", row_obj);
                 }
             });
-        })
+        });
     })
     .catch(function(err) {
         console.log("request.catch");

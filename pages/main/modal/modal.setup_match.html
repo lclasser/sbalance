@@ -34,7 +34,7 @@
                     <button class="input-label btn btn-secondary" type="button" data-bs-toggle="popover"
                         data-bs-placement="top" data-bs-container=".modal-body" 
                         data-bs-content="변수 %s:문자열,%d:숫자">?</button>
-                    <button type="button" class="btn btn-info h-100">검색</button>
+                    <button type="button" class="btn btn-info h-100" id="dlg_search">검색</button>
                 </div>
             </div>
             <div class="input-row">
@@ -76,8 +76,8 @@
         new bootstrap.Popover(element[0], { trigger: 'focus' });
 
         // dlg_alias
-        $modal.find('#dlg_alias').parent().attr("disabled", "disabled");
-        $modal.find('#dlg_alias').attr("disabled", "disabled");
+        // $modal.find('#dlg_alias').parent().attr("disabled", "disabled");
+        // $modal.find('#dlg_alias').attr("disabled", "disabled");
         window.SBalance.request("/main/account/list")
         .then(function(res) {
             console.log("/main/account/list:", res);
@@ -94,8 +94,8 @@
         });
 
         // dlg_class
-        $modal.find('#dlg_class').parent().attr("disabled", "disabled");
-        $modal.find('#dlg_class').attr("disabled", "disabled");
+        // $modal.find('#dlg_class').parent().attr("disabled", "disabled");
+        // $modal.find('#dlg_class').attr("disabled", "disabled");
         switch( param.sms_class ) {
         case 'D':
         case 'W': 
@@ -120,67 +120,57 @@
         });
 
         // dlg_money
-        $modal.find('#dlg_money').val(param.sms_amount && thousandFormatter(param.sms_amount));
+        eventInputNumber($modal.find("#dlg_money")[0]);
+        if( param.mat_amount != null && param.mat_amount != "0" )
+            $modal.find('#dlg_money').val(thousandFormatter(param.mat_amount));
 
         // dlg_target
         $modal.find('#dlg_target').val(param.mat_contents || '');
 
-        function display_match_find(acc_key, sms_class, sms_contents)
-        {
-            // sms_category
-            window.SBalance.request("/main/match/find", {
-                acc_key     : acc_key,
-                mat_class   : sms_class,
-                sms_contents: sms_contents,
-            })
-            .then(function(res) {
-                console.log("main/match/find:", res.data);
-                $modal.find("#dlg_matchlist").empty();
-                if( res.data.length <= 0 ) {
-                    $modal.find("#dlg_matchlist").append(
-                `<li class="list-group-item text-secondary">(없음)</li}`
-                        );
-                } else {
-                    res.data.forEach(function(mitem) {
-                        var li_item = $(`<li class="list-group-item d-flex">` +
-                            `<div class="align-self-center">\"${mitem.mat_contents}\"</div>` +
-                            `<div class="ms-auto"><button class="btn btn-sm btn-danger" id="mat_del">삭제</button></div>` +
-                        `</li}`);
-                        $modal.find("#dlg_matchlist").append(li_item);
-
-                        li_item.find("#mat_del").click(function() {
-                            window.SBalance.request("/main/match/delete", {
-                                acc_key     : mitem.acc_key,
-                                mat_class   : mitem.mat_class,
-                                mat_contents: mitem.mat_contents,
-                            })
-                            .then(function(res) {
-                                console.log("자동 분류 삭제:", res.error);
-                                if( res.error.success == 'Y' ) {
-                                    window.toast({
-                                        title_class: "bg-secondary text-white",
-                                        title_text: "자동 분류",
-                                        mesg_text: "자동 분류를 해제 했습니다.",
-                                    });
-                                } else {
-                                    window.toast({
-                                        title_class: "bg-danger text-white",
-                                        title_text: "자동 분류",
-                                        mesg_text: "자동 분류의 해제를 실패 했습니다.",
-                                    });
-                                }
-                                display_match_find(acc_key, sms_class, sms_contents);
-                            });
-                        });
-                    });
-                }
-            });
-        }
         display_match_find(param.acc_key, param.sms_class, param.sms_contents);
 
         console.log("init:", param);
     });
 
+    $modal.find("#dlg_search").click(function() {
+        var dlg_key = $modal.find('#dlg_alias').val();
+        var dlg_class = $modal.find('#dlg_class').val();
+        var dlg_money = $modal.find('#dlg_money').val();
+        var dlg_target = $modal.find('#dlg_target').val();
+
+        display_match_find(dlg_key, dlg_class, dlg_target, dlg_money);
+    });
+
+    function display_match_find(acc_key, sms_class, sms_contents, sms_money)
+    {
+        // sms_category
+        window.SBalance.request("/main/match/match", {
+            acc_key     : acc_key,
+            mat_class   : sms_class,
+            mat_contents: sms_contents,
+            mat_money   : sms_money,
+        })
+        .then(function(res) {
+            console.log("main/match/find:", res.data);
+            $modal.find("#dlg_matchlist").empty();
+            if( res.data.length <= 0 ) {
+                $modal.find("#dlg_matchlist").append(
+            `<li class="list-group-item text-secondary">(없음)</li}`
+                    );
+            } else {
+                res.data.forEach(function(mitem) {
+                    var li_item = $(`<li class="list-group-item d-flex">` +
+                        `<div class="col-3">${displayDate_fromFmtDate(mitem.sms_date)}</div>` +
+                        `<div class="col-3 text-truncate">${mitem.sms_contents}</div>` +
+                        `<div class="col-3 text-truncate">${mitem.sms_memo||""}</div>` +
+                        `<div class="col-3 text-end">${moneyFormatter(mitem.sms_amount)}</div>` +
+                    `</li}`);
+                    $modal.find("#dlg_matchlist").append(li_item);
+                });
+            }
+        });
+    }
+    
     $modal.find("#modal_del").click(function() {
         window.openModal('https://lclasser.github.io/sbalance/pages/main/modal/modal.confirm.html', {
             title   : "삭제 확인",
@@ -223,13 +213,15 @@
             mat_class    : param.sms_class,
             mat_amount   : param.mat_amount,
             mat_contents : param.mat_contents,
+            
+            ci_idx       : $modal.find("#dlg_category option:selected").val(),
+            mod_key      : $modal.find('#dlg_alias').val(),
+            mod_class    : $modal.find('#dlg_class').val(),
+            mod_amount   : $modal.find('#dlg_money').val(),
+            mod_contents : $modal.find('#dlg_target').val(),
         };
 
-        // dlg_money
-        inbound.target_amount = $modal.find('#dlg_money').val();
-
         // dlg_target
-        inbound.target_contents = $modal.find('#dlg_target').val();
         if( inbound.target_contents.length <= 0 ) {
             window.toast({
                 title_class: "bg-secondary text-white",
@@ -240,7 +232,6 @@
         }
 
         // dlg_category
-        inbound.ci_idx = $modal.find("#dlg_category option:selected").val();
         if( inbound.ci_idx <= 0 ) {
             window.toast({
                 title_class: "bg-secondary text-white",

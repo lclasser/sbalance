@@ -42,17 +42,17 @@
             </div>
             <div class="input-row">
                 <div class="input-col">
-                    <span class="input-label">금액</span>
-                    <input class="input-value form-control" type="text" id="dlg_amount" placeholder="금액을 입력하세요.(빈값은 사용안함)">
-                </div>
-            </div>
-            <div class="input-row">
-                <div class="input-col">
                     <span class="input-label">설정</span>
                     <input class="input-value form-control" type="text" id="dlg_target" placeholder="설정 값을 입력하세요.(필수)">
                     <button class="input-label btn btn-secondary" type="button" data-bs-toggle="popover"
                         data-bs-placement="top" data-bs-container=".modal-body" 
-                        data-bs-content="변수 %s:문자열,%d:숫자">?</button>
+                        data-bs-content="%s:문자열, %d:숫자">?</button>
+                </div>
+            </div>
+            <div class="input-row">
+                <div class="input-col">
+                    <span class="input-label">금액</span>
+                    <input class="input-value form-control" type="text" id="dlg_amount" placeholder="금액을 입력하세요.(빈값은 사용안함)">
                 </div>
             </div>
 
@@ -133,7 +133,6 @@
         // dlg_category
         window.SBalance.request("/main/category/item/select")
         .then(function(res) {
-            $modal.find('#dlg_category').append($(`<option class="" value="0"> - </option>`));
             var is_select;
             res.data.forEach(function(item) {
                 is_select = (param.sms_category == item.ci_idx) ? is_select = "selected" : "";
@@ -205,16 +204,13 @@
         var inbound = {
             acc_key      : param.acc_key,
             mat_class    : param.sms_class,
-            mat_amount   : param.mat_amount,
-            mat_contents : param.mat_contents,
+            mat_amount   : $modal.find('#dlg_amount').val(),
+            mat_contents : $modal.find('#dlg_target').val(),
+            ci_idx       : $modal.find("#dlg_category option:selected").val(),
         };
 
-        // dlg_amount
-        inbound.target_amount = $modal.find('#dlg_amount').val();
-
         // dlg_target
-        inbound.target_contents = $modal.find('#dlg_target').val();
-        if( inbound.target_contents.length <= 0 ) {
+        if( inbound.mat_contents.length <= 0 ) {
             window.toast({
                 title_class: "bg-secondary text-white",
                 title_text: "자동 분류",
@@ -224,7 +220,6 @@
         }
 
         // dlg_category
-        inbound.ci_idx = $modal.find("#dlg_category option:selected").val();
         if( inbound.ci_idx <= 0 ) {
             window.toast({
                 title_class: "bg-secondary text-white",
@@ -234,14 +229,7 @@
             return;
         }
 
-        if( compareMatch({
-                mat_amount   : inbound.target_amount,
-                mat_contents : inbound.target_contents,
-            }, {
-                sms_amount   : param.sms_amount,
-                sms_contents : param.sms_contents,
-            }
-        ) != true ) {
+        if( compareMatch(inbound, param) != true ) {
             window.toast({
                 title_class: "bg-secondary text-white",
                 title_text: "자동 분류",
@@ -253,9 +241,9 @@
         console.log("inbound:", param, inbound);
         // window.dmodal.close(inbound);
 
-        window.SBalance.request("/main/match/update", inbound)
+        window.SBalance.request("/main/match/insert", inbound)
         .then(function(res) {
-            console.log("/main/message/update res:", res);
+            console.log("/main/message/insert res:", res);
             var result = null;
             if( res.error.success == 'Y' ) {
                 result = { modified  : inbound, };
