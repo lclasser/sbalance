@@ -118,6 +118,9 @@
         $modal.find(`#${id}`).attr("disabled", "disabled");
         $modal.find(`#${id}`).parent().attr("disabled", "disabled");
     }
+    function readonly_column(id) {
+        $modal.find(`#${id}`).attr("readonly", "readonly");
+    }
     $(function () {
         console.log("modal.balance_item.html...", param);
         if (param == null) {
@@ -148,6 +151,25 @@
         });
 
         // 공유 계좌일 경우 수정 불가 항목설정
+        if( param.read_only == true ) {
+            readonly_column('sms_date');
+            readonly_column('sms_time');
+            disable_column('acc_alias');
+            disable_column('sms_class');
+            disable_column('sms_type');
+            disable_column('sms_display');
+            // disable_column('sms_recommend');
+            readonly_column('sms_amount');
+            disable_column('sms_unit');
+            readonly_column('sms_contents');
+            disable_column('sms_category');
+            readonly_column('sms_memo');
+
+            $modal.find('#modal_del').hide();
+            $modal.find('#modal_ok').hide();
+            $modal.find('#modal_match').hide();
+        }
+        else
         if (param.acc_type == 'L') {
             disable_column('sms_date');
             disable_column('sms_time');
@@ -164,6 +186,7 @@
             $modal.find('#modal_match').hide();
         }
         disable_column('sms_recommend');
+
 
         // acc_alias
         window.SBalance.request("/main/account/list", null)
