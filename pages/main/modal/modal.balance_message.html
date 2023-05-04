@@ -6,6 +6,7 @@
         </div>
 
         <div class="modal-body">
+            <!-- 날짜, 시간 -->
             <div class="input-row">
                 <div class="input-col">
                     <span class="input-label">날짜</span>
@@ -18,12 +19,14 @@
                         data-target="#sms_time" data-toggle="datetimepicker" />
                 </div>
             </div>
+            <!-- 지갑 -->
             <div class="input-row">
                 <div class="input-col">
                     <span class="input-label">지갑</span>
                     <select class="input-value form-select" id="acc_alias"></select>
                 </div>
             </div>
+            <!-- 구분, 상태 -->
             <div class="input-row">
                 <div class="input-col">
                     <span class="input-label">구분</span>
@@ -42,6 +45,23 @@
                     </select>
                 </div>
             </div>
+            <!-- 표시, 추천-->
+            <div class="input-row">
+                <div class="input-col">
+                    <span class="input-label">표시</span>
+                    <select class="input-value form-select" id="sms_display">
+                        <option value="I">포함</option>
+                        <option value="E">제외</option>
+                    </select>
+                </div>
+                <div class="input-col">
+                    <span class="input-label">추천</span>
+                    <select class="input-value form-select" id="sms_recommend">
+                        <option value="-">-</option>
+                    </select>
+                </div>
+            </div>
+            <!-- 금액 -->
             <div class="input-row">
                 <div class="input-col">
                     <span class="input-label">금액</span>
@@ -52,14 +72,14 @@
                     </select>
                 </div>
             </div>
+            <!-- 내용 -->
             <div class="input-row">
                 <div class="input-col">
                     <span class="input-label">내용</span>
                     <input class="input-value form-control" type="text" id="sms_contents">
-                    <!-- <button class="input-label form-control bg-success" type="button" id="sms_recommend">추천</button> -->
                 </div>
             </div>
-
+            <!-- 분류 -->
             <div class="input-row">
                 <div class="input-col">
                     <span class="input-label">분류</span>
@@ -93,6 +113,11 @@
 <script>
     var param = window.dmodal.getParam();
     var $modal = window.dmodal.getModal();
+
+    function disable_column(id) {
+        $modal.find(`#${id}`).attr("disabled", "disabled");
+        $modal.find(`#${id}`).parent().attr("disabled", "disabled");
+    }
     $(function () {
         console.log("modal.balance_item.html...", param);
         if (param == null) {
@@ -124,97 +149,85 @@
 
         // 공유 계좌일 경우 수정 불가 항목설정
         if (param.acc_type == 'L') {
-            $modal.find('#sms_date').attr("disabled", "disabled");
-            $modal.find('#sms_date').parent().attr("disabled", "disabled");
-
-            $modal.find('#sms_time').attr("disabled", "disabled");
-            $modal.find('#sms_time').parent().attr("disabled", "disabled");
-
-            $modal.find("#acc_alias").attr("disabled", "disabled");
-            $modal.find("#acc_alias").parent().attr("disabled", "disabled");
-
-            $modal.find("#sms_class").attr("disabled", "disabled");
-            $modal.find("#sms_class").parent().attr("disabled", "disabled");
-
-            $modal.find("#sms_type").attr("disabled", "disabled");
-            $modal.find("#sms_type").parent().attr("disabled", "disabled");
-
-            $modal.find('#sms_amount').attr("disabled", "disabled");
-            $modal.find('#sms_amount').parent().attr("disabled", "disabled");
-
-            $modal.find('#sms_unit').attr("disabled", "disabled");
-            $modal.find('#sms_unit').parent().attr("disabled", "disabled");
-
-            $modal.find('#sms_contents').attr("disabled", "disabled");
-            $modal.find('#sms_contents').parent().attr("disabled", "disabled");
+            disable_column('sms_date');
+            disable_column('sms_time');
+            disable_column('acc_alias');
+            disable_column('sms_class');
+            disable_column('sms_type');
+            disable_column('sms_display');
+            // disable_column('sms_recommend');
+            disable_column('sms_amount');
+            disable_column('sms_unit');
+            disable_column('sms_contents');
 
             $modal.find('#modal_del').attr("disabled", "disabled");
             $modal.find('#modal_match').hide();
         }
+        disable_column('sms_recommend');
 
         // acc_alias
         window.SBalance.request("/main/account/list", null)
-            .then(function (res) {
-                console.log("/main/account/list:", res);
-                var selected = null;
-                res.data.forEach(function (item) {
-                    var acc_type = '본인';
-                    var acc_key = null;
-                    selected = '';
-                    switch (item.acc_type) {
-                        case 'A':
-                            acc_type = '자동';
-                            acc_key = item.acc_key;
-                            if (param.acc_key == item.acc_key) selected = 'selected';
-                            break;
-                        case 'L':
-                            if (param.acc_type != 'L') {
-                                // 본인 지갑에만 생성 가능하다.
-                                return;
-                            }
-                            acc_type = '공유';
-                            acc_key = item.acc_name;
-                            if (param.acc_name == item.acc_name) selected = 'selected';
-                            break;
-                        case 'S':
-                            acc_type = '본인';
-                            acc_key = item.acc_key;
-                            if (param.acc_key == item.acc_key) selected = 'selected';
-                            break;
-                        default:
+        .then(function (res) {
+            console.log("/main/account/list:", res);
+            var selected = null;
+            res.data.forEach(function (item) {
+                var acc_type = '본인';
+                var acc_key = null;
+                selected = '';
+                switch (item.acc_type) {
+                    case 'A':
+                        acc_type = '자동';
+                        acc_key = item.acc_key;
+                        if (param.acc_key == item.acc_key) selected = 'selected';
+                        break;
+                    case 'L':
+                        if (param.acc_type != 'L') {
+                            // 본인 지갑에만 생성 가능하다.
                             return;
-                    }
-                    $modal.find('#acc_alias').append($(
-                        `<option class="fs_item" value="${acc_key}" ${selected}>[${item.acc_company}] ${item.acc_alias} (${acc_type})</option>`
-                    ));
-                });
-                if (selected == null) {
-                    $modal.find('#acc_alias').val("");
+                        }
+                        acc_type = '공유';
+                        acc_key = item.acc_name;
+                        if (param.acc_name == item.acc_name) selected = 'selected';
+                        break;
+                    case 'S':
+                        acc_type = '본인';
+                        acc_key = item.acc_key;
+                        if (param.acc_key == item.acc_key) selected = 'selected';
+                        break;
+                    default:
+                        return;
                 }
+                $modal.find('#acc_alias').append($(
+                    `<option class="fs_item" value="${acc_key}" ${selected}>[${item.acc_company}] ${item.acc_alias} (${acc_type})</option>`
+                ));
             });
+            if (selected == null) {
+                $modal.find('#acc_alias').val("");
+            }
+        });
 
         // sms_class
         switch (param.sms_class) {
-            case 'D':
-            case 'W':
-                $modal.find('#sms_class').val(param.sms_class).prop("selected", true);
-                break;
-            default:
-                $modal.find('#sms_class').val("(없음)");
-                break;
+        case 'D':
+        case 'W':
+            $modal.find('#sms_class').val(param.sms_class).prop("selected", true);
+            break;
+        default:
+            $modal.find('#sms_class').val("(없음)");
+            break;
         }
 
         // sms_type
         switch (param.sms_type) {
-            case 'P':
-            case 'C':
-            case 'D':
-            case 'I':
-                $modal.find('#sms_type').val(param.sms_type).prop("selected", true);
-                break;
-            default:
-                $modal.find('#sms_type').val("(없음)");
-                break;
+        case 'P':
+        case 'C':
+        case 'D':
+        case 'I':
+            $modal.find('#sms_type').val(param.sms_type).prop("selected", true);
+            break;
+        default:
+            $modal.find('#sms_type').val("(없음)");
+            break;
         }
 
         console.log("param.ci_idx:", param.ci_idx);
@@ -237,6 +250,12 @@
                 }
             });
         });
+
+        // sms_display
+        $modal.find('#sms_display').val(param.sms_display || 'I').prop("selected", true);
+
+        // sms_recommend
+        $modal.find('#sms_recommend').val(param.sms_recommend || '-').prop("selected", true);
 
         // sms_amount
         $modal.find('#sms_amount').val(thousandFormatter(param.sms_amount || 0));
@@ -356,6 +375,14 @@
         temp_val = $modal.find("#sms_category").attr("ci_idx");
         if (param.sms_category != temp_val) { inbound.sms_category = temp_val; }
 
+        // sms_display
+        temp_val = $modal.find("#sms_display option:selected").val();
+        if (param.sms_display != temp_val) { inbound.sms_display = temp_val; }
+
+        // sms_recommend
+        // temp_val = $modal.find("#sms_recommend option:selected").val();
+        // if (param.sms_recommend != temp_val) { inbound.sms_recommend = temp_val; }
+
         // sms_amount
         temp_val = $modal.find('#sms_amount').val().replace(/[^0-9]/g, '');
         if (param.sms_amount != temp_val) { inbound.sms_amount = temp_val; }
@@ -389,33 +416,33 @@
                 message_url = "/main/message/insert";
 
             window.SBalance.request(message_url, inbound)
-                .then(function (res) {
-                    var result = null;
-                    var bgcolor = "bg-secondary";
-                    var message = "";
-                    if (res.error.success == 'Y') {
-                        console.log(`message_url res:`, res);
-                        if (res.data.affectedRows > 0) {
-                            result = true;
-                            bgcolor = "bg-success";
-                            message = "정보를 저장 했습니다.";
-                        } else {
-                            bgcolor = "bg-secondary";
-                            message = "저장 할 정보가 없습니다.";
-                        }
+            .then(function (res) {
+                var result = null;
+                var bgcolor = "bg-secondary";
+                var message = "";
+                if (res.error.success == 'Y') {
+                    console.log(`message_url res:`, res);
+                    if (res.data.affectedRows > 0) {
+                        result = true;
+                        bgcolor = "bg-success";
+                        message = "정보를 저장 했습니다.";
                     } else {
-                        console.error(`message_url res:`, res);
-                        bgcolor = "bg-danger";
-                        message = `저장을 실패 했습니다. (${res.error.message})`;
+                        bgcolor = "bg-secondary";
+                        message = "저장 할 정보가 없습니다.";
                     }
+                } else {
+                    console.error(`message_url res:`, res);
+                    bgcolor = "bg-danger";
+                    message = `저장을 실패 했습니다. (${res.error.message})`;
+                }
 
-                    window.toast({
-                        title_class: `${bgcolor} text-white`,
-                        title_text: "상세 정보",
-                        mesg_text: message,
-                    });
-                    window.dmodal.close(result);
+                window.toast({
+                    title_class: `${bgcolor} text-white`,
+                    title_text: "상세 정보",
+                    mesg_text: message,
                 });
+                window.dmodal.close(result);
+            });
         }
     });
 </script>

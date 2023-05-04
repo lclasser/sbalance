@@ -23,6 +23,12 @@
             </div>
             <div class="input-row">
                 <div class="input-col">
+                    <span class="input-label">순서</span>
+                    <input class="input-value form-control" type="text" id="dlg_order" placeholder="순서 값을 입력하세요.">
+                </div>
+            </div>
+            <div class="input-row">
+                <div class="input-col">
                     <span class="input-label">분류</span>
                     <select class="input-value form-select" id="dlg_category"></select>
                 </div>
@@ -71,6 +77,7 @@
 <script>
     var $modal = window.dmodal.getModal();
     var param  = window.dmodal.getParam();
+
     $(function() {
         var element = $modal.find("[data-bs-toggle='popover']");
         new bootstrap.Popover(element[0], { trigger: 'focus' });
@@ -105,6 +112,10 @@
             $modal.find('#dlg_class').val("(없음)");
             break;
         }
+
+        // dlg_order
+        eventInputNumber($modal.find("#dlg_order")[0]);
+        $modal.find('#dlg_order').val(param.mat_order || 100);
 
         // dlg_category
         window.SBalance.request("/main/category/item/select")
@@ -151,7 +162,7 @@
             mat_money   : sms_money,
         })
         .then(function(res) {
-            console.log("main/match/find:", res.data);
+            console.log("main/match/match:", res.data);
             $modal.find("#dlg_matchlist").empty();
             if( res.data.length <= 0 ) {
                 $modal.find("#dlg_matchlist").append(
@@ -194,15 +205,15 @@
                         title_text: "자동 분류",
                         mesg_text: "자동 분류를 해제 했습니다.",
                     });
-                    window.dmodal.exit(true);
                 } else {
                     window.toast({
                         title_class: "bg-danger text-white",
                         title_text: "자동 분류",
-                        mesg_text: "자동 분류의 해제를 실패 했습니다.",
+                        mesg_text: "자동 분류의 삭제를 실패 했습니다.",
                     });
                 }
             });
+            window.dmodal.exit(true);
         });
     });
 
@@ -219,10 +230,11 @@
             mod_class    : $modal.find('#dlg_class').val(),
             mod_amount   : $modal.find('#dlg_money').val(),
             mod_contents : $modal.find('#dlg_target').val(),
+            mod_order    : $modal.find('#dlg_order').val(),
         };
 
         // dlg_target
-        if( inbound.target_contents.length <= 0 ) {
+        if( inbound.mod_contents.length <= 0 ) {
             window.toast({
                 title_class: "bg-secondary text-white",
                 title_text: "자동 분류",

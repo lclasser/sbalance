@@ -115,6 +115,16 @@ function inquire_category(spage, inbound, callback)
                 break;
             }
 
+            // sms_display
+            switch( item.sms_display ) {
+            case 'E':
+                is_accum = false;
+                break;
+            case 'H':
+                return;
+            }
+
+            // acc_display
             switch( item.acc_display ) {
             case 'E':
                 is_accum = false;
