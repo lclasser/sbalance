@@ -43,9 +43,17 @@ $(function() {
     var param = window.dmodal.getParam();
     console.log("param:", param);
 
+    var date_range = window.dmodal.getReference('date_range');
+
     var now_date = new Date();
-    var dlg_date1 = new Date(now_date.getFullYear(), now_date.getMonth(), 1);
-    var dlg_date2 = new Date(now_date.getFullYear(), now_date.getMonth() + 1, 0);
+    if( date_range.now_date1 == null ) {
+        date_range.now_date1 = new Date(now_date.getFullYear(), now_date.getMonth(), 1);
+    } 
+    if( date_range.now_date2 == null ) {
+        date_range.now_date2 = new Date(now_date.getFullYear(), now_date.getMonth() + 1, 0);
+    }
+    var dlg_date1 = date_range.now_date1;
+    var dlg_date2 = date_range.now_date2;
 
     $('#dlg_date1').datetimepicker({
         dayViewHeaderFormat: 'YYYY-MM',
@@ -80,6 +88,9 @@ $(function() {
     });
     
     $("#modal_ok").click(function() {
+        date_range.now_date1 = $('#dlg_date1').datetimepicker('viewDate').toDate();
+        date_range.now_date2 = $('#dlg_date2').datetimepicker('viewDate').toDate()
+
         window.dmodal.close({
             "date1" : $('#dlg_date1').datetimepicker('viewDate').toDate(),
             "date2" : $('#dlg_date2').datetimepicker('viewDate').toDate(),
