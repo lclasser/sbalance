@@ -99,7 +99,7 @@ function onPageLoad(epage)
 {
     var now_date = new Date();
     var now_date1 = new Date(now_date.getFullYear()-1, now_date.getMonth(), now_date.getDay());
-    var now_date2 = new Date(now_date.getFullYear(), now_date.getMonth(), now_date.getDay());
+    var now_date2 = new Date(now_date.getFullYear(), now_date.getMonth()+1, 0);
 
     $('#search_date1').datetimepicker({
         dayViewHeaderFormat: 'YYYY-MM',
