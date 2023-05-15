@@ -199,15 +199,21 @@ function inquire_calendar(dpage, inbound, callback)
                 // body
                 var sbc_body = $item_td.find(".sbc_body");
                 // 지출
+                var withdraw_amount = '-';
+                if( ndata.item && ndata.item.withdraw_count > 0 )
+                    withdraw_amount = thousandFormatter(ndata.item.withdraw_amount);
                 sbc_body.append(
                     `<div class="d-flex justify-content-end amount-withdraw">` +
-                        `<div class="text-truncate" id="amt">${moneyFormatter(ndata.item && ndata.item.withdraw_amount)}</div>` +
+                        `<div class="text-truncate" id="amt">${withdraw_amount}</div>` +
                     `</div>`
                 );
                 // 수입
+                var deposit_amount = '-';
+                if( ndata.item && ndata.item.deposit_count > 0 )
+                    deposit_amount = thousandFormatter(ndata.item.deposit_amount);
                 sbc_body.append(
                     `<div class="d-flex justify-content-end amount-deposit">` +
-                        `<div class="text-truncate" id="amt">${moneyFormatter(ndata.item && ndata.item.deposit_amount)}</div>` + 
+                        `<div class="text-truncate" id="amt">${deposit_amount}</div>` + 
                     `</div>`
                 );
 
