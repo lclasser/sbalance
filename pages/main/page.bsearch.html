@@ -66,9 +66,21 @@
         </div>
         <!-- Page -->
         <div class="p-1" style="flex: 1; overflow: auto;" id="bsearch_body">
-            <!-- -->
+            <!-- 날짜 -->
+
             <div class="d-flex input-group">
-                <span class="input-group-prepend input-group-text">검색어</span>
+                <span class="col-2 input-group-text fs_item">시작 날짜</span>
+                <input type="button" class="form-control date datetimepicker-input fs_item" id="search_date1" data-target="#search_date1" data-toggle="datetimepicker"/>
+            </div>
+
+            <div class="d-flex input-group">
+                <span class="col-2 input-group-text fs_item">종료 날짜</span>
+                <input type="button" class="form-control date datetimepicker-input fs_item" id="search_date2" data-target="#search_date2" data-toggle="datetimepicker"/>
+            </div>
+
+            <!-- 검색어 -->
+            <div class="d-flex input-group">
+                <span class="col-2 input-group-prepend input-group-text">검색어</span>
                 <input class="form-control" type="text" id="search_word" placeholder="내용과 메모에서 검색합니다.">
                 <button class="input-group-append btn btn-primary" type="button" id="search_btn">검색</button>
             </div>
@@ -85,12 +97,32 @@
 <script>
 function onPageLoad(epage)
 {
-    $("#search_btn").click(function() {
-        var search_word = $("#search_word").val();
+    var now_date = new Date();
+    var now_date1 = new Date(now_date.getFullYear()-1, now_date.getMonth(), now_date.getDay());
+    var now_date2 = new Date(now_date.getFullYear(), now_date.getMonth(), now_date.getDay());
 
-        window.SBalance.request('/main/message/search', {
-            search_word : search_word
-        })
+    $('#search_date1').datetimepicker({
+        dayViewHeaderFormat: 'YYYY-MM',
+        format: 'YYYY-MM-DD',
+        locale: 'ko',
+        date  : now_date1,
+    });
+
+    $('#search_date2').datetimepicker({
+        dayViewHeaderFormat: 'YYYY-MM',
+        format: 'YYYY-MM-DD',
+        locale: 'ko',
+        date  : now_date2,
+    });
+
+    $("#search_btn").click(function() {
+        var inbound = {
+            search_word  : $("#search_word").val(),
+            search_date1 : formaterFmtDate_fromDate($('#search_date1').datetimepicker('viewDate').toDate()),
+            search_date2 : formaterFmtDate_fromDate($('#search_date2').datetimepicker('viewDate').toDate()),
+        };
+
+        window.SBalance.request('/main/message/search', inbound)
         .then(function(result) {
             if( result.error.success != 'Y' ) {
                 console.error(`message_url res:`, result);
@@ -110,7 +142,7 @@ function onPageLoad(epage)
                 show_month : true,
                 read_only : true,
             };
-            process_card_daily($("#search_result"), null, options, result.data, function() {
+            process_data_daily($("#search_result"), null, options, result.data, function() {
                 // onRefresh
                 console.log("refresh...");
             });

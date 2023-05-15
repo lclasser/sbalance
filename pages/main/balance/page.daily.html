@@ -16,16 +16,6 @@ function onPageLoad(epage)
     var dpage = epage.getPage();
     var _balances = dpage.getReference('balances');
 
-    dpage.getFrame().setMenuCenter('menu_center_plus.svg', function() {
-        console.log('onsetMenuCenter');
-        window.openModal('https://lclasser.github.io/sbalance/pages/main/modal/modal.balance_message.html', null, function(result) {
-            STracer("page.daily.html").log("modal.balance_message.html result:", result);
-            if( result == null )
-                return;
-            page_query();
-        });
-    });
-
     var $bsum = dpage.getFrame().getBalanceSum();
 
     function page_query() {
@@ -37,6 +27,16 @@ function onPageLoad(epage)
             $bsum && $bsum[0].setSummaryResult(qry_result, page_query);
         });
     }
+
+    dpage.getFrame().setMenuCenter('menu_center_plus.svg', function() {
+        console.log('onsetMenuCenter');
+        window.openModal('https://lclasser.github.io/sbalance/pages/main/modal/modal.balance_message.html', null, function(result) {
+            STracer("page.daily.html").log("modal.balance_message.html result:", result);
+            if( result == null )
+                return;
+            page_query();
+        });
+    });
 
     dpage.on('refresh', function(event, value) {
         STracer("page.daily.html").log(`event.refresh:`, event, value);
