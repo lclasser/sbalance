@@ -40,16 +40,6 @@
                 display: none;
                 width: 100%; height: 100%;
             }
-            #screen-waitor {
-                display: none;
-                position: fixed;
-                z-index: 9000;
-                width: 100%; height: 100%;
-                top: 0px; left: 0px;
-                cursor: wait;
-                opacity: .5; /* in FireFox */ 
-                filter: alpha(opacity=50); /* in IE */
-            }
         </style>
     </head>
 
@@ -75,7 +65,9 @@
         </div>
 
         <!-- screen-waitor -->
-        <div id="screen-waitor"></div>
+        <div id="screen-waitor">
+            <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+        </div>
     </body>
 
     <!-- jQuery 3.5.1 -->
