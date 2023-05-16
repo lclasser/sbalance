@@ -1,29 +1,4 @@
-
-<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"  role="document">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="modal_title">분류 설정</h5>
-            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        
-        <div class="modal-body">
-            <div id="dlg_list"></div>
-        </div>
-
-        <div class="modal-footer">
-            <button type="button" id="modal_ok" class="btn btn-lg btn-primary">설정</button>
-            <button type="button" class="btn btn-lg btn-secondary" data-bs-dismiss="modal">취소</button>
-        </div>
-    </div>
-</div>
-
-<script>
-$(function() {
-    var param = window.dmodal.getParam();
-    console.log("param:", param);
-
-    
-    const template_card = `
+<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role=document><div class=modal-content><div class=modal-header><h5 class=modal-title id=modal_title>분류 설정</h5><button class=btn-close type=button data-bs-dismiss=modal aria-label=Close></button></div><div class=modal-body><div id=dlg_list></div></div><div class=modal-footer><button type=button id=modal_ok class="btn btn-lg btn-primary">설정</button> <button type=button class="btn btn-lg btn-secondary" data-bs-dismiss=modal>취소</button></div></div></div><script>$(function(){var c=window.dmodal.getParam();console.log("param:",c);var r=$("#dlg_list");$.post("/main/category/item/select",null,function(a){console.log("/main/category/item/select:",a);var o={};a.data.forEach(function(a){var i,t,s,l,e=o[a.cg_name];null==e&&(l=r,s="group_"+(t=a).ci_idx,(i=$("<div/>").addClass("card border-0 w-100 mb-1").html(`
     <div class="sb-card-header card-header d-flex align-items-center p-1" style="height:35px;">
         <div class="me-auto text_string" id="item_title"></div>
         <div class="ms-1 ps-4">
@@ -37,57 +12,4 @@ $(function() {
         </div>
     </div>
     <ul class="sb-card-body list-group list-group-flush collapse show group_x">
-    </ul>`;
-
-    function groupAdd(parent, citem) {
-        var grp_index = `group_${citem.ci_idx}`;
-        var group_card = $("<div/>").addClass("card border-0 w-100 mb-1").html(template_card);
-        group_card.find("#item_title").html(citem.cg_name);
-        group_card.find(".group_x").removeClass("group_x").addClass(grp_index);
-        group_card.find(`[data-bs-target=".group_x"]`).attr("data-bs-target", `.${grp_index}`);
-        group_card.find(`[aria-controls=".group_x"]`).attr("aria-controls", `${grp_index}`);
-        parent.append(group_card);
-        return group_card;
-    }
-
-    function itemAdd(group_card, citem, selected) {
-        group_card.find(".list-group").append(
-            `<li class="list-group-item list-group-item-action ${selected?"active":""}" ci_idx="${citem.ci_idx}" >${citem.ci_name}</li}`
-        );
-    }
-
-    var dlg_list = $("#dlg_list");
-    $.post("/main/category/item/select", null, function(res) {
-        console.log("/main/category/item/select:", res);
-        var grp_list = {};
-        res.data.forEach(function(citem) {
-            var group_item = grp_list[citem.cg_name];
-            if( group_item == null ) {
-                group_item = groupAdd(dlg_list, citem);
-                grp_list[citem.cg_name] = group_item;
-            }
-            itemAdd(group_item, citem, (citem.ci_idx == param.sms_category));
-        });
-
-        dlg_list.find(".list-group-item").click(function() {
-            var is_active = $(this).hasClass("active");
-            dlg_list.find(".list-group-item").removeClass("active");
-            if( is_active == false )
-                $(this).addClass("active");
-        })
-    });
-
-    $("#modal_ok").click(function() {
-        var result = {};
-
-        var sel_item = dlg_list.find(".list-group-item.active");
-        var sel_idx = sel_item.attr("ci_idx");
-        console.log("sel_idx:", sel_idx, sel_item);
-        if( sel_idx != null && Number.isInteger(parseInt(sel_idx)) ) {
-            window.dmodal.close(sel_idx);
-            return;
-        }
-        window.dmodal.close(-1);
-    });
-});
-</script>
+    </ul>`)).find("#item_title").html(t.cg_name),i.find(".group_x").removeClass("group_x").addClass(s),i.find('[data-bs-target=".group_x"]').attr("data-bs-target","."+s),i.find('[aria-controls=".group_x"]').attr("aria-controls",s),l.append(i),e=i,o[a.cg_name]=e),t=e,l=(s=a).ci_idx==c.sms_category,t.find(".list-group").append(`<li class="list-group-item list-group-item-action ${l?"active":""}" ci_idx="${s.ci_idx}" >${s.ci_name}</li}`)}),r.find(".list-group-item").click(function(){var a=$(this).hasClass("active");r.find(".list-group-item").removeClass("active"),0==a&&$(this).addClass("active")})}),$("#modal_ok").click(function(){var a=r.find(".list-group-item.active"),i=a.attr("ci_idx");console.log("sel_idx:",i,a),null!=i&&Number.isInteger(parseInt(i))?window.dmodal.close(i):window.dmodal.close(-1)})})</script>

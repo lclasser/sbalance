@@ -1,15 +1,4 @@
-<div page-declare="dpage" class="w-100 h-100" onload="onPageLoad(this);">
-    <div id="list_items" class="overflow-hidden">
-    </div>
-</div>
-
-<script>
-
-function inquire_match(dpage)
-{
-    var ilist = dpage.find("#list_items");
-
-    var grid_row = `
+<div page-declare=dpage class="h-100 w-100" onload=onPageLoad(this)><div id=list_items class=overflow-hidden></div></div><script>function inquire_match(a){var n=a.find("#list_items"),c=`
 <div class="col-3 p-1 border-end d-flex align-items-center text-truncate" id="item_category">지갑</div>
 <div class="col-1 p-1 border-end d-flex align-items-center justify-content-center" id="mat_order">순위</div>
 <div class="col-1 p-1 border-end d-flex align-items-center justify-content-center" id="mat_class">입출금</div>
@@ -18,68 +7,4 @@ function inquire_match(dpage)
     <div class="m-0 fw-bold" id="mat_contents">설정</div>
     <div class="m-0 " id="mat_category">분류</div>
 </div>
-`;
-
-    window.SBalance.request("/main/match/lists")
-    .then(function(res) {
-        console.log("match/list:", res);
-        ilist.empty();
-        var obj_row = $("<div/>");
-        obj_row.addClass("row theme_view border border-top border-end-0 m-0 w-100")
-        .css("min-height", "42px").html(grid_row);
-        ilist.append(obj_row);
-        
-        res.data.forEach(function(item) {
-            var obj_row = $("<div/>");
-            obj_row.addClass("row theme_view border border-top-0 border-end-0 m-0 w-100")
-            .css("min-height", "42px")
-            .html(grid_row);
-
-            obj_row.find("#item_category").html(item.acc_alias);
-            switch( item.mat_class ) {
-            case 'W': // 출금
-                obj_row.find("#mat_class").html("출금");
-                break;
-            case 'D': // 입금
-                obj_row.find("#mat_class").html("입금");
-                break;
-            }
-
-            obj_row.find('#mat_amount').html(thousandFormatter(item.mat_amount||''));
-
-            if( item.ci_name == null )
-                obj_row.find("#mat_category").html(`(없음)`);
-            else
-                obj_row.find("#mat_category").html(`${item.cg_name}/${item.ci_name}`);
-
-            obj_row.find("#mat_contents").html(`"${item.mat_contents}"`);
-            obj_row.find("#mat_order").html(item.mat_order);
-
-            obj_row.click(function() {
-                var param = {
-                    acc_type     : item.acc_type,
-                    acc_name     : item.acc_name,
-                    acc_key      : item.acc_key, 
-                    sms_class    : item.mat_class,
-                    sms_category : item.ci_idx,
-                    mat_amount   : item.mat_amount,
-                    mat_contents : item.mat_contents,
-                    mat_order    : item.mat_order,
-                };
-                window.openModal('https://lclasser.github.io/sbalance/pages/main/modal/modal.setup_match.html', param, function(result) {
-                    inquire_match(dpage);
-                });
-            });
-
-            ilist.append(obj_row);
-        });
-    });
-}
-
-function onPageLoad(epage)
-{
-    var dpage = epage.getPage();
-    inquire_match(dpage);
-}
-
-</script>
+`;window.SBalance.request("/main/match/lists").then(function(t){console.log("match/list:",t),n.empty();var e=$("<div/>");e.addClass("row theme_view border border-top border-end-0 m-0 w-100").css("min-height","42px").html(c),n.append(e),t.data.forEach(function(e){var t=$("<div/>");switch(t.addClass("row theme_view border border-top-0 border-end-0 m-0 w-100").css("min-height","42px").html(c),t.find("#item_category").html(e.acc_alias),e.mat_class){case"W":t.find("#mat_class").html("출금");break;case"D":t.find("#mat_class").html("입금")}t.find("#mat_amount").html(thousandFormatter(e.mat_amount||"")),null==e.ci_name?t.find("#mat_category").html("(없음)"):t.find("#mat_category").html(e.cg_name+"/"+e.ci_name),t.find("#mat_contents").html(`"${e.mat_contents}"`),t.find("#mat_order").html(e.mat_order),t.click(function(){var t={acc_type:e.acc_type,acc_name:e.acc_name,acc_key:e.acc_key,sms_class:e.mat_class,sms_category:e.ci_idx,mat_amount:e.mat_amount,mat_contents:e.mat_contents,mat_order:e.mat_order};window.openModal("https://lclasser.github.io/sbalance/pages/main/modal/modal.setup_match.html",t,function(t){inquire_match(a)})}),n.append(t)})})}function onPageLoad(t){inquire_match(t.getPage())}</script>
