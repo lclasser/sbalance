@@ -1,0 +1,23 @@
+<style>.list-group-item.focus:not(:hover){color:#e9e6e6;background-color:#555}</style><page class="d-block h-100 p-0 pb-2 pt-2 w-80" style=position:fixed;margin:auto;left:0;right:0;top:0;width:80%;display:none onopen=onOpened(this) onload=onLoaded(this) onclose=onClosed(this)><div id=dialog_modal class="align-items-center d-flex fade justify-content-center modal position-relative show" tabindex=-1 role=dialog data-bs-focus=false data-bs-backdrop=static aria-labelledby=dialog_modal aria-hidden=true><div class="m-0 modal-dialog modal-dialog-centered modal-dialog-scrollable sb-modal" role=document style=min-width:100%><div class=modal-content><div class=modal-header><h5 class=modal-title id=modal_title>필터 선택</h5><button class=btn-close type=button data-bs-dismiss=modal aria-label=Close></button></div><div class="modal-body overflow-auto"><div id=dlg_list></div></div><div class=modal-footer><button type=button id=modal_ok class="btn btn-lg btn-primary">적용</button> <button type=button class="btn btn-lg btn-secondary" data-bs-dismiss=modal>취소</button></div></div></div></div></page><script>function onOpened(o){console.log("dpopver:",o);o.getParam();function e(a,l,e){var e="pvgroup_"+e,t=$("<div/>").addClass("sb-card card border w-100 mb-1").html(`
+    <div class="card-header d-flex align-items-center p-1" style="height:35px;">
+        <div class="me-auto" id="item_title"></div>
+        <div class="ms-1 ps-4">
+            <button type="button" class="transparent-bgcolor"
+                data-bs-toggle="collapse" data-bs-target=".group_x" aria-expanded="false" aria-controls=".group_x">
+                <div class="collapse hide group_x"><img style="height:24px;" src="https://lclasser.github.io/sbalance/public/image/card_down.svg"></div>
+                <div class="collapse show group_x"><img style="height:24px;" src="https://lclasser.github.io/sbalance/public/image/card_up.svg"></div>
+            </button>
+        </div>
+    </div>
+    <div class="card-body p-0">
+        <ul class="list-group list-group-flush collapse show group_x"></ul>
+    </div>
+    </ul>`);return t.find("#item_title").html(l),t.find(".group_x").removeClass("group_x").addClass(e),t.find('[data-bs-target=".group_x"]').attr("data-bs-target","."+e),t.find('[aria-controls=".group_x"]').attr("aria-controls",e),a.append(t),t}function t(a,l,e,t){l=$(`
+            <li class="list-group-item list-group-item-action" ikey="${l}">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        ${e} (${t})
+                    </label>
+                </div>
+            </li>`);a.find(".list-group").append(l)}var c=o.find("#dlg_list");window.SBalance.request("/main/user/filter/balance").then(function(a){console.log("/main/user/filter/balance:",a);var l;null!=a.data.wallet&&0<a.data.wallet.length&&(l=e(c,"지갑",1),a.data.wallet.forEach(function(a){t(l,a.acc_key,a.acc_alias,a.acc_company)})),null!=a.data.category&&0<a.data.category.length&&(l=e(c,"분류",2),a.data.category.forEach(function(a){t(l,a.acc_key,a.ci_name,a.cg_name)})),o.$body.css("disply","block")}),o.find("#modal_ok").click(function(){var a=c.find(".list-group-item.active"),l=a.attr("ci_idx"),e=a.attr("ci_name"),t=a.attr("cg_name");console.log("ci_idx:",l,a),null!=l&&Number.isInteger(parseInt(l))?(window.last_category=l,o.close({ci_idx:l,ci_name:e,cg_name:t})):o.close(null)})}function onLoaded(a){console.log("onLoaded:",a)}function onClosed(a){console.log("onClosed:",a)}</script>
