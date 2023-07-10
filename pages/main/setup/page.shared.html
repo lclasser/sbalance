@@ -1,4 +1,4 @@
-<div page-declare=dpage class="h-100 w-100" onload=onPageLoad(this) onclose=onPageClose(this)><div id=list_items class=overflow-hidden></div></div><script>function inquire_shared(c){window.SBalance.request("/main/shared/users").then(function(a){c.find("#list_items").empty(),console.log("users:",a);a=Object.values(a.data);a.length<=0&&c.find("#list_items").html('<div class="row m-1" style="height:30px;">데이터가 없습니다.</div>'),a.forEach(function(a,e){var e="user_"+e,s=$("<div/>"),t=(s.addClass("sb-card card").html(`
+<div page-declare=dpage class=sb-page onload=onPageLoad(this) onclose=onPageClose(this)><div id=list_items class=overflow-auto></div></div><script>function inquire_shared(c){window.SBalance.request("/main/shared/users").then(function(a){c.find("#list_items").empty(),console.log("users:",a);a=Object.values(a.data);a.length<=0&&c.find("#list_items").html('<div class="row m-1" style="height:30px;">데이터가 없습니다.</div>'),a.forEach(function(a,e){var e="user_"+e,s=$("<div/>"),t=(s.addClass("sb-card card").html(`
         <div class="card-header">
             <div class="flex-grow-1" id="grp_name">지갑</div>
             <div class="col-auto p-1" style="text-align: right;">
@@ -12,7 +12,7 @@
                 <div class="collapse show group_x"><img style="height:24px;" src="https://lclasser.github.io/sbalance/public/image/card_up.svg"></div>
             </button>
         </div>
-        <div class="card-body p-0 collapse show group_x">
+        <div class="card-body p-1 collapse show group_x">
         </div>`),s.find("#grp_name").html(`${a[0].usr_name} (${a[0].usr_email})`),s.attr("share_key",a[0].share_key),s.find("#item_collapse")),i=(t.attr("data-bs-target","."+e),t.attr("aria-controls","."+e),s.find(".group_x").removeClass("group_x").addClass(e),s.find(".card-body"));a.forEach(function(a,e){var s=$("<div/>");switch(s.addClass("row m-0").css("min-height","54px").css("padding-right","6px").html(`
         <div class="d-flex align-items-center ps-1 pe-1 col-auto" id="acc_company" style="width: 70px;">금융사</div>
         <div class="d-flex align-items-center ps-1 pe-1 col" id="acc_alias">별칭</div>
