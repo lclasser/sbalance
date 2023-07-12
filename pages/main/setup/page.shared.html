@@ -1,6 +1,7 @@
-<div page-declare=dpage class=sb-page onload=onPageLoad(this) onclose=onPageClose(this)><div id=list_items class=overflow-auto style=margin-bottom:40px></div></div><script>function inquire_shared(c){window.SBalance.request("/main/shared/users").then(function(e){c.find("#list_items").empty(),console.log("users:",e);e=Object.values(e.data);e.length<=0&&c.find("#list_items").html('<div class="row m-1" style="height:30px;">데이터가 없습니다.</div>'),e.forEach(function(e,a){var a="user_"+a,t=$(`
+<div page-declare=dpage class=sb-page onload=onPageLoad(this) onclose=onPageClose(this)><div id=list_items class=overflow-auto style=margin-bottom:40px></div></div><script>function inquire_shared(c){window.SBalance.request("/main/shared/users").then(function(a){c.find("#list_items").empty(),console.log("users:",a);a=Object.values(a.data);a.length<=0&&c.find("#list_items").html('<div class="row m-1" style="height:30px;">데이터가 없습니다.</div>'),a.forEach(function(a,e){var e="user_"+e,t=$(`
     <div class="sb-card card">
         <div class="card-header">
+                <img id="grp_icon" class="p-1 pe-2" src="https://lclasser.github.io/sbalance/public/image/icon_share.svg">
             <div class="d-flex flex-column justify-content-center flex-grow-1 overflow-hidden">
                 <div class="text-truncate" id="grp_name"></div>
                 <div class="text-truncate memo-text" id="grp_email"></div>
@@ -19,8 +20,8 @@
         </div>
         <div class="card-body p-1 collapse show group_x">
         </div>
-    </div>`),s=(t.find("#grp_name").html(e[0].usr_name),t.find("#grp_email").html(e[0].usr_email),t.attr("share_key",e[0].share_key),t.find("#item_collapse")),i=(s.attr("data-bs-target","."+a),s.attr("aria-controls","."+a),t.find(".group_x").removeClass("group_x").addClass(a),t.find(".shared-btn").click(function(){console.log("공유 해제 click.")}),t.find(".card-body"));e.forEach(function(e,a){var t=$(`
+    </div>`),s=(t.find("#grp_name").html(a[0].usr_name),t.find("#grp_email").html(a[0].usr_email),t.attr("share_key",a[0].share_key),t.find("#item_collapse")),i=(s.attr("data-bs-target","."+e),s.attr("aria-controls","."+e),t.find(".group_x").removeClass("group_x").addClass(e),t.find(".shared-btn").click(function(){console.log("공유 해제 click.")}),t.find(".card-body"));a.forEach(function(a,e){var t=$(`
     <div class="row align-items-center m-0" style="min-height:54px;">
         <div class="d-flex align-items-center ps-1 pe-1 col-auto share-text" id="acc_company" style="width: 80px;">금융사</div>
         <div class="d-flex align-items-center ps-1 pe-1 col" id="acc_alias">별칭</div>
-    </div>`);switch(t.attr("type",e.type),e.type){case"A":t.find("#acc_company").html(e.acc_company),t.find("#acc_alias").html(e.acc_alias),t.attr("acc_key",e.acc_key);break;case"C":t.find("#acc_company").html("카테고리"),t.find("#acc_alias").html(e.cg_name),t.attr("cg_key",e.cg_key)}0<i.children().length&&i.append($('<div class="seperater"/>')),i.append(t)}),c.find("#list_items").append(t)})})}function onPageLoad(e){e=e.getPage();STracer("page.wallet.html").dbg("onPageLoad..."),inquire_shared(e)}function onPageClose(e){STracer("page.wallet.html").dbg("onPageClose:",e)}</script>
+    </div>`);switch(t.attr("type",a.type),a.type){case"A":t.find("#acc_company").html(a.acc_company),t.find("#acc_alias").html(a.acc_alias),t.attr("acc_key",a.acc_key);break;case"C":t.find("#acc_company").html("카테고리"),t.find("#acc_alias").html(a.cg_name),t.attr("cg_key",a.cg_key)}0<i.children().length&&i.append($('<div class="seperater"/>')),i.append(t)}),c.find("#list_items").append(t)})})}function onPageLoad(a){a=a.getPage();STracer("page.wallet.html").dbg("onPageLoad..."),inquire_shared(a)}function onPageClose(a){STracer("page.wallet.html").dbg("onPageClose:",a)}</script>

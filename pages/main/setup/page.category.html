@@ -1,7 +1,8 @@
 <div page-declare=dpage class=sb-page onload=onPageLoad(this) onclose=onPageClose(this)><div id=list_items class=overflow-auto style=margin-bottom:40px></div></div><script>function onPageLoad(t){var i=t.getPage();i.getFrame().setMenuCenter("menu_center_apps.svg",function(){console.log("onsetMenuCenter"),window.popver("https://lclasser.github.io/sbalance/pages/main/popver/menu.setup.category.html",{callback:function(){o()}})});const l=`
     <div class="sb-card card">
         <div class="card-header">
-            <div class="d-flex flex-column justify-content-center flex-grow-1 overflow-hidden">
+            <div class="d-flex flex-grow-1 align-items-center">
+                <img id="cate_icon" class="p-1 pe-2" src="https://lclasser.github.io/sbalance/public/image/icon_category.svg">
                 <div class="text-truncate" id="item_title"></div>
                 <div class="text-truncate memo-text" id="item_owner"></div>
             </div>
