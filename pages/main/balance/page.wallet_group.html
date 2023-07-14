@@ -1,6 +1,10 @@
-<link href=https://lclasser.github.io/sbalance/pages/main/balance/page.wallet_group.css rel=stylesheet><div page-declare=dpage class=sb-page onload=onPageLoad(this)><div id=list_items class="overflow-hidden theme-card-body"></div></div><script>function inquire_wallet(s,a,t){console.log("inbound:",a);var i={sum_count:0,sum_withdraw:amountAdd(),sum_deposit:amountAdd()},c={self:{title:"본인",wallets:{}},link:{title:"공유",wallets:{}}};Promise.resolve().then(function(){return window.SBalance.request("/main/account/list")}).then(function(a){a.data.forEach(function(a,t){var e=null,n=null,n="L"===a.acc_type?(e=c.link,a.acc_name):(e=c.self,a.acc_key);e.wallets[n]=a})}).then(function(){return window.SBalance.request("/main/message/wallet",a)}).then(function(a){console.log("res:",a),s.find("#list_items").empty(),a.data.forEach(function(a,t){var e=null,e="L"===a.acc_type?c.link:c.self;a.acc_key=a.acc_key||"",e.wallets[a.acc_key]=Object.assign(e.wallets[a.acc_key]||{},a)});Object.keys(c).forEach(function(a,t){var a=c[a],t="group_"+t,e=$("<div/>"),n=(e.addClass("sb-card card").html(`
+<div page-declare=dpage class=sb-page onload=onPageLoad(this)><div id=list_items class="overflow-hidden theme-card-body"></div></div><script>function inquire_wallet(i,a,t){console.log("inbound:",a);var n={sum_count:0,sum_withdraw:amountAdd(),sum_deposit:amountAdd()},c={self:{title:"본인",icon:"https://lclasser.github.io/sbalance/public/image/icon_user.svg",class:"self-text",wallets:{}},link:{title:"공유",icon:"https://lclasser.github.io/sbalance/public/image/icon_share.svg",class:"share-text",wallets:{}}};Promise.resolve().then(function(){return window.SBalance.request("/main/account/list")}).then(function(a){a.data.forEach(function(a,t){var e=null,s=null,s="L"===a.acc_type?(e=c.link,a.acc_name):(e=c.self,a.acc_key);e.wallets[s]=a})}).then(function(){return window.SBalance.request("/main/message/wallet",a)}).then(function(a){console.log("res:",a),i.find("#list_items").empty(),a.data.forEach(function(a,t){var e=null,e="L"===a.acc_type?c.link:c.self;a.acc_key=a.acc_key||"",e.wallets[a.acc_key]=Object.assign(e.wallets[a.acc_key]||{},a)});Object.keys(c).forEach(function(a,t){var s=c[a],a="group_"+t,t=$(`
+        <div class="sb-card card">
         <div class="card-header">
-            <div class="flex-grow-1" id="grp_name">지갑</div>
+            <div class="d-flex flex-grow-1 align-items-center">
+                <img id="grp_icon" class="p-1 pe-2" src="">
+                <span id="grp_name" class="">지갑<span>
+            </div>
             <button type="button" class="transparent-bgcolor" 
                 id="item_collapse"
                 data-bs-toggle="collapse" data-bs-target=".group_x" 
@@ -10,12 +14,17 @@
             </button>
         </div>
         <div class="card-body p-0 collapse show group_x">
-        </div>`),e.find("#grp_name").html(""+(a.title||"-")),e.find("#item_collapse")),l=(n.attr("data-bs-target","."+t),n.attr("aria-controls","."+t),e.find(".group_x").removeClass("group_x").addClass(t),e.find(".card-body"));Object.values(a.wallets).forEach(function(t,a){var e=$("<div/>");e.addClass("d-flex align-items-center border-0 m-0 h-100").css("min-height","54px").css("padding-right","6px").html(`
-        <div class="d-flex align-items-center ps-1 pe-1 row col-4">
-            <div class="d-flex" id="acc_company">금융사</div>
-            <div class="d-flex" id="acc_alias">별칭</div>
         </div>
-        <div class="d-flex align-items-center ps-1 pe-1 col justify-content-end" id="deposit_amount">입금금액</div>
-        <div class="d-flex align-items-center ps-1 pe-1 col-1 justify-content-end" id="deposit_count">개수</div>
-        <div class="d-flex align-items-center ps-1 pe-1 col justify-content-end" id="withdraw_amount">출금금액</div>
-        <div class="d-flex align-items-center ps-1 pe-1 col-1 justify-content-end" id="withdraw_count">개수</div>`),null==t.acc_key||t.acc_key.length<=0?(e.find("#acc_company").html("(미지정)"),e.find("#acc_alias").html("")):(e.find("#acc_company").html(t.acc_company),e.find("#acc_alias").html(t.acc_alias)),e.find("#deposit_count").html(t.deposit_count||""),e.find("#deposit_amount").html(amountFormat(null,t.deposit_amount)).addClass("amount-deposit"),e.find("#withdraw_count").html(t.withdraw_count||""),e.find("#withdraw_amount").html(amountFormat(null,t.withdraw_amount)).addClass("amount-withdraw"),amountAdd(i.sum_withdraw,t.withdraw_amount),amountAdd(i.sum_deposit,t.deposit_amount),i.sum_count++,e.click(function(a){return s.getFrame().openPage("https://lclasser.github.io/sbalance/pages/main/balance/page.wallet_item.html",t.acc_alias||"(미지정)",t),!1}),0<a&&l.append($('<div class="seperater m-0 w-100"/>')),l.append(e)}),s.find("#list_items").append(e)}),t(i)})}function onPageLoad(a){STracer("page.wallet_group.html").log("onPageLoad...");var e=a.getPage(),n=e.getReference("balances");function l(){var t=e.getFrame().getBalanceSum(),a={year:n.now_date.getFullYear(),month:n.now_date.getMonth()+1,sms_class:t&&t[0].getSummaryClass()};inquire_wallet(e,a,function(a){t&&t[0].setSummaryResult(a,l)})}e.on("refresh",function(a,t){console.log(e.getFile()+": refresh",a,t),l()}),l()}</script>
+        </div>`),e=(t.find("#grp_icon").prop("src",s.icon||""),t.find("#grp_name").html(""+(s.title||"-")),t.find("#item_collapse")),l=(e.attr("data-bs-target","."+a),e.attr("aria-controls","."+a),t.find(".group_x").removeClass("group_x").addClass(a),t.find(".card-body"));Object.values(s.wallets).forEach(function(t,a){var e=$(`
+        <div class="d-flex align-items-center flex-column p-1" style="min-height:54px; padding-right:6px;">
+        <div class="d-flex w-100">
+            <div class="d-flex col-2 me-3" id="acc_company">금융사</div>
+            <div class="d-flex text-truncate" id="acc_alias">별칭</div>
+        </div>
+        <div class="d-flex align-items-center flex-row w-100">
+            <div class="d-flex ps-1 pe-1 col justify-content-end" id="deposit_amount">입금금액</div>
+            <div class="d-flex ps-1 pe-1 col-1 justify-content-end memo-text" id="deposit_count">개수</div>
+            <div class="d-flex ps-1 pe-1 col justify-content-end" id="withdraw_amount">출금금액</div>
+            <div class="d-flex ps-1 pe-1 col-1 justify-content-end memo-text" id="withdraw_count">개수</div>
+        </div>
+        </div>`);null==t.acc_key||t.acc_key.length<=0?(e.find("#acc_company").html("(미지정)"),e.find("#acc_alias").html("")):(e.find("#acc_company").html(t.acc_company),e.find("#acc_alias").html(t.acc_alias)),e.find("#acc_company").addClass(s.class),e.find("#deposit_count").html(t.deposit_count||""),e.find("#deposit_amount").html(amountFormat(null,t.deposit_amount)).addClass("amount-deposit"),e.find("#withdraw_count").html(t.withdraw_count||""),e.find("#withdraw_amount").html(amountFormat(null,t.withdraw_amount)).addClass("amount-withdraw"),amountAdd(n.sum_withdraw,t.withdraw_amount),amountAdd(n.sum_deposit,t.deposit_amount),n.sum_count++,e.click(function(a){return i.getFrame().openPage("https://lclasser.github.io/sbalance/pages/main/balance/page.wallet_item.html",t.acc_alias||"(미지정)",t),!1}),0<a&&l.append($('<div class="seperater m-0 w-100"/>')),l.append(e)}),i.find("#list_items").append(t)}),t(n)})}function onPageLoad(a){stracer("page.wallet_group.html").log("onPageLoad...");var e=a.getPage(),s=e.getReference("balances");function l(){var t=e.getFrame().getBalanceSum(),a={year:s.now_date.getFullYear(),month:s.now_date.getMonth()+1,sms_class:t&&t[0].getSummaryClass()};inquire_wallet(e,a,function(a){t&&t[0].setSummaryResult(a,l)})}e.on("refresh",function(a,t){console.log(e.getFile()+": refresh",a,t),l()}),l()}</script>
