@@ -1,17 +1,17 @@
 <style>.input_check{flex:1 0 auto}.input_select{display:flex;flex-direction:row;flex:1 0 auto;justify-content:flex-end}.input_select select{width:auto}</style><div page-declare=dpage class="page-column sb-page" onload=onPageLoad(this)><div class="mb-1 align-items-center column-fixed d-flex flex-row flex-wrap m-0 p-1"><div class="p-1 input_check"><input class=form-check-input type=checkbox id=item_all> <label class=form-check-label for=item_all id=item_qty>선택</label></div><div class=input_select><select class="m-1 form-select" id=disp_type style=width:auto><option class=fs_item value=ALL selected=selected>모두 보기<option class=fs_item value=SERVER>저장된거만 보기<option class=fs_item value=CLIENT>장치거만 보기</select> <button type=button class="m-1 btn btn-primary" id=btn_add>추가하기</button> <button type=button class="m-1 btn btn-primary" id=btn_refresh>재조회</button></div></div><div class="mb-1 column-paged sb-list" id=data_list></div></div><script>function onPageLoad(e){var l=e.getPage(),m=e.getParam();function s(e,t,s){var e={date1:e,date2:t},a=(l.find("#disp_type option:selected").val(),s.slice());window.SBalance.request("/main/message/lists",e).then(function(e){stracer("page.message_list.html").log("/main/message/lists:",e);var i=l.find("#data_list");function n(){l.find("#item_qty").html(`선택: ${i.find("#msg_check:checked").length} 건<br>전체: ${a.length} 건`)}i.empty(),e.data.forEach(function(t){var e;null!=t.msg_body&&(t.msg_str=t.msg_body.replace(/(\s*|\r\n|\r|\n)/g,""),SHA_256(t.msg_str),null!=(e=a.find(function(e){if(1!=e.is_found&&e.msg_phone==t.msg_phone&&e.msg_date==t.msg_date&&e.msg_str==t.msg_str)return!0}))?e.is_found=!0:(t.is_found=!1,a.push(t)))}),a.sort(function(e,t){return e.msg_date>t.msg_date?-1:e.msg_date<t.msg_date?1:e.msg_time>t.msg_time?-1:e.msg_time<t.msg_time?1:0});stracer("page.message_list.html").log("list... :",a),a.forEach(function(e,t){0<t&&i.append('<div class="list-line">');var s=$(`
-    <div class="list-row m-0">
+    <div class="list-row h-100 m-0">
         <div class="d-flex flex-column p-1" >
             <div class="d-flex flex-row">
-                <div class="p-1">
+                <div class="pe-1">
                     <input class="form-check-input" type="checkbox" id="msg_check">
                 </div>
-                <div class="p-1 pe-3" id="msg_date">날짜</div>
-                <div class="p-1 me-auto" id="msg_time">시간</div>
-                <div class="p-1" id="msg_phone">수신번호</div>
+                <div class="pe-3" id="msg_date">날짜</div>
+                <div class="me-auto" id="msg_time">시간</div>
+                <div class="" id="msg_phone">수신번호</div>
             </div>
             <div class="d-flex flex-row">
                 <div class="p-1" style="width: 1em;"></div>
-                <div class="d-flex align-items-center p-1" id="msg_body">내용</div>
+                <div class="d-flex align-items-center" id="msg_body">내용</div>
             </div>
         </div>
     </div>
