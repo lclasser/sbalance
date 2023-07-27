@@ -16,15 +16,15 @@
         <div class="card-body p-0 collapse show group_x">
         </div>
         </div>`),e=(t.find("#grp_icon").prop("src",s.icon||""),t.find("#grp_name").html(""+(s.title||"-")),t.find("#item_collapse")),l=(e.attr("data-bs-target","."+a),e.attr("aria-controls","."+a),t.find(".group_x").removeClass("group_x").addClass(a),t.find(".card-body"));Object.values(s.wallets).forEach(function(t,a){var e=$(`
-        <div class="d-flex align-items-center flex-column p-1" style="min-height:54px; padding-right:6px;">
-        <div class="d-flex w-100">
-            <div class="d-flex col-2 me-3" id="acc_company">금융사</div>
-            <div class="d-flex text-truncate" id="acc_alias">별칭</div>
-        </div>
-        <div class="d-flex align-items-center flex-row w-100">
-            <div class="d-flex ps-1 pe-1 col justify-content-end" id="deposit_amount">입금금액</div>
-            <div class="d-flex ps-1 pe-1 col-1 justify-content-end memo-text" id="deposit_count">개수</div>
-            <div class="d-flex ps-1 pe-1 col justify-content-end" id="withdraw_amount">출금금액</div>
-            <div class="d-flex ps-1 pe-1 col-1 justify-content-end memo-text" id="withdraw_count">개수</div>
-        </div>
+        <div class="d-flex justify-content-center flex-column p-1" style="min-height:54px;">
+            <div class="d-flex w-100">
+                <div class="d-flex col-2 me-3" id="acc_company">금융사</div>
+                <div class="d-flex text-truncate" id="acc_alias">별칭</div>
+            </div>
+            <div class="d-flex align-items-center flex-row w-100">
+                <div class="d-flex ps-1 pe-1 col justify-content-end" id="deposit_amount">입금금액</div>
+                <div class="d-flex ps-1 pe-1 col-1 justify-content-end memo-text" id="deposit_count">개수</div>
+                <div class="d-flex ps-1 pe-1 col justify-content-end" id="withdraw_amount">출금금액</div>
+                <div class="d-flex ps-1 pe-1 col-1 justify-content-end memo-text" id="withdraw_count">개수</div>
+            </div>
         </div>`);null==t.acc_key||t.acc_key.length<=0?(e.find("#acc_company").html("(미지정)"),e.find("#acc_alias").html("")):(e.find("#acc_company").html(t.acc_company),e.find("#acc_alias").html(t.acc_alias)),e.find("#acc_company").addClass(s.class),e.find("#deposit_count").html(t.deposit_count||""),e.find("#deposit_amount").html(amountFormat(null,t.deposit_amount)).addClass("amount-deposit"),e.find("#withdraw_count").html(t.withdraw_count||""),e.find("#withdraw_amount").html(amountFormat(null,t.withdraw_amount)).addClass("amount-withdraw"),amountAdd(c.sum_withdraw,t.withdraw_amount),amountAdd(c.sum_deposit,t.deposit_amount),c.sum_count++,e.click(function(a){return i.getFrame().openPage("https://lclasser.github.io/sbalance/pages/main/balance/page.wallet_item.html",t.acc_alias||"(미지정)",t),!1}),0<a&&l.append($('<div class="seperater m-0 w-100"/>')),l.append(e)}),i.find("#list_items").append(t)}),t(c)})}function onPageLoad(a){stracer("page.wallet_group.html").log("onPageLoad...");var e=a.getPage(),s=e.getReference("balances");function l(){var t=e.getFrame().getBalanceSum(),a={year:s.now_date.getFullYear(),month:s.now_date.getMonth()+1,sms_class:t&&t[0].getSummaryClass()};inquire_wallet(e,a,function(a){t&&t[0].setSummaryResult(a,l)})}e.on("refresh",function(a,t){stracer("page.wallet_group.html").log(e.getFile()+": refresh",a,t),l()}),l()}</script>
